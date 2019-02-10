@@ -1,0 +1,17 @@
+<design:component>
+       <!--<aura:handler name="init" value="{!this}" action="{!c.doInit}"/> -->
+  <!--  <design:attribute name="sObjectName" label="Object"  />
+    <design:attribute name="title" label="Title" />
+    <design:attribute name="numberOfColumns" label="Columns" />
+    <design:attribute name="fieldsToInclude" label="Fields"  /> 
+    
+    <design:attribute name="mode" label="Mode"  />
+     doInit : function (cmp, evt, hpl) {
+        
+        var str = cmp.get("v.fieldsToInclude");
+    	var res = str.split(",");
+       
+        cmp.set("v.fieldsArray" , res);
+        console.log(res);
+	} -->
+</design:component>

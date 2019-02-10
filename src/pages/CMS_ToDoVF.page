@@ -1,0 +1,122 @@
+<apex:page controller="CMS_ToDoCtr" 
+       docType="html-5.0" sidebar="false" >
+
+<apex:slds />
+ <style>
+        .tablesorter {
+        counter-reset: rowCounter;
+        }
+        .tablesorter .row {
+        counter-increment: rowCounter;
+        }
+        .tablesorter .row .counter::before {
+        content: counter(rowCounter);
+        }
+        
+        
+    </style>
+<style type="text/css">        /* Color for the title bar */
+    
+    .centerHeader { text-align:center;}
+</style>
+
+<style>
+    .centerHeaderBold { text-align:center; font-weight:bold; }
+</style>
+
+
+
+<apex:form >
+    
+    <apex:pageBlock title="CMS - Todo Dashboard">
+        <apex:pageMessages id="messages" ></apex:pageMessages>
+        
+        <apex:pageBlockSection columns="1" collapsible="false">
+            <apex:panelGroup >
+                <apex:outputLabel value="Date From" />
+                <apex:input label="Date From" value="{!dateFrom}" type="auto" /> 
+                <apex:outputLabel value="Date To" />
+                <apex:input label="Date To" value="{!dateTo}" type="auto" />
+                <apex:outputLabel value="" />
+                <apex:commandButton value="Generate" action="{!startGenerateBoard}"   />
+                
+                
+            </apex:panelGroup>          
+        </apex:pageBlockSection>    
+    </apex:pageBlock>
+    
+    
+    
+     <apex:pageblock title="Family Support Campaigns With No Essential Service OR Funder Or Incomplete"  >
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="1" cellpadding="50" cellspacing="300"> 
+                    <apex:pageBlockTable value="{!GenerateUnAss}" var="ex" style="text-align:center"  styleClass="tablesorter" rowClasses="row" cellpadding="300" cellspacing="100">  
+                        <apex:column headervalue="Counter">
+                                <span class="counter"></span>
+                            </apex:column>
+                        <apex:column headervalue="Campaign" > <!--highlight if blank-->
+                            <a href="/{!ex.campLink}"  onclick="window.open(this.href, 'mywin', 'height=400,width=1100'); return false;" >
+                                <apex:outputtext value="{!ex.ES}"/>
+                            </a>
+                        </apex:column>  
+                        <apex:column style="background-color:{!IF(ex.cString5 =null,"#F1F9CC", "#F4F6F6")}" value="{!ex.cString5 }" headervalue="Quarter" />
+                        <apex:column style="background-color:{!IF(ex.cDte =null,"#F1F9CC", "#F4F6F6")}" value="{!ex.cDte}" headervalue="StartDate" /> 
+                        
+                        <apex:column style="background-color:{!IF(ex.cString1 ='Planned', "#F1F9CC" , "#F4F6F6")}" value="{!ex.cString1 }" headervalue="Status" />
+                        
+                        <apex:column style="background-color:{!IF(ex.cString2 =null,"#F1F9CC", "#F4F6F6")}" value="{!ex.cString2 }" headervalue="Funder" />
+                        <apex:column style="background-color:{!IF(ex.cString3 =null,"#F1F9CC", "#F4F6F6")}" value="{!ex.cString3 }" headervalue="Essential Service" /> 
+                        
+                        <apex:column value="{!ex.Int1}" headervalue="Caregivers" />  
+                        <apex:column value="{!ex.Int3}" headervalue="Professionals" /> 
+                        <apex:column value="{!ex.Int2}" headervalue="Children" />  
+                        <apex:column value="{!ex.Int4}" headervalue="Evaluations" /> 
+                        <apex:column value="{!ex.Int5 }" headervalue="Minutes" /> 
+                        
+                        <apex:column value="{!ex.cString6 }" headervalue="Owner" /> 
+                        <apex:column value="{!ex.cString4 }" headervalue="Language" />  
+                        <!--   <apex:column value="{!ex.}" headervalue="Past Due" />  
+<apex:column value="{!ex.Int4}" headervalue="Great Evaluations" /> 
+<!-- <apex:column value="{!ex.}" headervalue="Active" /> -->
+                        
+                        
+                        
+                    </apex:pageBlockTable>
+                    
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageblock>
+         <apex:pageBlock >
+      <apex:pageBlockSection >
+            <apex:panelGrid columns="1"> 
+                <apex:pageBlock title="Prep Download File">
+                    <apex:pageBlockTable id="TagBlock"  value="{!GenerateTagTotals}" var="ex" style="text-align:center" >  
+                         <apex:column value="{!ex.Es }" headervalue="Record Type" />
+                        <apex:column value="{!ex.int1}" headervalue="Total" />
+                   
+                       </apex:pageBlockTable>
+                       </apex:pageBlock>
+                       <apex:pageBlock >
+                     <apex:commandButton action="{!TagContacts}" value="Tag Contacts" rerender="TagBlock" />
+                </apex:pageBlock>
+            </apex:panelGrid>
+        </apex:pageBlockSection>
+        <apex:pageBlock >
+        <apex:panelGrid Columns="1">
+        <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007kuTq" id="EventPrepFile">Group Activity Download File</apex:outputLink>
+        </apex:panelGrid>
+         <apex:panelGrid Columns="1">
+        <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007kuTv" id="IntAll">CMS Interactions Download File</apex:outputLink> 
+        </apex:panelGrid>
+         <apex:panelGrid Columns="1">
+        <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007kD99" id="Kids">Kids Download File</apex:outputLink>
+        </apex:panelGrid>
+         <apex:panelGrid Columns="1">
+         <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007kZQR" id="Adult">Adult Download File</apex:outputLink>
+     
+    </apex:panelGrid>
+          </apex:pageBlock>
+    </apex:pageBlock>
+       
+</apex:form>
+</apex:page>

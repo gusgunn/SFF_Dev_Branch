@@ -1,0 +1,118 @@
+<apex:page readOnly="true" controller="ESP_Stats1" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    <apex:form >
+        
+        <apex:pageBlock title=" ESP: Ethnicity, Race,  Gender, Zip, & Parent Language">
+            <apex:pageMessages id="messages" ></apex:pageMessages>
+            <apex:pageBlockSection title="Enter Quarter Ending" columns="1" collapsible="false">
+                <apex:panelGroup >
+                    <apex:outputLabel value="Date From" />
+                    <apex:input label="Date From" value="{!dateFrom}" type="auto" />
+                    <apex:outputLabel value="Date To" />
+                    <apex:input label="Date To" value="{!dateTo}" type="auto" />
+                    <apex:outputLabel value="" />
+                    <apex:commandButton value="Generate" action="{!startGenerateEISDashboard}" />
+                </apex:panelGroup>          
+            </apex:pageBlockSection>    
+            
+            <apex:pageblock title="Ethnicity" >
+                <apex:pageBlockSection columns="3">
+                    <apex:pageBlockTable value="{!generateEthnicityP}" var="exP"> 
+                        <apex:column value="{!exP.EthnicitiesP}" headervalue="YTPrior Quarter Ethnicities" /> 
+                        <apex:column value="{!exP.ConTactDistinctP}" headervalue="YTPrior Quarter Unduplicated" />  
+                    </apex:pageBlockTable>   
+                    
+                    <apex:pageBlockTable value="{!generateEthnicity}" var="ex"> 
+                        <apex:column value="{!ex.Ethnicities}" headervalue="Current Quarter Ethnicities" />
+                        <apex:column value="{!ex.ConTactDistinct}" headervalue="Current Quarter Unduplicated" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!generateEthnicityYtd}" var="exY"> 
+                        <apex:column value="{!exY.EthnicitiesYtd}" headervalue="YTD Ethnicities" />
+                        <apex:column value="{!exY.ConTactDistinctYtd}" headervalue="YTD Unduplicated" />  
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection> 
+            </apex:pageblock>
+            
+            <apex:pageblock title="Race" >
+                <apex:pageBlockSection columns="3">
+                    <apex:pageBlockTable value="{!generateRaceP}" var="exP"> 
+                        <apex:column value="{!exP.EthnicitiesP}" headervalue="YTPrior Quarter Race" /> 
+                        <apex:column value="{!exP.ConTactDistinctP}" headervalue="YTPrior Quarter Unduplicated" />  
+                    </apex:pageBlockTable>   
+                    
+                    <apex:pageBlockTable value="{!generateRace}" var="ex"> 
+                        <apex:column value="{!ex.Ethnicities}" headervalue="Current Quarter Race" />
+                        <apex:column value="{!ex.ConTactDistinct}" headervalue="Current Quarter Unduplicated" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!generateRaceYtd}" var="exY"> 
+                        <apex:column value="{!exY.EthnicitiesYtd}" headervalue="YTD Race" />
+                        <apex:column value="{!exY.ConTactDistinctYtd}" headervalue="YTD Unduplicated" />  
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection> 
+            </apex:pageblock>
+            
+            
+            <apex:pageblock title="Zip" >
+                <apex:pageBlockSection columns="3">
+                    <apex:pageBlockTable value="{!generateZipFP}" var="zPF"> 
+                        <apex:column value="{!zPF.ZipPF}" headervalue="YTPrior Quarter" />
+                        <apex:column value="{!zPF.ConTactDistinctZPF}" headervalue="YTPrior Unduplicated" />
+                    </apex:pageBlockTable> 
+                    
+                    <apex:pageBlockTable value="{!generateZipF}" var="zPF"> 
+                        <apex:column value="{!zPF.ZipF}" headervalue="Current Quarter Zips" />
+                        <apex:column value="{!zPF.ConTactDistinctZF}" headervalue="Current Quarter Unduplicated" />
+                    </apex:pageBlockTable> 
+                    
+                    <apex:pageBlockTable value="{!GenerateZipFYTD}" var="zPF"> 
+                        <apex:column value="{!zPF.ZipYTDF}" headervalue="YTD Zip" />
+                        <apex:column value="{!zPF.ConTactDistinctZYTDF}" headervalue="YTD Unduplicated" />
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection>  
+            </apex:pageblock>
+            
+            <apex:pageblock title="Gender" >
+                <apex:pageBlockSection columns="3">
+                    <apex:pageBlockTable value="{!GenerateGenP}" var="exP"> 
+                        <apex:column value="{!exP.GenderP}" headervalue="YTPrior Quarter Gender" /> 
+                        <apex:column value="{!exP.ConTactDistinctGP}" headervalue="YTPrior Quarter Unduplicated" />  
+                    </apex:pageBlockTable>   
+                    
+                    <apex:pageBlockTable value="{!GenerateGenC}" var="ex"> 
+                        <apex:column value="{!ex.GenderC}" headervalue="Current Quarter Gender" />
+                        <apex:column value="{!ex.ConTactDistinctG}" headervalue="Current Quarter Unduplicated" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateGenYTD}" var="exY"> 
+                        <apex:column value="{!exY.GenderYtd}" headervalue="YTD Gender" />
+                        <apex:column value="{!exY.ConTactDistinctGYtd}" headervalue="YTD Unduplicated" />  
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection> 
+            </apex:pageblock>
+            
+            
+            <apex:pageblock title="Parent Language" >
+                <apex:pageBlockSection columns="3">
+                    <apex:pageBlockTable value="{!GenerateParentLanguageP}" var="ex"> 
+                        <apex:column value="{!ex.lP}" headervalue=" Prior Quarter Parent Language" />
+                        <apex:column value="{!ex.hhP}" headervalue="Prior Quarter Unduplicated" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateParentLanguage}" var="la"> 
+                        <apex:column value="{!la.lC}" headervalue="Current Quarter Parent Language" />
+                        <apex:column value="{!la.hhC}" headervalue="Current Quarter Unduplicated" />  
+                    </apex:pageBlockTable>  
+                    <apex:pageBlockTable value="{!GenerateParentLanguageYTD}" var="exY"> 
+                        <apex:column value="{!exY.lYtd}" headervalue="YTD Parent Language" />
+                        <apex:column value="{!exY.hhYtd}" headervalue="YTD Unduplicated" />  
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection> 
+            </apex:pageblock>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,79 @@
+<aura:component implements="lightning:actionOverride,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId"
+                controller="service_Picklist_RecordTypeSelector" access="global">
+    <lightning:notificationsLibrary aura:id="notifLib" />
+    <aura:attribute name="sObjectName" type="String" default="Contact" />
+     <aura:attribute name="recordId" type="String" />
+     <aura:attribute name="household" type="String" />
+    <aura:attribute access="private" type="String" name="objectName" default="Contact" />
+    <aura:attribute access="private" type="Map" name="entries" />
+    <aura:attribute name="mapOfRecordTypes" type="Map" />
+    <aura:attribute name="selectedRecordTypeId" type="String" />
+    <aura:attribute access="private" type="Map" name="selectedEntry"  />
+    <aura:attribute access="private" type="String" name="entriesAsJson" />
+    <aura:attribute name="optionsList" type="List" />
+    <aura:attribute name="isOpen" type="Boolean" default="false" />
+    <aura:attribute name="fields" type="String[]" default="['Id','npo02__Household__c']" />
+    <aura:attribute name="contact" type="Object" default="Contact" />
+    <aura:attribute name="record" type="Object" />
+    <aura:attribute name="simpleRecord" type="Object" />
+    <aura:attribute name="error" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <lightning:overlayLibrary aura:id="popuplib" />
+    <aura:handler name="change" value="{!v.selectedEntry}" action="{!c.setSelectedEntry}" />
+     <aura:handler name="change" value="{!v.selectedEntry}" action="{!c.handleRecordUpdated}" />  
+    
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      layoutType="full"
+                      targetRecord="{!v.record}"
+                      targetFields="{!v.simpleRecord}"
+                      targetError="{!v.error}"
+                      recordUpdated="{!c.handleRecordUpdated}" />
+    
+    <!-- Model Box Start -->
+    <aura:if isTrue="{!v.isOpen}">
+     
+        <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container slds-size--1-of-2" >
+                  
+                <div class="slds-modal__header slds-size--1-of-2">
+                   
+                    <button class="slds-button slds-modal__close slds-button" title="Close" onclick="{!c.closeModal}">
+                        X<span class="slds-assistive-text">Cancel</span>
+                        
+                    </button>
+                </div>
+                
+                <div class="slds-modal__content slds-size--1-of-2 slds-p-around--medium">
+                     
+                    <div class="slds-grid slds-wrap">
+                        
+                        <div class="slds-size--1-of-1" >
+                            <lightning:select name="selectItem" label="Select a Contact Type" value="{!v.selectedEntry}">
+                                <aura:iteration items="{!v.optionsList}" var="option">
+                                    <option value="{!option.value}" text="{!option.label}" selected="{!option.selected}" >
+                                    </option>
+                                </aura:iteration>
+                            </lightning:select>
+                        </div>&nbsp; &nbsp;
+                    </div>
+                    
+                </div>
+                
+                <div class="slds-modal__footer slds-size--1-of-2">
+                   
+                    <lightning:button class="slds-button slds-button--brand" onclick="{!c.onRecordTypeSelected}">Next</lightning:button>
+                </div>
+ 
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+     
+    </aura:if>
+    
+    <aura:if isTrue="{!not(empty(v.error))}">
+        <div class="recordError">
+            {!v.error}</div>
+    </aura:if>
+    
+</aura:component>

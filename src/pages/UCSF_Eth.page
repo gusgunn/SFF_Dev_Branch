@@ -1,0 +1,59 @@
+<apex:page readOnly="true" controller="UCSF_Stats" 
+           docType="html-5.0" sidebar="false" >
+    
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        
+        <apex:pageBlock title="UCSF Ethnicity Dashboard">
+            <apex:pageMessages id="messages" ></apex:pageMessages>
+            <apex:pageBlockSection title="Enter Month" columns="1" >
+                <apex:panelGroup >
+                    <apex:outputLabel value="Date From" />
+                    <apex:input label="Date From" value="{!dateFrom}" type="auto" />
+                    <apex:outputLabel value="Date To" />
+                    <apex:input label="Date To" value="{!dateTo}" type="auto" />
+                    <apex:outputLabel value="" />
+                    <apex:commandButton value="Generate" action="{!startGenerateEISDashboard}" />
+                </apex:panelGroup>    		
+            </apex:pageBlockSection>    
+            
+            <apex:pageblock title="Ethnicity" >
+                <apex:pageBlockSection columns="3">
+                    <apex:pageBlockTable value="{!generateEthnicity}" var="ex"> 
+                        <apex:column value="{!ex.Ethnicities}" headervalue="0 to 2 yr old -Ethnicities" />
+                        <apex:column value="{!ex.ConTactDistinct}" />
+                    </apex:pageBlockTable>
+
+                    <apex:pageBlockTable value="{!generateEthnicityP}" var="exP"> 
+                        <apex:column value="{!exP.EthnicitiesP}" headervalue="3 to 5 yr old- Ethnicities" />
+                        <apex:column value="{!exP.ConTactDistinctP}"  />  
+                    </apex:pageBlockTable>   
+                    
+                                       <apex:pageBlockTable value="{!generateEthnicityYtd}" var="exY"> 
+                        <apex:column value="{!exY.EthnicitiesYtd}" headervalue="YTD Ethnicities" />
+                        <apex:column value="{!exY.ConTactDistinctYtd}" headervalue="YTD Unduplicated" />  
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection> 
+            </apex:pageblock>
+            
+     
+            
+            <apex:pageblock title="Parent Language" >
+                <apex:pageBlockSection columns="3">
+                  
+                    <apex:pageBlockTable value="{!GenerateParentLanguage}" var="la"> 
+                        <apex:column value="{!la.lC}" headervalue="Current Month Parent Language" />
+                        <apex:column value="{!la.hhC}"  />  
+                    </apex:pageBlockTable>  
+                   
+                </apex:pageBlockSection> 
+            </apex:pageblock>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

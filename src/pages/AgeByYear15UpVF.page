@@ -1,0 +1,79 @@
+<apex:page readOnly="true" controller="AgeByYear15Up" 
+           docType="html-5.0" sidebar="false" >
+    
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        <apex:panelGroup >
+            <apex:pageBlock title="Annual Report Age - 15 Years and Older"  >
+                
+                <apex:pageMessages id="messages" ></apex:pageMessages>
+                <apex:pageBlockSection title="Enter Fiscal Year: " columns="1" collapsible="True"  >
+                    <apex:panelGrid columns="5" cellpadding="15"  cellspacing="5" style="text-align:center; font-weight: bold" >
+                        <apex:outputLabel value="Date From " />
+                        <apex:input value="{!dateFrom}" type="auto" /> 
+                        <apex:outputLabel value="Date To"  />
+                        <apex:input value="{!dateTo}" type="auto" />
+                        <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                    </apex:panelGrid> 
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:panelGroup>  
+        
+        
+        <apex:pageblock title="Ages: Unduplicated Children, 15 and Older"  >
+            <apex:pageBlockSection >
+                <apex:panelGrid columns="6" cellpadding="15" border="1"  cellspacing="15" >
+                
+                    <apex:pageBlockTable value="{!GenerateKids15}" var="a">  
+                      <apex:column value="{!a.C1}" headervalue=" Total Children: 15 Years"/>
+                    </apex:pageBlockTable>
+                     <apex:pageBlockTable value="{!GenerateKids16}" var="a">  
+                      <apex:column value="{!a.C1}" headervalue=" Total Children: 16 Years"/>
+                    </apex:pageBlockTable>
+                     <apex:pageBlockTable value="{!GenerateKids17}" var="a">  
+                      <apex:column value="{!a.C1}" headervalue=" Total Children: 17 Years"/>
+                    </apex:pageBlockTable>
+                     <apex:pageBlockTable value="{!GenerateKids18}" var="a">  
+                      <apex:column value="{!a.C1}" headervalue=" Total Children: 18 Years"/>
+                    </apex:pageBlockTable>
+                     <apex:pageBlockTable value="{!GenerateKids19}" var="a">  
+                      <apex:column value="{!a.C1}" headervalue=" Total Children: 19 Years"/>
+                    </apex:pageBlockTable>
+                     <apex:pageBlockTable value="{!GenerateKids20}" var="a">  
+                      <apex:column value="{!a.C1}" headervalue=" Total Children: 20 Years"/>
+                    </apex:pageBlockTable>
+                     <apex:pageBlockTable value="{!GenerateKids21}" var="a">  
+                      <apex:column value="{!a.C1}" headervalue=" Total Children: 21 Years"/>
+                    </apex:pageBlockTable>
+                     <apex:pageBlockTable value="{!GenerateKids22}" var="a">  
+                      <apex:column value="{!a.C1}" headervalue=" Total Children: 22 Years"/>
+                    </apex:pageBlockTable>
+                     <apex:pageBlockTable value="{!GenerateKids23}" var="a">  
+                      <apex:column value="{!a.C1}" headervalue=" Total Children: 23 Years"/>
+                    </apex:pageBlockTable>
+                     <apex:pageBlockTable value="{!GenerateKids24}" var="a">  
+                      <apex:column value="{!a.C1}" headervalue=" Total Children: 24 Years"/>
+                    </apex:pageBlockTable>
+                     <apex:pageBlockTable value="{!GenerateKids25}" var="a">  
+                      <apex:column value="{!a.C1}" headervalue=" Total Children: 25 Years"/>
+                    </apex:pageBlockTable>
+                     <apex:pageBlockTable value="{!GenerateKids26}" var="a">  
+                      <apex:column value="{!a.C1}" headervalue=" Total Children: 26 Years"/>
+                    </apex:pageBlockTable>
+                    
+                   
+                </apex:panelGrid>             
+            </apex:pageBlockSection>  
+            
+            
+            
+        </apex:pageblock>
+        
+    </apex:form>
+</apex:page>

@@ -1,0 +1,23 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName"
+    access="global">
+    <aura:attribute name="recordId" type="Id" default="" />
+    <aura:attribute name="sObjectName" type="String" default="Contact" />
+    <aura:attribute name="fieldsToDisplay" type="String" />
+    <aura:attribute name="val" type="String" />
+    <aura:attribute name="layoutType" type="String" default="Custom" />
+    <aura:attribute name="numberOfColumns" type="String" default="1" />
+    <aura:attribute name="fieldsArray" type="String[]" default="['Name','Email','Phone','AccountId']" />
+    <aura:attribute name="targetFields" type="Contact" />
+
+    <aura:registerEvent name="evtApp_dataTableOriginal_toContact" type="c:evtApp_dataTableOriginal_toContact" />
+    <aura:handler event="c:recordChange" action="{!c.onPrefillForm}" />
+
+    <lightning:card iconName="custom:custom19" title="lightning:recordForm">
+        <div class="slds-p-left_large slds-p-right_medium">
+
+            <lightning:recordForm aura:id="recordFormView" recordId="{!v.recordId}" objectApiName="{!v.sObjectName}"
+                fields="{!v.fieldsArray}" columns="1" onsuccess="{!c.onSuccess}" />
+
+        </div>
+    </lightning:card>
+</aura:component>

@@ -1,0 +1,23 @@
+{
+    "projectName": "SFF_Dev_Branch",
+    "username": "ggunn@supportforfamilies.org.devgit",
+    "id": "d84d84a0-2d60-11e9-aa5b-6987636943e2",
+    "namespace": "",
+    "orgType": "developer",
+    "loginUrl": "https://login.salesforce.com/",
+    "instanceUrl": "https://sfcd--devGit.cs30.my.salesforce.com",
+    "workspace": "E:\\CodePlace\\",
+    "subscription": [
+        "ApexClass",
+        "ApexPage",
+        "ApexTrigger",
+        "AuraDefinitionBundle",
+        "CustomMetadata",
+        "FlexiPage",
+        "Flow",
+        "FlowDefinition",
+        "LightningExperienceTheme",
+        "QuickAction",
+        "StaticResource"
+    ]
+}

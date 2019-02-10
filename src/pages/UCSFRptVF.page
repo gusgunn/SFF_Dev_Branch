@@ -1,0 +1,86 @@
+<apex:page readOnly="true" controller="UCSFRept" 
+           docType="html-5.0" sidebar="false" >
+    
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        
+        <apex:pageBlock title="UCSF Age Report Dashboard">
+            <apex:pageMessages id="messages" ></apex:pageMessages>
+            <apex:pageBlockSection title="  7/1/2015 -  " columns="1" >
+                <apex:panelGroup >
+                    
+
+                    <apex:outputLabel value="Date To    " />
+                    <apex:input label="Date To    " value="{!dateTo}" type="auto" />
+                    <apex:outputLabel value="" />
+                    <apex:commandButton value="Generate" action="{!startGenerateEISDashboard}" />
+                </apex:panelGroup>    		
+            </apex:pageBlockSection>    
+            
+       
+            <apex:pageblock title="Age Ranges - 7/1/2015  - Unduplicated" >
+              <apex:pageBlockSection columns="3">
+                 
+                 <apex:pageBlockTable value="{!GenerateAge1}" var="a">  
+          			<apex:column value="{!a.ag1}" headervalue=" Gender" />
+                    <apex:column value="{!a.ConTactDistinctag1}" headervalue="0 to 35 ( 0 to 2 Yrs) Months "/>
+                     </apex:pageBlockTable>
+                   
+              <!--    <apex:pageBlockTable value="{!GenerateAge2}" var="a">  
+                    <apex:column value="{!a.ag2}" headervalue=" Gender" />
+                      <apex:column value="{!a.ConTactDistinctag2}" headervalue=" 6 - 11 Months "/>
+                      </apex:pageBlockTable>
+                  
+                    <apex:pageBlockTable value="{!GenerateAge3}" var="a">  
+                    <apex:column value="{!a.ag3}" headervalue=" Gender" />
+                        <apex:column value="{!a.ConTactDistinctag3}" headervalue="12 - 17 Months"/>
+                     </apex:pageBlockTable>
+                  
+                   
+                    <apex:pageBlockTable value="{!GenerateAge4}" var="a">  
+                    <apex:column value="{!a.ag4}" headervalue=" Gender" />
+                        <apex:column value="{!a.ConTactDistinctag4}" headervalue="18 - 23 Months"/>
+                     </apex:pageBlockTable>
+                  
+                        <apex:pageBlockTable value="{!GenerateAge5}" var="a">  
+                       <apex:column value="{!a.ag5}" headervalue=" Gender" />
+                            <apex:column value="{!a.ConTactDistinctag5}" headervalue="24 - 29 Months"/>
+                     </apex:pageBlockTable>
+                  
+                            <apex:pageBlockTable value="{!GenerateAge6}" var="a">  
+                              <apex:column value="{!a.ag6}" headervalue=" Gender" />
+                                <apex:column value="{!a.ConTactDistinctag6}" headervalue="30 - 35 Months"/> -
+                    </apex:pageBlockTable>
+                -->   
+                  <apex:pageBlockTable value="{!GenerateAge7}" var="a">  
+                              <apex:column value="{!a.ag7}" headervalue=" Gender" />
+                                <apex:column value="{!a.ConTactDistinctag7}" headervalue="3 to 5 Yrs"/> -
+                    </apex:pageBlockTable>
+                  
+             <!--     <apex:pageBlockTable value="{!GenerateAge8}" var="a">  
+                              <apex:column value="{!a.ag8}" headervalue=" Gender" />
+                                <apex:column value="{!a.ConTactDistinctag8}" headervalue=" Unknown Age"/> -
+                    </apex:pageBlockTable>
+             
+                  <apex:pageBlockTable value="{!GenerateAge9}" var="a">  
+                              <apex:column value="{!a.ag9}" headervalue=" Gender" />
+                                <apex:column value="{!a.ConTactDistinctag9}" headervalue="6 + Years "/> -
+                    </apex:pageBlockTable> -->
+                 
+             
+             
+               </apex:pageBlockSection>  
+   	
+            
+            
+            </apex:pageblock>
+         
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,6 @@
+<aura:event type="APPLICATION" description="base_datatableWithEdit returns new lookup details for server and UI update">
+    <aura:attribute name="rowId" type="String"/>
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="newId" type="String"/>
+    <aura:attribute name="rowIndex" type="Integer"/> 
+</aura:event>

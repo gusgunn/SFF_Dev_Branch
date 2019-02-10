@@ -1,0 +1,65 @@
+<apex:page StandardController="Case" extensions="InteractionClone" action="{!doClone}" >
+   
+   <apex:form id="theform"  >
+         <apex:pageMessages />
+             <apex:pageBlock title="Clone Interaction With Issues" mode="edit" >
+                
+         <apex:pageBlockSection collapsible="True" title="Interaction Detail">
+             <apex:inputField value="{!case.ContactID}"/>
+         <!--      <apex:inputField value="{!case.CaseNumber}"/>-->
+             
+               <apex:inputField value="{!case.AccountID}"/>
+             <apex:inputField value="{!case.RecordType.Name}"/>
+             
+              <apex:inputField value="{!case.On_behalf_of__c}"/>
+             <apex:inputField value="{!case.Origin}"/>
+              
+              <apex:inputField value="{!case.Development_Screening__c}"/>
+             <apex:inputField value="{!case.Call_Type__c}"/>
+             
+               <apex:inputField value="{!case.Appropriate_services_improvement_score__c}"/>
+             <apex:inputField value="{!case.Start_Time__c}"/>
+             
+             <apex:outputField value="{!case.TP__c}"/>
+                <apex:inputField value="{!case.Add_5_Mins_to_Start_Time_For_End_Time__c}"/>
+             
+                 </apex:pageBlockSection>
+             
+              <apex:pageBlockSection collapsible="True" title="Child Details">
+             
+              <apex:inputField value="{!case.Family__Household__c}"/>
+                    <apex:inputField value="{!case.AgeMonthCaseTime__c}"/>
+                  <apex:inputField value="{!case.Family__Child__c}"/>   
+              
+               
+              
+                 </apex:pageBlockSection>
+                 <apex:pageBlockButtons >
+             
+               
+                <apex:commandButton value="CancelIt" action="{!cancel}"/>
+                <apex:commandButton value="Save" action="{!save}"/>
+            </apex:pageBlockButtons>
+           
+       
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
+
+<!--public class OpportunityClone_Class { public Opportunity OldRecord {get; set; } public Opportunity NewRecord {get; set; } public Id OpptyIdOld {get; set; } public Boolean CloneOLI {get; set; } public Boolean forceError {get; set; } // this is the constructor public OpportunityClone_Class (){ //default forceError = False; //get the passed parm OpptyIdOld = System.currentPageReference().getParameters().get('id') ; if ( System.currentPageReference().getParameters().get('cloneoli') == '1') { CloneOLI = True ; } else { CloneOLI = False ; } } // this will be invoked from VForce page // in this kind of VForce page / controller, the constructor can not do the work public PageReference doit(){ //SPECIFICALLY EXCLUDE THESE FIELDS: //this gets the original record... OldRecord = [ Select AccountId , Amount , CampaignId , CloseDate , CreatedById , CreatedDate , CurrencyIsoCode , Description , Fiscal , FiscalQuarter , FiscalYear , ForecastCategory , HasOpportunityLineItem , Id , IsClosed , IsDeleted , IsWon , LastActivityDate , LastModifiedById , LastModifiedDate , LeadSource , Name , NextStep , OwnerId , Pricebook2Id , RecordTypeId , StageName , SystemModstamp , Type , (Select Id, OpportunityId , Description, PriceBookEntryId, Quantity, TotalPrice from OpportunityLineItems) from Opportunity o where id = :OpptyIdOld ] ; try { // clones the original (resets id) Opportunity NewRecord = OldRecord.clone(false, false); //over ride some fields NewRecord.Name = '[CLONED] ' + OldRecord.Name; NewRecord.Amount = 0; //for good or bad, not resetting the pricebookid - would cause lots of other problems //NewRecord.Pricebook2Id = null; //Closed deals can be any date. Non-Closed deals can only be future. if (!NewRecord.IsClosed) { NewRecord.CloseDate = system.today(); } //insert cloned record insert NewRecord; //this will cause a failure, i.e. the catch if (forceError) { insert NewRecord; } system.debug ('NEW RECORD: ' + newRecord.id + ' ' + newRecord.Name); if (CloneOLI == True) { OpportunityLineItem[] products = oldRecord.OpportunityLineItems.DeepClone(false); for (OpportunityLineItem each : products) { each.OpportunityId = NewRecord.id; each.TotalPrice = 0; //each.Description = '[CLONED]' + each.description; } insert products; } PageReference home = new PageReference('/' + newRecord.id); home.setRedirect(true); return home; } catch (Exception e) { system.debug ('ERROR! ' + e); ApexPages.Message myMsg = new ApexPages.Message(ApexPages.Severity.ERROR, 'Error creating new record: ' + e); A
+pexPages.addMessage(myMsg); return null; } } } -->
+
+<!--use JAVASCRIPTButton For Listview  
+{!REQUIRESCRIPT("/soap/ajax/15.0/connection.js")} 
+
+var records = {!GETRECORDIDS( $ObjectType.Invoice_Statement__c)};
+
+if (records[0] == null) { 
+alert("Please select a record for cloning");
+}
+else if (records[1] != null) { 
+alert("Records can only be cloned one at a time");
+}
+else{
+window.location.href="/apex/ClonePlus?id=" + records[0] + "&childobjecttypes=Line_Item__c,Delivery__c";
+}-->

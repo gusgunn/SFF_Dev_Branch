@@ -1,0 +1,90 @@
+<apex:page readOnly="true" controller="AgeByYear_Cls" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        <apex:panelGroup >
+            <apex:pageBlock title="Annual Report Age - Through 14 Years"  >
+                
+                <apex:pageMessages id="messages" ></apex:pageMessages>
+                <apex:pageBlockSection title="Enter Fiscal Year: " columns="1" collapsible="True"  >
+                    <apex:panelGrid columns="5" cellpadding="15"  cellspacing="5" style="text-align:center; font-weight: bold" >
+                        <apex:outputLabel value="Date From " />
+                        <apex:input value="{!dateFrom}" type="auto" /> 
+                        <apex:outputLabel value="Date To"  />
+                        <apex:input value="{!dateTo}" type="auto" />
+                        <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                    </apex:panelGrid> 
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:panelGroup>  
+        
+        
+        <apex:pageblock title="Ages: Unduplicated Children, Birth through 14"  >
+            <apex:pageBlockSection >
+                <apex:panelGrid columns="5" cellpadding="15" border="1"  cellspacing="5" >
+                    
+                    <apex:pageBlockTable value="{!GenerateKids0}" var="a">  
+                        
+                        <apex:column value="{!a.C1}" headervalue=" Total Children: 0 Years"/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids1}" var="a">  
+                        
+                        <apex:column value="{!a.C1}" headervalue=" Total Children: 1 Years"/>
+                    </apex:pageBlockTable>
+                    
+                    <apex:pageBlockTable value="{!GenerateKids2}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue="Total Children:  2 Years "/> 
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids3}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue="Total Children: 3 Years "/> 
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids4}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue="Total Children: 4 Years "/> 
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids5}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue=" Total Children: 5 Years"/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids6}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue=" Total Children: 6 Years"/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids7}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue=" Total Children: 7 Years"/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids8}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue=" Total Children: 8 Years"/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids9}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue=" Total Children: 9 Years"/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids10}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue=" Total Children: 10 Years"/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids11}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue=" Total Children: 11 Years"/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids12}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue=" Total Children: 12 Years"/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids13}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue=" Total Children: 13 Years"/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateKids14}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue=" Total Children: 14 Years"/>
+                    </apex:pageBlockTable>
+                    
+                </apex:panelGrid>             
+            </apex:pageBlockSection>  
+            
+            
+            
+        </apex:pageblock>
+        
+    </apex:form>
+</apex:page>

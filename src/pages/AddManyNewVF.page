@@ -1,0 +1,534 @@
+<apex:page standardController="Contact"  extensions="AddManyAlphaTemplate" id="AddManyNewVF"   >
+    <apex:slds />
+    <style type="text/css">
+        .loading-icon {
+        background-image: url(/img/loading.gif);
+        width: 16px;
+        height: 16px;
+        }
+        
+        a.alpha-link {
+        font-weight: normal;
+        font-size: 100%;
+        padding: 0 8px;
+        
+        color: #015BA7 !important;
+        }
+        
+        a.alpha-link+a.alpha-link {
+        border-left: 1px solid #CFCECE;
+        }
+        
+        a.alpha-link:hover {
+        background-color: #e0f5fc !important;
+        }
+        
+        a.alpha-select {
+        font-weight: bold;
+        text-decoration: none;
+        background-color: #C6E1FF;
+        color: #000000 !important;
+        }
+        
+        .search-block {
+        text-align: center;
+        }
+        
+        .search-block input {
+        margin: 0px 15px 0px 5px;
+        }
+        
+        .search-block-button {
+        min-width: 110px;
+        }
+        
+        .process-block {
+        text-align: center;
+        margin-top: 10px;
+        }
+        
+        .process-block input {
+        margin: 0px 15px;
+        }
+        
+        .process-block-button {
+        min-width: 110px;
+        }
+        
+        .page-buttons input {
+        min-width: 110px;
+        }
+        .styleSelect select {
+        background: transparent;
+        width: 168px;
+        padding: 5px;
+        font-size: 16px;
+        line-height: 1;
+        border: 0;
+        border-radius: 0;
+        height: 34px;
+        -webkit-appearance: none;
+        color: #000;
+        }
+    </style>
+    
+    <apex:pageMessages />
+    
+    <!-- jQuery plug in for table sort my multiple columns -->
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"/>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+    <apex:includeScript value="{!URLFOR($Resource.jQuery_TableSort, 'jquery-latest.js')}"  />
+    <apex:includeScript value="{!URLFOR($Resource.jQuery_TableSort, 'jquery.tablesorter.min.js')}"  />
+    <apex:stylesheet value="{!URLFOR($Resource.jQuery_TableSort   , '/themes/blue/style.css')}"  />
+    <apex:includeScript value="{!$Resource.Jquery}"/>
+    <apex:includeScript value="{!$Resource.jMaskedInput}"/>
+    <script src="jquery.js" type="text/javascript"></script>
+    
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+        
+        document.getElementById("search").style.cursor = "pointer";
+        console.log('pointer');
+    });
+    
+    </script>
+    
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $('#search').keyup(function(){
+            searchTable($(this).val());
+        });
+    });
+    /*@gusgunn
+                    Param 1:searchText
+                    Description: this method takes an argument and
+                    search records in the assigned table Id.
+                */
+    function searchTable(searchText){
+        /*get Table using its Id */
+        var table = $('table[id$=TablePanel');
+        table.find('tr').each(function(index, row){
+            var allCells = $(row).find('td');
+            if(allCells.length > 0){
+                var found = false;
+                allCells.each(function(index, td){
+                    var regExp = new RegExp(searchText, 'i');
+                    if(regExp.test($(td).text()))
+                    {
+                        found = true;
+                        return false;
+                    }
+                });
+                if(found == true)$(row).show();else $(row).hide();
+            }
+        });
+    }
+    </script>
+    
+    <script>
+    $(document).ready(function() {
+        $(".txt-mask").mask("(999) 999-9999");
+        console.log('Done');
+    });
+    
+    </script>
+    
+    <apex:form id="TheForm">
+        <!-- ***************************** -->
+        
+        
+        <!-- Search Criteria               -->
+        <apex:pageBlock mode="maindetail" >
+            <div class= "slds-page-header slds_m_xxx-small slds-text-align_left slds-font-weight-bold  slds-style-complimentary">
+            <label class="slds-form-element__label slds-text-align_center slds-text-body_xx-small ">
+                    <strong> <i>&nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; Name  </i> </strong>  </label>
+                <apex:outputLink style="color:blue"  value="/{!selectedCampaign.Id }"  target="_blank">{!selectedCampaign.Name } </apex:outputLink>
+                
+                <label class="slds-form-element__label slds-text-align_center slds-text-body_xx-small ">
+                    <strong> <i>&nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; Start Time  </i> </strong>  </label>
+                <apex:outputField style="color:blue" value="{!selectedCampaign.Start_Date_Time__c}"  />
+                <apex:outputPanel id="spots">
+                    <label class="slds-form-element__label slds-text-align_center slds-text-body_xx-small ">
+                        
+                        <strong> <i>&nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; Adult Spots Remaining  </i> </strong>  </label>
+                    <apex:outputtext style="color:blue"  value="{!selectedCampaign.Number_of_adult_spots_remaining__c}"  />
+                    <label class="slds-form-element__label slds-text-align_center slds-text-body_xx-small ">
+                        <strong> <i>&nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; Child Spots Remaining  </i> </strong>  </label>
+                    <apex:outputtext style="color:blue"
+                                     value="{!selectedCampaign.Number_of_child_spots_remaining__c}"  />
+                </apex:outputPanel>
+                <label class="slds-form-element__label slds-text-align_center slds-text-body_xx-small ">
+                    <strong> <i>&nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp;Language  </i> </strong>  </label>
+                <apex:outputtext style="color:blue"
+                                 value="{!IF(selectedCampaign.Presentation_Language__c= '', "English", selectedCampaign.Presentation_Language__c) }"  />
+                <label class="slds-form-element__label slds-text-align_center slds-text-body_xx-small ">
+                    <strong> <i>&nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp;Interpreter Offered </i> </strong>  </label>
+                <apex:outputtext style="color:blue"
+                                 value="{!IF(selectedCampaign.Language_Interpreter_Services__c= '', "Contact Admin If Needed", selectedCampaign.Language_Interpreter_Services__c) }"  />
+            </div>
+            
+        </apex:pageBlock>
+        <apex:pageBlock rendered="{!If(processDisabled != true, true, false)}" >
+            <!-- alphabet selection -->
+            <span style="float: center ; margin: 5px 5px 5px 5px;"> Alpha Search By Last Name:  <apex:repeat value="{!AlphaList}" var="a">
+                <apex:commandLink value="{!a}" action="{!BuildQuery}" rerender="TablePanel"
+                                  styleClass="alpha-link{!if(AlphaFilter=a,' alpha-select','')}" rendered="{!!paginationNavigationLock}" status="TableUpdateStatus">
+                    <apex:param name="AlphaFilter" value="{!a}" assignTo="{!AlphaFilter}" />
+                </apex:commandLink>
+                </apex:repeat>
+            </span>
+            <div>
+            </div>
+        
+        
+        <div>
+            
+                <apex:outputPanel >
+                    &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp;
+                </apex:outputPanel>
+                <apex:outputPanel style="Center" >
+                    <label class="slds-form-element__label  slds-p-top_large slds-font-weight-bold "> <b> <i>
+                        &nbsp;  &nbsp;  &nbsp; Search By Household Name / Partial Household Name  </i></b> </label> 
+                    
+                    <apex:inputText value="{!SearchName}" /> 
+                    
+               <!-- <apex:inputText value="{!SearchHousehold}" />-->
+                &nbsp;  &nbsp;  &nbsp;
+                <apex:commandButton styleClass="slds-button slds-button--neutral" value="Search" action="{!SearchContact}" rerender="TablePanel"
+                                     status="TableUpdateStatus" /> 
+
+                </apex:outputPanel>
+             </div>
+            </apex:pageBlock>
+       
+        
+        <div style="clear: both;"></div>
+        
+        
+        
+        <!-- styleClass="process-block-button" -->
+        <!--  <div class="process-block"> -->
+        <apex:actionStatus id="ProcessButtonStatus">
+            <apex:facet name="stop">
+                <apex:outputPanel >
+                  
+                    &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;    <apex:commandButton styleClass="slds-button slds-button--neutral "  value="Process Selected" action="{!Submit}"
+                                                                                          status="ProcessButtonStatus" disabled="{!processDisabled}"    rerender="TheForm, maindetail, spots, TablePanel2"/>
+                    
+                    &nbsp;  &nbsp;  &nbsp; &nbsp;    <apex:commandButton id="Submit"   action="{!Submit}" value="Submit" status="ProcessButtonStatus"  alt="Submit"
+                                                                         disabled="{!SubmitDisabled}"   styleClass="slds-button slds-button--neutral " rendered="{!processDisabled}" />
+                </apex:outputPanel>
+            </apex:facet>
+            <apex:facet name="start">
+                <apex:outputPanel >
+                    &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; <apex:commandButton styleClass="process-block-button" value="Processing..." disabled="true" />
+                    <!--  <apex:commandButton styleClass="process-block-button" value="Processing..." disabled="true" />-->
+                    
+                </apex:outputPanel>
+            </apex:facet>
+        </apex:actionStatus>
+        
+        
+        
+        <!-- search results table      -
+<!-- First select  -->
+        <div>
+            
+        </div>
+        <apex:pageBlock id="TablePanel" rendered="{!If(processDisabled == true, false, true)}" >
+            <div>
+                <span  style="float: left; margin-bottom: 5px;">
+                    <apex:commandButton styleClass="slds-button slds-button--neutral" disabled="{!!StdSetControllerContact.hasprevious || paginationNavigationLock}" value="First" action="{!StdSetControllerContact.First}"
+                                        rerender="TablePanel" />
+                    <apex:commandButton styleClass="slds-button slds-button--neutral" disabled="{!!StdSetControllerContact.hasprevious ||  paginationNavigationLock}" value="Previous" action="{!StdSetControllerContact.previous}"
+                                        rerender="TablePanel" />
+                    <apex:commandButton styleClass="slds-button slds-button--neutral" disabled="{!!StdSetControllerContact.hasnext ||  paginationNavigationLock}" value="Next"
+                                        action="{!StdSetControllerContact.next}" rerender="TablePanel" />
+                    <apex:commandButton styleClass="slds-button slds-button--neutral" disabled="{!!StdSetControllerContact.hasnext || paginationNavigationLock}" value="Last"
+                                        action="{!StdSetControllerContact.Last}" rerender="TablePanel" />
+                </span>
+                &nbsp;  &nbsp;  &nbsp;
+                <!-- SearchBox -->
+                <apex:actionFunction action="{!BuildQuery}" name="apexDoQuery" reRender="TablePanel"/>
+                
+                <!-- <div class= "slds-page-header slds_m_xxx-small slds-text-align_left slds-font-weight-bold slds-text-title_caps"> -->
+                <label class="slds-form-element__label  slds-font-weight-bold "> <b> <i>
+                    &nbsp;  &nbsp;  &nbsp;  Find Contacts in this page  </i></b> </label>  <input type="text" id="search" alt="search Household, Last Name and First Name fields by entering letters"  />
+                <label class="slds-form-element__label  slds-font-weight-bold "> <b> <i>
+                    &nbsp;  &nbsp;  Names through: </i> {!LastOnPage.aContact.Name} </b></label> 
+              
+                &nbsp;  &nbsp;  
+                <label class="slds-form-element__label  slds-font-weight-bold "> 
+                    <apex:outputText value="# Records per Page:  " rendered="{!!paginationNavigationLock}"/> 
+                    
+                    <apex:selectList value="{!RecPerPage}" size="1" rendered="{!!paginationNavigationLock}">
+                        <apex:selectOptions value="{!RecPerPageOption}" />
+                        <apex:actionSupport event="onchange" action="{!BuildQuery}" reRender="TablePanel" status="TableUpdateStatus" />
+                    </apex:selectList> </label>
+                                  <label class="slds-form-element__label  slds-font-weight-bold "> 
+                    &nbsp;  &nbsp;  {!Reccount} <i>records within this filtered section.  </i>  </label>
+                
+                <label class="slds-form-element__label  slds-font-weight-bold "> 
+                     &nbsp;  &nbsp;  &nbsp; &nbsp;   Page {!pageNumber}  of {!pageTotal} .   </label>
+
+            </div>
+            
+            <apex:actionStatus id="TableUpdateStatus">
+                <apex:inputHidden value="{!AlphaFilter}" id="hiddenField" />
+                <!-- loading message -->
+                <apex:facet name="start">
+                    <apex:outputPanel layout="block" styleClass="message infoM4">
+                        <apex:panelGrid columns="2" styleClass="messageTable" columnClasses="messageCell" style="padding:0px;margin:0px;">
+                            <apex:panelGroup >
+                                <img class="loading-icon" src="/s.gif" />
+                            </apex:panelGroup>
+                            <apex:panelGroup >
+                                <div class="messageText">Please wait...</div>
+                            </apex:panelGroup>
+                        </apex:panelGrid>
+                    </apex:outputPanel>
+                </apex:facet>
+                
+                <!-- Contact table -->
+                <apex:facet name="stop">
+                    <apex:pageBlockTable value="{!CurrentContactList}" var="a" id="TablePanel" >
+                        <!--  <apex:column >
+<apex:commandLink styleClass="alpha-link" action="{!DoSomethingOne}">
+<apex:param value="{!a.aContact.Id}" assignTo="{!SelectedOneContact}" />Select</apex:commandLink>
+</apex:column> -->
+                        <apex:column value="{!a.aRowCounter}">
+                            <apex:facet name="header">#</apex:facet>
+                        </apex:column>
+                        
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:outputPanel id="SelectedCount2">
+                                    <div style="text-align: center;">
+                                        <apex:outputText value="Selected" />
+                                        <br />
+                                        <apex:outputText value="{!ContactSelectedCount}" />
+                                    </div>
+                                </apex:outputPanel>
+                            </apex:facet>
+                            <div style="text-align: center;">
+                                <apex:inputCheckBox value="{!a.aCheckBox}" id="check-box"  disabled="{!a.disabled}" >
+                                    <apex:actionSupport event="onchange" rerender="SelectedCount" action="{!UpdateContactSelectedSet}" />
+                                </apex:inputcheckbox>
+                            </div>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:commandLink action="{!SortToggle}" rerender="TablePanel" status="TableUpdateStatus">
+                                    <apex:param name="SortField" value="LastName" assignTo="{!SortField}" />
+                                    <!--  <apex:inputField value="{!a.aContact.LastName}"  /> -->
+                                    
+                                    
+                                    <apex:outputText value="{!$ObjectType.Contact.Fields.LastName.Label}{!IF(SortField=='LastName.',IF(SortDirection='asc','▲','▼'),'')}" />
+                                </apex:commandLink>
+                            </apex:facet>
+                            <apex:outputField value="{!a.aContact.LastName}" />
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:commandLink action="{!SortToggle}" rerender="TablePanel" status="TableUpdateStatus">
+                                    <apex:param name="SortField" value="Name" assignTo="{!SortField}" />
+                                    <apex:outputText value="{!$ObjectType.Contact.Fields.Name.Label}{!IF(SortField=='LastName',IF(SortDirection='asc','▲','▼'),'')}" />
+                                </apex:commandLink>
+                            </apex:facet>
+                            <apex:outputLink value="/{!a.aContact.Id}" target="_blank">{!a.aContact.Name}</apex:outputlink>
+                        </apex:column>
+                        
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:commandLink action="{!SortToggle}" rerender="TablePanel" status="TableUpdateStatus">
+                                    <apex:param name="SortField" value="RecordTypeID" assignTo="{!SortField}" />
+                                    <apex:outputText value="Type{!IF(SortField=='RecordTypeID',IF(SortDirection='asc','▲','▼'),'')}" />
+                                </apex:commandLink>
+                            </apex:facet>
+                            <!--  <apex:outputText value="{!a.aContact.RecordTypeID}" />-->
+                            <apex:outputText value="Adult" rendered="{!IF(a.aContact.RecordTypeID == "012G0000000qhDMIAY", true, false)}" />
+                            <apex:outputText value="Child" rendered="{!IF(a.aContact.RecordTypeID == "012G0000000qhDMIAY", false, true)}" />
+                            
+                        </apex:column>
+                        
+                        
+                        
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:commandLink action="{!SortToggle}" rerender="TablePanel" status="TableUpdateStatus">
+                                    <apex:param name="SortField" value="Name" assignTo="{!SortField}" />
+                                    <apex:outputText value="{!$ObjectType.Contact.Fields.npo02__Household__c.Label}{!IF(SortField=='npo02__Household__c',IF(SortDirection='asc','▲','▼'),'')}" />
+                                </apex:commandLink>
+                            </apex:facet>
+                            <apex:outputField value="{!a.aContact.npo02__Household__r.Name}" />
+                        </apex:column>
+                        
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:commandLink action="{!SortToggle}" rerender="TablePanel" status="TableUpdateStatus">
+                                    <apex:param name="SortField" value="Email" assignTo="{!SortField}" />
+                                    <apex:outputText value="{!$ObjectType.Contact.Fields.Email.Label}{!IF(SortField=='Email',IF(SortDirection='asc','▲','▼'),'')}" />
+                                </apex:commandLink>
+                            </apex:facet>
+                            <apex:outputField value="{!a.aContact.Email}" />
+                        </apex:column>
+                        
+                        <apex:column headerValue=" Mobile "  >
+                            
+                            <apex:outputField value="{!a.aContact.MobilePhone}" styleClass="txt-mask" rendered="{!IF(a.disabled, false, true)}"  />
+                            
+                        </apex:column>
+                        
+                    </apex:pageBlockTable>
+                </apex:facet>
+            </apex:actionStatus>
+            <div style="margin-top: 5px;">
+              
+            </div>
+        </apex:pageBlock>
+        
+        <!--  tablePanel 2 -->
+        
+        <apex:pageBlock id="TablePanel2" rendered="{!If(processDisabled == true, true, false)}" >
+
+            <apex:actionStatus id="TableUpdateStatus">
+                <apex:inputHidden value="{!AlphaFilter}" id="hiddenField" />
+                <!-- loading message -->
+                <apex:facet name="start">
+                    <apex:outputPanel layout="block" styleClass="message infoM4">
+                        <apex:panelGrid columns="2" styleClass="messageTable" columnClasses="messageCell" style="padding:0px;margin:0px;">
+                            <apex:panelGroup >
+                                <img class="loading-icon" src="/s.gif" />
+                            </apex:panelGroup>
+                            <apex:panelGroup >
+                                <div class="messageText">Please wait...</div>
+                            </apex:panelGroup>
+                        </apex:panelGrid>
+                    </apex:outputPanel>
+                </apex:facet> -->
+                
+                <!-- Contact table -->
+                <apex:facet name="stop">
+                    <apex:pageBlockTable value="{!CurrentContactList}" var="a" id="TablePanel2" rendered="{!If(processDisabled == true, true, false)}" >
+                       
+                        <apex:column value="{!a.aRowCounter}">
+                            <apex:facet name="header">#</apex:facet>
+                        </apex:column>
+                        
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:outputPanel id="SelectedCount2">
+                                    <div style="text-align: center;">
+                                        <apex:outputText value="Selected" />
+                                        <br />
+                                        <apex:outputText value="{!ContactSelectedCount}" />
+                                    </div>
+                                </apex:outputPanel>
+                            </apex:facet>
+                            <div style="text-align: center;">
+                                <apex:inputCheckBox value="{!a.aCheckBox}" id="check-box"  disabled="{!a.disabled}" >
+                                    <apex:actionSupport event="onchange" rerender="SelectedCount" action="{!UpdateContactSelectedSet}" />
+                                </apex:inputcheckbox>
+                            </div>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:commandLink action="{!SortToggle}" rerender="TablePanel2" status="TableUpdateStatus">
+                                    <apex:param name="SortField" value="22222LastName" assignTo="{!SortField}" />
+                                    <!--  <apex:inputField value="{!a.aContact.LastName}"  /> -->
+                                    
+                                    
+                                    <apex:outputText value="{!$ObjectType.Contact.Fields.LastName.Label}{!IF(SortField=='LastName.',IF(SortDirection='asc','▲','▼'),'')}" />
+                                </apex:commandLink>
+                            </apex:facet>
+                            <apex:outputField value="{!a.aContact.LastName}" />
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:commandLink action="{!SortToggle}" rerender="TablePanel" status="TableUpdateStatus">
+                                    <apex:param name="SortField" value="Name" assignTo="{!SortField}" />
+                                    <apex:outputText value="{!$ObjectType.Contact.Fields.Name.Label}{!IF(SortField=='LastName',IF(SortDirection='asc','▲','▼'),'')}" />
+                                </apex:commandLink>
+                            </apex:facet>
+                            <apex:outputLink value="/{!a.aContact.Id}" target="_blank">{!a.aContact.Name}</apex:outputlink>
+                        </apex:column>
+                        
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:commandLink action="{!SortToggle}" rerender="TablePanel" status="TableUpdateStatus">
+                                    <apex:param name="SortField" value="RecordTypeID" assignTo="{!SortField}" />
+                                    <apex:outputText value="Type{!IF(SortField=='RecordTypeID',IF(SortDirection='asc','▲','▼'),'')}" />
+                                </apex:commandLink>
+                            </apex:facet>
+                            <!--  <apex:outputText value="{!a.aContact.RecordTypeID}" />-->
+                            <apex:outputText value="Adult" rendered="{!IF(a.aContact.RecordTypeID == "012G0000000qhDMIAY", true, false)}" />
+                            <apex:outputText value="Child" rendered="{!IF(a.aContact.RecordTypeID == "012G0000000qhDMIAY", false, true)}" />
+                            
+                        </apex:column>
+                        
+                        <apex:column headerValue=" Status ">
+                            <apex:selectList size="1" styleClass="slds-select-slds-nowrap" id="setStatus" onchange="setStatus(this.value);"
+                                             value="{!a.status}" rendered="{!IF(a.disabled, false, true)}"  >
+                                <apex:selectOptions value="{!items}" /> </apex:selectlist>
+                            <apex:outputText value="Registered" rendered="{!IF(a.disabled, true, false)}" />
+                        </apex:column>
+                        
+                        <apex:column headerValue=" Special Accomodations ">
+                            <apex:inputText value="{!a.aSpecial}" rendered="{!IF(a.disabled, false, true)}"  />
+                        </apex:column>
+                        
+                        
+                        <apex:column headerValue=" Interpreter ">
+                            <apex:inputCheckbox id="interp" onchange="setInterp(this.value);" value="{!a.aInterp}" rendered="{!IF(a.disabled, false, true)}"  />
+                        </apex:column>
+                        <apex:column headerValue=" Language "  >         <!-- style="background-color:{!IF(con.Family__Primary_Language__c == '', '#e6e6ff', IF(con.Family__Primary_Language__c == 'Unknown', '#e6e6ff', 'White' ))}" -->
+                            
+                            <apex:inputField value="{!a.aContact.Family__Primary_Language__c}" rendered="{!IF(a.disabled, false, true)}"  style="border=0"  />
+                            
+                        </apex:column>
+
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:commandLink action="{!SortToggle}" rerender="TablePanel" status="TableUpdateStatus">
+                                    <apex:param name="SortField" value="Name" assignTo="{!SortField}" />
+                                    <apex:outputText value="{!$ObjectType.Contact.Fields.npo02__Household__c.Label}{!IF(SortField=='npo02__Household__c',IF(SortDirection='asc','▲','▼'),'')}" />
+                                </apex:commandLink>
+                            </apex:facet>
+                            <apex:outputField value="{!a.aContact.npo02__Household__r.Name}" />
+                        </apex:column>
+                        
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:commandLink action="{!SortToggle}" rerender="TablePanel" status="TableUpdateStatus">
+                                    <apex:param name="SortField" value="Email" assignTo="{!SortField}" />
+                                    <apex:outputText value="{!$ObjectType.Contact.Fields.Email.Label}{!IF(SortField=='Email',IF(SortDirection='asc','▲','▼'),'')}" />
+                                </apex:commandLink>
+                            </apex:facet>
+                            <apex:inputField value="{!a.aContact.Email}" />
+                        </apex:column>
+                        
+                        <apex:column headerValue=" Mobile "  >
+                            
+                            <apex:inputField value="{!a.aContact.MobilePhone}" styleClass="txt-mask" rendered="{!IF(a.disabled, false, true)}"  />
+                            
+                        </apex:column>
+                        
+                        <apex:column headerValue=" Birthdate "  >
+                            
+                            <apex:inputField value="{!a.aContact.Birthdate}" rendered="{!IF(a.disabled, false, true)}"  />
+                            
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:facet>
+            </apex:actionStatus>
+            <div style="margin-top: 5px;">
+               
+            </div>
+        </apex:pageBlock>
+        
+        
+        
+    </apex:form>
+</apex:page>

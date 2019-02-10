@@ -1,0 +1,282 @@
+<apex:page readOnly="true" controller="ReferralTrackReportsCtr" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    
+       <style type="text/css">        /* Color for the title bar */
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .filterDiv{ padding: 10px; }
+        label{ padding: 4px; }
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"/>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+    <apex:includeScript value="{!URLFOR($Resource.jQuery_TableSort, 'jquery-latest.js')}"  />
+    <apex:includeScript value="{!URLFOR($Resource.tablesorter, 'jquery.tablesorter.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.jQuery_TableSort   , '/themes/blue/style.css')}"  />
+        <apex:includeScript value="{!$Resource.Jquery}"/>   
+
+    <!--Sort on load -->
+    <script type="text/javascript">
+    $j = jQuery.noConflict();    
+    $j(document).ready(function () {
+        $j('select[id*="Default"]').val('IA');
+        $j('a').attr("target","_blank");
+        $j("[id$=sortIt]").tablesorter();  
+    });    
+    </script>
+
+     <script type="text/javascript">
+        $(document).ready(function(){
+            $('#search').keyup(function(){
+                searchTable($(this).val());
+            });
+        });
+        /*@gusgunn
+                Param 1:searchText
+                Description: this method takes an argument and
+                search records in the assigned table Id.
+            */
+        function searchTable(searchText)
+        {
+            /*get Table using its Id */
+            var table = $('table[id$=tblData]');
+            table.find('tr').each(function(index, row){
+                var allCells = $(row).find('td');
+                if(allCells.length > 0)
+                {
+                    var found = false;
+                    allCells.each(function(index, td)
+                                  {
+                                      var regExp = new RegExp(searchText, 'i');
+                                      if(regExp.test($(td).text()))
+                                      {
+                                          found = true;
+                                          return false;
+                                      }
+                                  });
+                    if(found == true)$(row).show();else $(row).hide();
+                }
+            });
+        }            
+        
+        document.getElementById("lkpParent").style.cursor = "pointer";
+        </script>
+
+
+    
+    <apex:messages />
+    
+    <!-- default = IA- tells controller what agerage etc to use -->  
+    
+    
+    <apex:form >
+        
+        <apex:pageBlock >
+            <apex:pageMessages id="messages" ></apex:pageMessages>
+            <apex:pageBlockSection title="HMG Professionals - Enter Date Range"  collapsible="true">
+               <apex:panelGrid columns="7" cellspacing="100" cellpadding="100" >
+                <section class="stage slds-grid slds-grid--vertical slds-nowrap">
+                                <div class="slds-shrink-none">
+                               
+                               
+                                    <apex:panelGrid columns="1" cellspacing="100" cellpadding="100"  >
+                                    <div class= "slds-theme--shade slds-text-align--left slds-size--1-of-1 slds-p-around--xx-small" role="complementary" >
+                                    <label class="slds-form-element__label">  <b><i>                                        
+                                            Date From  </i></b> </label>
+                                <apex:input label="Date from" value="{!dateFrom}" type="auto" />
+                </div>
+            </apex:panelGrid> 
+                                                
+      
+                <apex:panelGrid columns="1" cellspacing="100" cellpadding="100"  >
+                <div class= "slds-theme--shade slds-text-align--left slds-size--1-of-1 slds-p-around--xx-small" role="complementary" >
+                                    <label class="slds-form-element__label">  <b><i>                                        
+                                            Date To</i></b> </label>
+                <apex:input label="Date To" value="{!dateTo}" type="auto" /> </div>
+            </apex:panelGrid>
+                    
+                    <apex:panelGrid columns="1" cellspacing="100" cellpadding="100"  >
+                       <div class= "slds-theme--shade slds-text-align--left slds-size--1-of-1 slds-p-around--xx-small" role="complementary" >
+                                    <label class="slds-form-element__label">  <b><i>                                        
+                                            Ages</i></b> </label> </div>
+                        <div> <apex:selectList size="1"  id="Default" onchange="setSelector(this.value);"
+                                               value="{!selector}" >
+                            <apex:selectOptions value="{!items}"/>
+                            </apex:selectlist></div>
+                        
+                        
+                    </apex:panelGrid>
+                    
+                    
+                    
+                      <apex:panelGrid columns="1" cellspacing="100" cellpadding="100"  >
+                <apex:outputLabel value="" />
+                <div class= "slds-theme--shade slds-text-align--left slds-size--1-of-1 slds-p-around--x-small" role="complementary" > 
+                <apex:commandButton value="Generate" action="{!startGenerateBoard}"  rerender="detail" /> </div>
+                </apex:panelGrid>
+                
+                  <!-- JQUERY SEARCHBOX -->
+                            <apex:panelGrid columns="1" cellspacing="100" cellpadding="100"  >
+                            <apex:actionFunction action="{!doQuery}" name="apexDoQuery" reRender="myData"/>
+                            
+                          
+                                    <div class= "slds-theme--shade slds-text-align--left slds-size--1-of-1 slds-p-around--small" role="complementary" > 
+                                        <label class="slds-form-element__label">  <b><i>                                        
+                                            Filter Referrals  </i></b> </label>  <input type="text" id="search"   />
+                                        </div>
+                                             </apex:panelGrid>
+                                    
+                     </div>               
+                 </section> 
+                
+            </apex:panelGrid>
+            </apex:pageBlockSection> 
+            <apex:pageBlock >
+            <apex:pageBlockSection title="** Note **" collapsible="true">
+            <apex:panelGrid >
+             <p>Undupliacted Referring Professionals Total includes any Contact listed in the referral action, as referrer. This feeds the Referral Tracking records (They may not be a professional). 
+               </p>
+               </apex:panelGrid>
+               <apex:panelGrid >
+             <p>Unduplicated Organization Totals sum organizations listed in Professional OBO Interactions by the people listed as professionals in the referrals (so if a person is not a professional, and has not had a professional interaction they will not show up in these numbers).
+                 
+               </p>
+               </apex:panelGrid>
+                 </apex:pageBlockSection>
+                  </apex:pageBlock>
+            <apex:pageBlock >
+                <apex:pageBlockSection title="Totals" collapsible="true">
+                    <apex:panelGroup > 
+                        <apex:outputPanel id="detail">
+                            <apex:panelGrid columns="3" cellpadding="20"   cellspacing="20" >
+                                
+                                <apex:panelGrid columns="2" title="Referral Totals">
+                                    <apex:outputLabel style="font-weight:800" value="Contact Role " />
+                                    <apex:outputLabel style="font-weight:800" value="Totals" />
+                                    <apex:outputLabel value="Unduplicated Kids" />
+                                        <apex:outputText value="{!TotalUndupeK}"  /> 
+                                    
+                                        <apex:outputLabel style="font-weight:600" value="Unduplicated Referring Professionals" />
+                                        <apex:outputText style="font-weight:600" value="{!TotalUndupeP}"  /> 
+                                   
+                                      <apex:outputLabel value="Duplicated Kids Referred" />
+                                    <apex:outputText value="{!kidDupeCount}"  /> 
+                                    
+                                        <apex:outputLabel value="Duplicated Professionals" />
+                                        <apex:outputText value="{!profDupeCount}"  /> 
+                                   
+                                        <apex:outputLabel style="font-weight:600" value="Duplicated Interactions Referring Professionals" />
+                                        <apex:outputText style="font-weight:600" value="{!intTotals}"  /> 
+                                </apex:panelGrid>
+                                
+                                
+                                
+                 
+                                <apex:panelGrid columns="2" title="Unduplicated Organization Category Totals">
+                                    <apex:outputLabel style="font-weight:800" value="Unduplicated Organization Category Total" />
+                                     <apex:outputLabel style="font-weight:800" value="Unduplicated Organization " />
+                                    <apex:outputLabel value="Total CBO" />
+                                    <apex:outputText value="{!CBOUn}"  /> 
+                                    <apex:outputLabel value="Total Childcare" />
+                                    <apex:outputText value="{!childCareUn}"  /> 
+                                    <apex:outputLabel value="Total FRC" />
+                                    <apex:outputText value="{!FRCUn}"  /> 
+                                    <apex:outputLabel value="Total Health" />
+                                    <apex:outputText value="{!healthUn}"  /> 
+                                    <apex:outputLabel value="Total Mental Health" />
+                                    <apex:outputText value="{!mentalUn}"  /> 
+                                    <apex:outputLabel value="Total SFUSD & GGRC" />
+                                    <apex:outputText value="{!cUn}"  /> 
+                                    <apex:outputLabel value="Total Social Services" />
+                                    <apex:outputText value="{!socialUn}"  /> 
+                                    <apex:outputLabel value="Total Other" />
+                                    <apex:outputText value="{!otherUn}"  /> 
+                                    <apex:outputLabel style="font-weight:800" value="Total Organizations" />
+                                    <apex:outputText style="font-weight:800" value="{!sizeUn}"  /> 
+                                </apex:panelGrid>
+                                <apex:panelGrid columns="2" title="Duplicated Organization Totals">
+                                    <apex:outputLabel style="font-weight:800" value="Duplicated Organization Category Total" />
+                                     <apex:outputLabel style="font-weight:800" value="Dupliated Interactions" />
+                                    <apex:outputLabel value="Total CBO" />
+                                    <apex:outputText value="{!CBO}"  /> 
+                                    <apex:outputLabel value="Total Childcare" />
+                                    <apex:outputText value="{!childCare}"  /> 
+                                    <apex:outputLabel value="Total FRC" />
+                                    <apex:outputText value="{!FRC}"  /> 
+                                    <apex:outputLabel value="Total Health" />
+                                    <apex:outputText value="{!health}"  /> 
+                                    <apex:outputLabel value="Total Mental Health" />
+                                    <apex:outputText value="{!mental}"  /> 
+                                    <apex:outputLabel value="Total SFUSD & GGRC" />
+                                    <apex:outputText value="{!c}"  /> 
+                                    <apex:outputLabel value="Total Social Services" />
+                                    <apex:outputText value="{!social}"  /> 
+                                    <apex:outputLabel value="Total Other" />
+                                    <apex:outputText value="{!other}"  /> 
+                                    <apex:outputLabel style="font-weight:800" value="Total Duplicated Referring Organizations" />
+                                        <apex:outputText style="font-weight:800"  value="{!intTotals}"  />  
+  
+                                </apex:panelGrid>
+                            </apex:panelGrid>
+                            <!-- JQUERY SEARCHBOX --> 
+                            <apex:pageBlock id="results">
+                          
+                                    
+                            <!--    <apex:pageblock title="Click ▲▼ to sort" >  -->
+                            <apex:pageBlockSection collapsible="True" title="View Referral Tracking Records - 1 per referral">
+                                <apex:panelGrid columns="5"  cellspacing="20" border="1" >
+                                    <apex:outputPanel id="detail"> 
+
+                                        <strong> <apex:variable value="{!0}" var="count"/></strong>
+
+                                        <apex:pageBlockTable value="{!GenerateRTs}" var="ex" id="tblData" styleClass="tablesorter" headerClass="TableTitle" style="text-align:center; font-weight: bold " > 
+                                           
+                                       <!--     <apex:column value="{!count+ 1}" headervalue=" Count" style="Center" />  --> 
+                                            
+                                            <apex:column value="{!ex.Child_Referred__c}" headervalue=" Child Referred ▲▼" style="Center" /> 
+                                            <apex:column value="{!ex.Referral_Received_From__c}" headervalue=" Professional ▲▼" style="Center" /> 
+                                            <apex:column value="{!ex.Household_Referred__c}" headervalue=" Household ▲▼" style="Center" /> 
+                                            
+                                            <apex:column value="{!ex.Referral_Received_From__r.AccountID}" headervalue=" Referral Org ▲▼" style="Center" /> 
+                                            
+                                            <apex:column headervalue="Referral Record ▲▼" style="Center"  >
+                                                <apex:outputLink value="https://sfcd.my.salesforce.com/{!ex.id}" > Record </apex:outputLink>
+                                            </apex:column>
+                                            <apex:column value="{!ex.InteractionReference__c}" headervalue="Initial Interaction Link ▲▼" style="Center" />  
+                                            
+                                            
+                                            
+                                            
+                                            <apex:column value="{!ex.ActionReference__c   }" headervalue="Initial ActionLink ▲▼" style="Center" />  
+                                            
+                                            
+                                            
+                                            <apex:column value="{!ex.Date_Referral_Received__c }" headervalue=" Date Recieved ▲▼" style="Center"  /> 
+                                            
+                                            <apex:column value="{!ex.date_TYSent__c}" headervalue="Date TY Sent ▲▼" style="Center" /> 
+                                            
+                                            
+                                            <apex:column value="{!ex.date_Contact_Confirmation_Sent__c}" headervalue="Date Confirmation Sent ▲▼" style="Center" />  
+                                            <apex:column value="{!ex.Assigned_To__c}" headervalue="Assigned To ▲▼" style="Center" /> 
+                                            
+                                            
+                                        </apex:pageBlockTable>
+                                       <!-- <strong><b>Total number of rows : </b> {!FLOOR(count)}</strong>-->
+
+                                    </apex:outputPanel> 
+                                </apex:panelGrid>
+                            </apex:pageBlockSection>
+                            </apex:pageBlock>
+                            <!--         </apex:pageblock> -->
+                        </apex:outputPanel>
+                    </apex:panelGroup>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

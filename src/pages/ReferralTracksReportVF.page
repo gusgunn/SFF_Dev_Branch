@@ -1,0 +1,200 @@
+<apex:page readOnly="true" controller="ReferralTrackReportsCtr" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    
+    <style type="text/css">        /* Color for the title bar */
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .filterDiv{ padding: 10px; }
+        label{ padding: 4px; }
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"/>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+    <apex:includeScript value="{!URLFOR($Resource.jQuery_TableSort, 'jquery-latest.js')}"  />
+    <apex:includeScript value="{!URLFOR($Resource.tablesorter, 'jquery.tablesorter.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.jQuery_TableSort   , '/themes/blue/style.css')}"  />
+        <apex:includeScript value="{!$Resource.Jquery}"/>   
+
+    <!--Sort on load -->
+     <script type="text/javascript">
+    $j = jQuery.noConflict();    
+    $j(document).ready(function () {
+        $j('select[id*="Default"]').val('All');
+        $j('a').attr("target","_blank");
+        $j("[id$=sortIt]").tablesorter();   
+    });    
+    </script>
+     
+      <script type="text/javascript">
+        $(document).ready(function(){
+            $('#search').keyup(function(){
+                searchTable($(this).val());
+            });
+        });
+        /*@gusgunn
+                Param 1:searchText
+                Description: this method takes an argument and
+                search records in the assigned table Id.
+            */
+        function searchTable(searchText)
+        {
+            /*get Table using its Id */
+            var table = $('table[id$=tblData]');
+            table.find('tr').each(function(index, row){
+                var allCells = $(row).find('td');
+                if(allCells.length > 0)
+                {
+                    var found = false;
+                    allCells.each(function(index, td)
+                                  {
+                                      var regExp = new RegExp(searchText, 'i');
+                                      if(regExp.test($(td).text()))
+                                      {
+                                          found = true;
+                                          return false;
+                                      }
+                                  });
+                    if(found == true)$(row).show();else $(row).hide();
+                }
+            });
+        }            
+        
+        document.getElementById("lkpParent").style.cursor = "pointer";
+        </script>
+        
+    
+    
+    <apex:messages />
+    
+    <apex:form >
+          <apex:pageBlock >
+         <apex:pageMessages id="messages" ></apex:pageMessages>
+        <apex:pageBlockSection title="Referral Tracking  -  Enter Dates"  collapsible="true">
+            <apex:panelGrid columns="6" cellpadding="100"   cellspacing="100" >
+             <section class="stage slds-grid slds-grid--vertical slds-nowrap">
+                                <div class="slds-shrink-none">
+                               
+                                    <apex:panelGrid columns="1" cellpadding="80"  >
+                <apex:outputLabel value="Date From" />
+                <apex:input label="Date from" value="{!dateFrom}" type="auto" />
+            </apex:panelGrid> 
+                                                
+                                                   
+
+            
+                      
+                <apex:panelGrid columns="1" cellpadding="80"  >
+                <apex:outputLabel value="Date To" />
+                <apex:input label="Date To" value="{!dateTo}" type="auto" />
+            </apex:panelGrid>
+           
+           <!--    <apex:panelGrid columns="1" cellpadding="80"  >
+           <apex:outputLabel value="Select Filter" />
+                <div> <apex:selectList size="1"  id="Default" onchange="setSelector(this.value);"
+                                                                       value="{!selector}" >
+                                                    <apex:selectOptions value="{!items}"/>
+                                                    </apex:selectlist></div>
+                
+                
+            </apex:panelGrid> -->
+               
+         
+              
+               <apex:panelGrid columns="1" cellpadding="80"  >
+                <apex:outputLabel value="" />
+                <apex:commandButton value="Generate" action="{!startGenerateBoard}"  rerender="detail" />
+                </apex:panelGrid>
+                
+                <apex:panelGrid columns="3" cellpadding="80"  >
+                </apex:panelGrid>
+                  <!-- JQUERY SEARCHBOX -->
+                            <apex:panelGrid columns="2" cellpadding="80"  >
+                            <apex:actionFunction action="{!doQuery}" name="apexDoQuery" reRender="myData"/>
+                            
+                          
+                                    <div class= "slds-theme--shade slds-text-align--left slds-size--1-of-1 slds-p-around--medium" role="complementary" > 
+                                        <label class="slds-form-element__label">  <b><i>                                        
+                                            Filter Referrals  </i></b> </label>  <input type="text" id="search"   />
+                                        </div>
+                                             </apex:panelGrid>
+                                    </div>
+                                    
+                 </section> 
+            </apex:panelGrid>
+        </apex:pageBlockSection> 
+        
+
+            <apex:pageblock id="detail" >
+                <!--  <apex:pageBlockSection collapsible="True" title="">
+                  <apex:panelGrid columns="5"  cellspacing="20" border="1"   > -->
+                        
+                        <apex:pageBlockTable value="{!generateRts}" var="ex" id="tblData" >  <!-- id="sortIt" styleClass="tablesorter" headerClass="TableTitle" style="text-align:center; font-weight: bold " -->
+                            <!--  <apex:column headervalue=" Next Steps" style="Center"  >
+<!--       <apex:outputLink value="InteractionCloneVF?id={!ex.InteractionReference__c}" > Clone </apex:outputLink>  -->
+                            <!--  </apex:column> -->
+                            
+                         <!--   <apex:column value="{!ex.Track_Complete__c}" headervalue=" Completed!" style="Center" /> -->
+                            <apex:column value="{!ex.Completed_Prof_Notification__c}" headervalue="Complete!" style="Center" />
+                         <apex:column value="{!ex.CompletedCGSucess__c}" headervalue="Caregiver Completed!" style="Center" /> 
+                            
+                            <apex:column value="{!ex.Child_Referred__c}" headervalue=" Child Referred ▲▼" style="Center" /> 
+                             <apex:column value="{!ex.Household_Referred__c}" headervalue=" Household ▲▼" style="Center" /> 
+                            <apex:column value="{!ex.Household_Referred__r.Owner.Name}" headervalue=" FRS HH Owner ▲▼" style="Center" /> 
+                            <apex:column value="{!ex.Household_Referred__r.Household_SW__r.Name}" headervalue="SW HH Owner▲▼" style="Center" /> 
+                            
+                            <apex:column value="{!ex.Referral_Received_From__c}" headervalue=" Professional ▲▼" style="Center" /> 
+                              <apex:column value="{!ex.Referral_Received_From__r.AccountID}" headervalue=" Referral Org ▲▼" style="Center" /> 
+                           -   <apex:column value="{!ex.Household_Referred__r.First_Intake__c}" headervalue="First Intake" style="Center" /> -->
+                            <apex:column headervalue="Referral Record ▲▼" style="Center"  >
+                                <apex:outputLink value="https://sfcd.my.salesforce.com/{!ex.id}" > Record </apex:outputLink>
+                            </apex:column>
+                            <apex:column value="{!ex.InteractionReference__c}" headervalue="Initial Interaction Link ▲▼" style="Center" />  
+                            
+                            <!-- <apex:column value="{!ex.Date_Referral_Received__c }" headervalue=" Date Recieved ▲▼" style="Center"  /> 
+
+<apex:column headervalue="Date Recieved ▲▼"  style="Center" >
+<apex:outputtext style="background-color:{!IF(ex.date_TYSent__c - ex.Date_Referral_Received__c >2, "#D98880", "#538A61")}" value="{!ex.Date_Referral_Received__c}" />
+</apex:column> -->
+                           <!--  <apex:column value="{!ex.date_Intake__c}" headervalue=" Date Recieved ▲▼" style="Center"  /> -->
+                            <apex:column value="{!ex.Owner.Alias}" headervalue=" Logged By ▲▼" style="Center" />
+                           
+                            <apex:column value="{!ex.ActionReference__c   }" headervalue="Initial ActionLink ▲▼" style="Center" />  
+                            
+                            
+                             
+                            <apex:column value="{!ex.Date_Referral_Received__c }" headervalue=" Date Recieved ▲▼" style="Center"  /> 
+                           
+                            <apex:column value="{!ex.date_TYSent__c}" headervalue="Date TY Sent ▲▼" style="Center" /> 
+                            <!--   <apex:column headervalue="TYSent ▲▼"  style="Center" >
+<apex:outputtext style="background-color:{!IF(ex.date_TYSent__c - ex.Date_Referral_Received__c >2, "#D98880", "#538A61")}" value="{!ex.Date_Referral_Received__c}" />
+</apex:column>-->
+                          
+                            <apex:column value="{!ex.date_Contact_Confirmation_Sent__c}" headervalue="Date Confirmation Sent ▲▼" style="Center" />  
+                            
+                            <apex:column value="{!ex.date_Update__c}" headervalue="Date Update Sent ▲▼" style="Center" /> 
+                            <apex:column value="{!ex.UTC_Professional_Notify__c  }" headervalue="UTC Prof ▲▼" style="Center"  /> 
+                            <apex:column value="{!ex.date_UTC_to_Prof__c}" headervalue="Date UTC Sent ▲▼" style="Center" /> 
+                            Child_Age_At_Referral_Time__c
+                            
+                            
+                         <!--   <apex:column value="{!ex.Child_Age_At_Referral_Time__c}" headervalue=" Age At Referral  ▲▼" style="Center" /> -->
+                          <!--   <apex:column value="{!ex.Permission_Received__c}" headervalue=" Permission Recieved ▲▼" style="Center" /> 
+                            <apex:column value="{!ex.Permission_Date__c}" headervalue=" Permission Date ▲▼" style="Center" /> -->
+                          
+       
+                          
+       
+                        </apex:pageBlockTable>
+               <!--     </apex:panelGrid>
+                </apex:pageBlockSection> -->
+            </apex:pageblock>
+            
+        
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

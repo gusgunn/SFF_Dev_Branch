@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="evt_passString" >
+    <aura:attribute type ="String" name = "stringToPass"  />
+    <aura:attribute type ="String" name = "field"  />
+</aura:event>

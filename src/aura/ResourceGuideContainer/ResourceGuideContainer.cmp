@@ -1,0 +1,95 @@
+<aura:component controller ="ResourceGuide" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" 
+                access="global" >
+    <aura:attribute name="options" type="List" default="[]" />
+    <aura:attribute name="values" type="List" default="[]" />
+    <aura:attribute name="account" type="Account" default="{'sobjectType': 'Account'}"/>
+    <aura:attribute name="mydata" type="Object"/>
+    
+    <aura:attribute name="searchWord" type="string" default ="" />
+    <aura:attribute name="objectAPIName" type="string" default="Account"/>
+    <aura:attribute name="organizationName" type="string" default="" />
+    <aura:attribute name="issueName" type="string" default="" />
+    <aura:attribute name="zip" type="string" default=""  />
+    <aura:attribute name="conditionName" type="string" default="" />
+    <aura:registerEvent name="resetform" type="c:evt_resetForm"/>
+    <aura:handler name="passIssueType" event="c:evt_passString" action="{!c.onSearchIssues}"/>
+    <aura:handler event="c:evt_SearchKeyChange" action="{!c.onSearchKeyChange}"/>
+    <aura:handler name="resetOne" event="c:evt_resetOne" action="{!c.onResetOne}"/>
+   
+    
+    <!-- format - see details in superbadge -->
+    <div class="c-container">
+        
+        <lightning:layout>
+            <lightning:layoutItem flexibility="auto" padding="horizontal-medium" size="6" >
+                <div>
+                <lightning:card>
+                    <lightning:layout horizontalAlign="left"   multipleRows ="true" >
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-medium" size="12" >
+                            <c:base_searchBar aura:id="searchBar" label="Search Organizations" field="Name" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-medium" size="12" >
+                            <c:base_LookupSelect aura:id="lookup" label="Issues" field="Issue_Type__c"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-medium" size="12" >
+                            <c:base_LookupSelect aura:id="condition" label="Conditions"  field="Condition__c"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-medium" size="12" >
+                            <c:base_searchBar aura:id="zip" label="Zip"  field="BillingPostalCode" />
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    <!--- add search button here to search all selections -->
+                    
+                    <lightning:layout horizontalAlign="center" >
+                        <lightning:layoutItem flexibility="auto" alignmentBump="top"  >
+                            
+                            <div  class="slds-p-around_xx-large">
+                                <div style="background-color:#16325c slds-p-around_x-large">
+                                    
+                                    <lightning:button class="slds-m-left_large slds-m-right_large" variant ="neutral" label="Search"  onclick = "{!c.onSearchAll}" />
+                                    
+                                    <lightning:button class="slds-m-left_large slds-m-left slds-button slds-button_inverse" variant ="destructive" label="Reset Search Form"  onclick = "{!c.onReset}" />
+                                </div>
+                            </div>
+                        </lightning:layoutItem>   
+                    </lightning:layout>
+                </lightning:card>
+                    </div>
+            </lightning:layoutItem>
+        </lightning:layout>
+        
+      <!--  <lightning:layout>
+           
+                <lightning:layoutItem flexibility="auto" padding="horizontal-medium" size="6" >
+                    <div>
+                     <lightning:card>
+                    <lightning:layout horizontalAlign="right"    >
+                        Details and map here when View is clicked
+                    </lightning:layout>
+                          </lightning:card>
+                        </div>
+                </lightning:layoutItem>
+           
+        </lightning:layout> -->
+        <aura:if isTrue="{!not(empty(v.mydata))}" >  
+            <lightning:layout horizontalAlign="left"   >
+                <lightning:layoutItem flexibility="auto"  size="12" >
+                    <c:ResourceGuideDataTable dataIn= "{!v.mydata}" />
+                </lightning:layoutItem>
+            </lightning:layout>
+        </aura:if>
+        
+        
+    </div>
+    <!--   <aura:if isTrue ="{!v.showNewButton}" >
+                <lightning:button variant= "neutral" label="New" onclick= "{!c.onNewissue}" />
+            </aura:if>-->
+    
+    <!-- <div class="row">
+        <h2 class="header">Live Input Text</h2>
+        <lightning:input name="input8" value="{! v.firstName }" placeholder="type your first name..." label="Text field with attribute binding" />
+        <p>
+            FirstName: {! v.firstName }
+        </p>
+    </div> -->
+</aura:component>

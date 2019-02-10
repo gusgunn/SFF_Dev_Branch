@@ -1,0 +1,48 @@
+<!-- base_datableRecordForm code for the Component File in the lightning bundle -->
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId,force:lightningQuickAction" access="global" >   
+    <aura:attribute name="recordId" type="Id"  default="" />
+    <aura:attribute name="newLookupId" type="Id"  default="" />
+    <aura:attribute name="sObjectName" type="Object" default = "Contact" />
+    <aura:attribute name="lookupsObjectName" type="Object" default = "Account" />
+    <aura:attribute name="rowinfo" type="Integer"  />
+    <aura:attribute name="fieldsToDisplay" type="String" default ="Id"/>
+    <aura:attribute name="title" type="String" default ="Update Contact"/>
+    <aura:attribute name="layoutType" type="String" default="Custom" />
+    <aura:attribute name="numberOfColumns" type="String" default="1" />
+    <aura:attribute name="fieldsArray" type="String[]"  />
+    <aura:attribute name="mode" type="String" />
+    <aura:attribute name="error" type="String" />
+    <aura:attribute name="contact" type="Object" default = "Contact"  />
+    <aura:attribute name="simpleFields" type="Object" default = ""  />
+    <aura:attribute name="isOpen" type="String" default ="true" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> 
+    <lightning:overlayLibrary aura:id="popuplib"/>
+    
+    
+    <aura:registerEvent name="evt_dataTableUpdate" type="c:evt_dataTableUpdate"/>
+    
+    <aura:if isTrue="{!v.isOpen}">
+       <lightning:recordEditForm aura:id="recordEditForm" 
+                                          recordId="{!v.recordId}"
+                                          objectApiName="{!v.sObjectName}"   
+                                          onsubmit="{!c.onDone}"
+                                          onerror ="{!c.errors}">   
+                    <lightning:messages />
+                    
+                    <lightning:inputField class="slds-xx-small slds-slide-down-cancel"  fieldName= "AccountId" aura:id ="primary" />
+                     <footer class="slds-card__footer"> 
+                    	<lightning:button class="slds-m-top_small slds-align_right" type="button" name="Cancel" label="Cancel" onclick="{!c.close}"/>
+                    <lightning:button class="slds-m-top_small slds-align_right" type="button" variant="brand" name="Select" label="Select" onclick="{!c.onDone}"/>
+                    
+                    </footer>
+                    <lightning:button class=" slds-hide" variant="brand" type="submit" name="Save" label="Select" />
+                </lightning:recordEditForm>
+            
+    </aura:if>
+    
+    <aura:if isTrue="{!not(empty(v.recordError))}">
+        <div class="recordError">
+            {!v.error}</div>
+    </aura:if>
+    
+</aura:component>

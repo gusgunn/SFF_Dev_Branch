@@ -1,0 +1,5 @@
+<aura:event type="APPLICATION" description="evt_dataTableUpdate reloads datatable">
+    <aura:attribute name="rowId" type="String"/>
+    <aura:attribute name="refreshMe" type="String"/>
+    <aura:attribute name="myIndex" type="Integer"/>
+</aura:event>

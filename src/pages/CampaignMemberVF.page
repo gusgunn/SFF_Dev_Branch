@@ -1,0 +1,146 @@
+<apex:page standardController="Campaign" extensions="CampaignCMListController" sidebar="false">
+
+    
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"/>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+    <apex:includeScript value="{!URLFOR($Resource.tablesorter, 'jquery.tablesorter.min.js')}"/>
+        
+    <!--Sort on load -->
+    <script type="text/javascript">
+        $j = jQuery.noConflict();    
+        $j(document).ready(function () {
+        $j('a').attr("target","_blank");
+        $j("[id$=sortIt]").tablesorter();
+        });    
+    </script>
+  
+    <apex:messages />
+    <apex:form >
+ 
+      
+ <!-- actionFunction is for calling controller's method -->
+        
+    <apex:actionFunction action="{!doQuery}" name="apexDoQuery" reRender="myData"/>
+  
+
+<!-- Filter Section -->
+    
+    <div style="padding: 10px">
+        
+              
+       
+        
+        <label>Filter by Last Name&nbsp;&nbsp; <apex:inputText value="{!searchString}" onKeyup="apexDoQuery()"/></label>
+        
+    </div>
+        
+    
+    <apex:pageBlock title="Edit Campaign Members" id="myData">
+            
+        <apex:pageBlockButtons >
+               
+            <apex:commandButton action="{!save}" value="Save"/>
+            <apex:commandButton action="{!cancel}" value="Cancel"/>
+           
+        </apex:pageBlockButtons>
+       
+    <apex:pageblockTable value="{!cms}" var="con" id="sortIt" styleClass="tablesorter" headerClass="header">   
+                
+        <apex:column headerValue="Last Name ▲▼">
+
+            <a href="/{!con.contactId}"  onclick="window.open(this.href, 'mywin', 'height=400,width=1100'); return false;" >
+                        
+            <apex:outputField value="{!con.LastName}"/>
+                   
+            </a>
+                
+        </apex:column>  
+      
+       
+                 
+        <apex:column headerValue="First Name ▲▼" >
+                    
+            <apex:inputField value="{!con.FirstName}"/>
+           
+        </apex:column> 
+          
+                        
+      <apex:column headerValue="Household ▲▼">
+
+            <a href="/{!con.contact.npo02__Household__c}"  onclick="window.open(this.href, 'mywin', 'height=400,width=600'); return false;" >
+                        
+            <apex:outputField value="{!con.contact.npo02__Household__c}"/>
+                   
+            </a>
+                
+      </apex:column> 
+            
+         
+            
+        <apex:column headerValue="Status" >
+                    
+                <apex:inputField value="{!con.Status}"/>
+                      
+        </apex:column>    
+        
+        <apex:column headerValue="Registration Status" >
+                    
+                <apex:inputField value="{!con.Registration_Status__c}"/>
+           
+        </apex:column>  
+        
+        <apex:column headerValue="No Show?" >
+                    
+                <apex:inputField value="{!con.No_Show__c}"/>
+                      
+        </apex:column> 
+       
+        <apex:column headerValue="Contact Type ▲▼" >
+                    
+                <apex:OutputField value="{!con.contact.RecordType.Name }"/>
+           
+        </apex:column>  
+        
+        
+         <apex:column headerValue="Preferred Phone ▲▼" >
+                    
+                <apex:outputField value="{!con.Contact.npe01__PreferredPhone__c}"/>
+           
+        </apex:column>  
+        
+         <apex:column headerValue="Phone ▲▼" >
+                    
+                <apex:outputField value="{!con.Contact.Phone}"/>
+           
+        </apex:column>  
+       
+        
+        <apex:column headerValue="Email ▲▼" >
+                    
+                <apex:outputField value="{!con.Contact.Email}"/>
+           
+        </apex:column>  
+        
+         <apex:column headerValue="Caregiver ▲▼" >
+                    
+                <apex:outputField value="{!con.Parent_Caregiver__c}"/>
+           
+        </apex:column>  
+       
+           
+           
+    </apex:pageblockTable>
+       
+ </apex:pageBlock>
+        
+    
+</apex:form>
+    
+    
+
+<style>
+        .filterDiv{ padding: 10px; }
+        label{ padding: 4px; }
+    </style>
+</apex:page>

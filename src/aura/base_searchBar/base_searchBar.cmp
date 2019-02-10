@@ -1,0 +1,28 @@
+<aura:component>
+    <aura:attribute name="selectedValue" type="String" />
+    <aura:attribute name="label" type="String" />
+    <aura:attribute name="field" type="String"  />
+    <aura:attribute name="fieldOut" type="String"  />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:registerEvent name="refreshDataTable" type="c:evt_refresh"/>
+    <aura:registerEvent name="searchKeyChange" type="c:evt_SearchKeyChange"/>
+    <aura:registerEvent name="resetOne" type="c:evt_resetOne"/>
+   
+    <aura:attribute name="value" type="String" />
+    
+    <aura:method name="reset" action="{!c.onReset}">
+       <!-- <aura:attribute name="reset" type="String" /> -->
+    </aura:method>
+
+    <lightning:layout  >
+        <lightning:layoutItem size ="6">
+               <lightning:input class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-padding-around_xx-large" iconName="utility:search" 
+                                aura:id="inputName" value="{!v.value}"  
+                           		 label="{!v.label}"  onchange="{!c.onSearchKeyChange}" />
+        </lightning:layoutItem>
+           <lightning:layoutItem alignmentBump="top"   size ="6">  
+         <lightning:button class="slds-m-left_large"  variant ="brand" label="Reset"  onclick = "{!c.onReset}" />
+        </lightning:layoutItem>
+    </lightning:layout>
+  
+</aura:component>

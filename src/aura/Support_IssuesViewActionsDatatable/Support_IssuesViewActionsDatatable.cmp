@@ -1,0 +1,94 @@
+<aura:component controller="IssuesActionsCtr" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId"
+                access="global">
+    <aura:import library="lightning:notificationsLibrary" property="notifications" />
+    <aura:attribute name="relatedId" type="String"  />
+    <aura:attribute name="sObj" type="String"  default ="Action__c"/>
+    <aura:attribute name="fieldsToDisplay" type="String" default ="Id"/>
+    <aura:attribute name="title" type="String" />
+    <aura:attribute name="layoutType" type="String" default="Custom" />
+    <aura:attribute name="numberOfColumns" type="String" default="1" />
+    <aura:attribute name="mode" type="String" />
+    <aura:attribute name="iconFlipper" type="String" default="utility:search" />
+    <aura:attribute name="interactionID" type="String" default="" />
+    <aura:attribute name="dataIn" type="Object" />
+    <aura:attribute name="saveLocalStorage" type="Boolean" default="false" />
+    <aura:attribute name="mydata" type="Object" />
+    <aura:attribute name="mycolumns" type="List" />
+    <aura:attribute name="errors" type="Object" default="[]" />
+    <aura:attribute name="draftValues" type="Object" default="[]" />
+    <aura:attribute name="atomicChanges" type="Object" default="[]" />
+    <aura:attribute name="changeIndex" type="Integer" default="0" />
+    <aura:attribute name="selectedRow" type="Id" />
+    <aura:attribute name="targetFields" type="Action__c" />
+    <aura:attribute name="showHide" type="Boolean" />
+    <aura:attribute name="autoSaveEnabled" type="Boolean" default="false" />
+    <aura:attribute name="typeTest" type="String" default="text" />
+    <aura:attribute name="recordError" type="String"/>
+    
+    <aura:registerEvent name="recordChange" type="c:recordChange"/>
+    <aura:handler event="c:evt_dataTableUpdate" action="{!c.updatable}"/>
+     <aura:handler event="c:evt_AddNewActionToTable" action="{!c.updatable}"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+    <lightning:overlayLibrary aura:id="popuplib"/>
+    <force:recordData aura:id="recHandler"
+                      targetFields="{!v.targetFields}"
+                      layoutType="FULL"
+                      mode="EDIT"/>
+
+    <div class="c-container">
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem padding="around-x-small" size="12">
+                <div class="page-section page-main">
+                    <!-- class = "slds-table_striped" -->
+                    <lightning:datatable class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal" 
+                                         aura:id="table" 
+                                         errors="{! v.errors }" 
+                                         draftValues="{! v.draftValues }" 
+                                         data="{! v.mydata }" 
+                                         columns="{! v.mycolumns }"
+                                         keyField="Id" 
+                                         onsave="{! c.handleSave }" 
+                                         oncellchange="{! c.handleEditCell }" 
+                                         oncancel="{! c.handleCancel }" 
+                                         onrowaction="{! c.handleRowActionForLookup }"
+                                         hideCheckboxColumn="true"
+                                         onsort="{!c.updateColumnSorting}"
+                                         sortedBy="{!v.sortedBy}"  
+                                         sortedDirection="{!v.sortedDirection}"
+                                         showRowNumberColumn="true"/>
+                    
+                </div>
+            </lightning:layoutItem>
+            
+        </lightning:layout>     
+        
+    </div>
+    <!-- Model Box Start -->   
+    <aura:if isTrue="{!v.isOpen}">
+        <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <button class="slds-button slds-modal__close slds-button" title="Close" onclick="{!c.closeModal}">
+                        X<span class="slds-assistive-text">Cancel</span>
+                    </button>
+                    
+                </div>
+                <div class="slds-modal__content slds-p-around--x-small">
+                    <c:relatedRecordForm_byDesign recordId ="{!v.relatedId}" 
+                                                  sObjectName="{!v.sObj}"
+                                                  fieldsToDisplay ="{!v.fieldsToDisplay}"
+                                                  title ="{!v.title}"
+                                                  layoutType ="{!v.layoutType}"
+                                                  numberOfColumns ="{!v.numberOfColumns}"
+                                                  mode ="{!v.mode}"/> 
+                    
+                    
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </div>
+    </aura:if>
+    
+    
+</aura:component>

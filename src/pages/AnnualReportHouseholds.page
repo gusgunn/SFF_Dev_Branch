@@ -1,0 +1,51 @@
+<apex:page readOnly="true" controller="AnnualReportStatsCG" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        <apex:panelGroup >
+            <apex:pageBlock title="Annual Report Households">
+                
+                <apex:pageMessages id="messages" ></apex:pageMessages>
+                <apex:pageBlockSection title="Enter Date Range: " columns="1" collapsible="True"  >
+                    <apex:panelGrid columns="5" cellpadding="15"  cellspacing="5" style="text-align:center; font-weight: bold" >
+                        <apex:outputLabel value="Date From " />
+                        <apex:input value="{!dateFrom}" type="auto" /> 
+                        <apex:outputLabel value="Date To"  />
+                        <apex:input value="{!dateTo}" type="auto" />
+                        <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                    </apex:panelGrid>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:panelGroup>
+        
+ <apex:pageblock title="Unduplicated Households by Zip Codes " >
+            
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="4" cellpadding="80" border="3"  cellspacing="80" >
+          
+           
+            
+             <apex:pageBlockTable value="{!GenerateHH}" var="ex"  style="text-align:center; font-weight: bold"  border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue="Zip Codes" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Households" />
+                    </apex:pageBlockTable>    
+                     <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL Households from Family and PMP Professional interactions, and from All Educational events and Family events during the reporting period selected. 
+                                The total is All Unduplicated Households</p> </div>
+                    </apex:pageBlock> 
+                    
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+
+        </apex:pageblock>
+        
+    </apex:form>
+</apex:page>

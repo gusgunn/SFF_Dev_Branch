@@ -1,0 +1,25 @@
+<aura:component >
+    <aura:attribute name="objectAPIName" type="string" default="Issue__c"/>
+    <aura:attribute name="excludedIssues" type="Issue__c[]" default="[]"/>
+    <aura:attribute name="childID" type="string" default=""/>
+    <aura:attribute name="contactID" type="string" default=""/>
+    <aura:attribute name="interactionID" type="string" default=""/> 
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+    
+    <aura:registerEvent name="createRecord" type="c:IssueCreateRecord" />
+    
+    <aura:registerEvent name="listOpenIssues" type="c:cOpenIssues"/> 
+    <aura:registerEvent name="appEvent" type="c:cOpenIssues" />    
+    <aura:attribute name="selectedLookUpRecords" type="sObject[]" default="[]"/>
+    <aura:attribute name="selectedLookUpRecordIDs" type="string[]" default="[]"/>
+    
+    <c:Support_AddOpenIssuesLookup objectAPIName="issue__c"
+                              IconName="custom:custom5" 
+                              lstSelectedRecords="{!v.selectedLookUpRecords}"
+                              label="IssueName"
+                              interactionID="{!v.interactionID}"
+                              childID="{!v.childID}"
+                              contactID="{!v.contactID}"/>
+   
+ 
+</aura:component>

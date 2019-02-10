@@ -1,0 +1,36 @@
+<apex:page StandardController="Campaign" extensions="campaignClone"  > 
+    <apex:slds />
+  
+   
+   <apex:form id="theform"  >
+         
+           
+     
+
+       <apex:pageblock >
+    
+          <apex:pageblocksection columns="1" title="info">
+
+                -   <apex:repeat value="{!$ObjectType.Campaign.FieldSets.ChildcareCloneFieldSet}" var="i">
+
+                       <apex:inputfield value="{!Campaign[i]}" />
+                
+
+                   </apex:repeat> 
+                    
+          </apex:pageblocksection>
+
+       <apex:pageBlockButtons >
+             
+               
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+               <apex:commandButton value="Save" action="{!doClone}"/> 
+            </apex:pageBlockButtons> 
+           
+
+
+                 
+                
+       </apex:pageblock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,85 @@
+<apex:page readOnly="true" controller="CPIRAge" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        <apex:panelGroup >
+            <apex:pageBlock title="CPIR: Age Of Children, Unduplicated"  >
+                
+                <apex:pageMessages id="messages" ></apex:pageMessages>
+                <apex:pageBlockSection title=" " columns="1" collapsible="True"  >
+                    <apex:panelGrid columns="5" cellpadding="15"  cellspacing="5" style="text-align:center; font-weight: bold" >
+                        <apex:outputLabel value="Date From " />
+                        <apex:input value="{!dateFrom}" type="auto" /> 
+                        <apex:outputLabel value="Date To"  />
+                        <apex:input value="{!dateTo}" type="auto" />
+                        <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                    </apex:panelGrid> 
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:panelGroup>  
+        
+        
+        <apex:pageblock title="Children of Caregivers who Attended Educational Events"  >
+            <apex:pageBlockSection >
+                <apex:panelGrid columns="1" cellpadding="100" border="1"  cellspacing="75" >
+                    
+                    <apex:pageBlockTable value="{!GenerateAgeCamp}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue=" 0 through 2 Years"/>
+                    <apex:column value="{!a.C2}" headervalue="  3 Through 5 Years "/>
+                    <apex:column value="{!a.C3}" headervalue=" 6 Through 11 Years"/>
+                      
+                        <apex:column value="{!a.C4}" headervalue=" 12 Through 14 Years"/>
+                     
+                        <apex:column value="{!a.C5}" headervalue=" 15 though 18 Years"/>
+                      
+                        <apex:column value="{!a.C6}" headervalue=" 19 Through 21 Years"/> 
+                     
+                        <apex:column value="{!a.C7}" headervalue="Above"/> 
+                          <apex:column value="{!a.C0}" headervalue="No Age"/> 
+                        <apex:column value="{!a.Total}" headervalue="Total Children"/>
+                    </apex:pageBlockTable>
+                    
+                </apex:panelGrid>             
+            </apex:pageBlockSection>  
+            
+            
+            
+        </apex:pageblock>
+        
+         <apex:pageblock title="Children Of Caregivers With Interactions "  >
+            <apex:pageBlockSection >
+                <apex:panelGrid columns="1" cellpadding="100" border="1"  cellspacing="75" >
+                    
+                    <apex:pageBlockTable value="{!GenerateAgeInt}" var="a">  
+                        <apex:column value="{!a.C1}" headervalue=" 0 through 2 Years"/>
+                    <apex:column value="{!a.C2}" headervalue="  3 Through 5 Years "/>
+                    <apex:column value="{!a.C3}" headervalue=" 6 Through 11 Years"/>
+                      
+                        <apex:column value="{!a.C4}" headervalue=" 12 Through 14 Years"/>
+                     
+                        <apex:column value="{!a.C5}" headervalue=" 15 though 18 Years"/>
+                      
+                        <apex:column value="{!a.C6}" headervalue="19 Through 21 Years"/> 
+                     
+                        <apex:column value="{!a.C7}" headervalue="Above"/> 
+                          <apex:column value="{!a.C0}" headervalue="No Age"/> 
+                         <apex:column value="{!a.Total}" headervalue="Total Children"/>
+                    </apex:pageBlockTable>
+                    
+                </apex:panelGrid>             
+            </apex:pageBlockSection>  
+            
+            
+            
+        </apex:pageblock>
+        
+        
+    </apex:form>
+</apex:page>

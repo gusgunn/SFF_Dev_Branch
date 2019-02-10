@@ -1,0 +1,225 @@
+<apex:page readOnly="true" controller="AnnualReportStatsCG" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        <apex:panelGroup >
+            <apex:pageBlock title="Annual Report Statistics">
+                
+                <apex:pageMessages id="messages" ></apex:pageMessages>
+                <apex:pageBlockSection title="Enter Fiscal Year: " columns="1" collapsible="True"  >
+                    <apex:panelGrid columns="5" cellpadding="15"  cellspacing="5" style="text-align:center; font-weight: bold" >
+                        <apex:outputLabel value="Date From " />
+                        <apex:input value="{!dateFrom}" type="auto" /> 
+                        <apex:outputLabel value="Date To"  />
+                        <apex:input value="{!dateTo}" type="auto" />
+                        <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                    </apex:panelGrid>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:panelGroup>
+        
+ <apex:pageblock title="Unduplicated Caregivers - Ethnicity & Race " >
+            
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="4" cellpadding="80" border="3"  cellspacing="80" >
+                    <apex:pageBlockTable value="{!GenerateEthnicity}" var="ex"  style="text-align:center; font-weight: bold" border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue=" Ethnicity" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL caregivers from Family and PMP Professional interactions, and from All Educational events and Family events during the reporting period selected. 
+                                The total is ALL Unduplicated Caregivers and their Ethnicity. NOTE: Ethnicity and ace are 2 sepeate fields. Please subtract the total for Hispanic/Latino from the total Unknown in the Race section</p> </div>
+                    </apex:pageBlock>
+                    
+                    
+                    <apex:pageBlockTable value="{!generateRace}" var="ex"  style="text-align:center; font-weight: bold"  border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue="Race" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable>    
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL caregivers from Family and PMP Professional interactions, and from All Educational events and Family events during the reporting period selected.  Support groups?
+                               </p> </div>
+                    </apex:pageBlock>          
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+            </apex:pageblock>
+
+
+
+        <apex:pageblock title="Unduplicated Caregivers - Language & Low Income Zip Codes " >
+            
+                   
+            
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="6" cellpadding="80" border="3"  cellspacing="80" >
+                    
+                    <apex:pageBlockTable value="{!GenerateIntEduCampTotals}" var="ex"  style="text-align:center; font-weight: bold"  border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue="Language" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable>    
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL caregivers from Family and PMP Professional interactions, and from All Educational events (BUT NOT FAMILY EVENTS) during the reporting period selected. 
+                                </p> </div>
+                    </apex:pageBlock>  
+                    
+                    
+                    <apex:pageBlockTable value="{!GenerateParentLanguage}" var="ex"  style="text-align:center; font-weight: bold" border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue=" Parent Language" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL caregivers from Family and PMP Professional interactions, and from All Educational events and Family events during the reporting period selected. 
+                                The total is ALL Unduplicated Caregivers and their Primary Language.</p> </div>
+                    </apex:pageBlock>
+                    
+                    
+                    <apex:pageBlockTable value="{!generateZip}" var="ex"  style="text-align:center; font-weight: bold"  border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue="Low Income Zip Codes" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable>    
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL caregivers from Family and PMP Professional interactions, and from All Educational events and Family events during the reporting period selected. 
+                                The total is All Unduplicated caregivers  who live in  San Francisco Low Income Zip Codes: 94110;94124;94108;94103;94102;94134; 94115</p> </div>
+                    </apex:pageBlock>    
+            
+                    
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+         
+            
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="4" cellpadding="20" border="3"  cellspacing="80" >
+                    
+                    
+                    <apex:pageBlockTable value="{!generateCampTotals}" var="ex"  style="text-align:center; font-weight: bold" border="3" > 
+                        <apex:column value="{!ex.a1}" headervalue="Parent Language" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers - Family & Educational Events" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL Caregivers from All Educational AND Family Events during the reporting period selected.
+                                Click the link to see a list of Caregivers at all Educational and Family Events. 
+                                Note, the List view report is set to show "Last Fiscal Year" so you may need to adjust the dates if you need different reporting period.</p>
+                            <p><apex:commandbutton value="Caregivers-Educational & Family Events" 
+                                                   onclick="window.location='https://sfcd.my.salesforce.com/00O16000007kjHe'; return false;"/></p> </div>
+                         <div> <p> NOTE: Gus to add total number Educational and Family Events here also (rollup by Campaign Type?) </p></div>
+                    </apex:pageBlock>
+                    
+                    
+                    <apex:pageBlockTable value="{!generateEduCampTotals}" var="ex"  style="text-align:center; font-weight: bold"  > 
+                        <apex:column value="{!ex.a1}" headervalue="Parent Language" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers Educational Events ONLY" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL Caregivers from All Educational Events during the reporting period selected.
+                                Click the link to see a list of Caregivers at all Educational Events. 
+                                Note, the List view report is set to show "Last Fiscal Year" so you may need to adjust the dates if you need different reporting period.</p>
+                            <p><apex:commandbutton value="Caregivers-Educational Events" 
+                                                   onclick="window.location='https://sfcd.my.salesforce.com/00O16000007kjID'; return false;"/></p> </div>
+                    </apex:pageBlock>
+                    
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="4" cellpadding="20" border="3"  cellspacing="80" >
+                    <apex:pageBlockTable value="{!generateIntTotals}" var="ex"  style="text-align:center; font-weight: bold" border="3" > 
+                        <apex:column value="{!ex.a1}" headervalue="Parent Language" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated CG who had Interactions" />
+                    </apex:pageBlockTable> 
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL Caregivers from Family and PMP Professional Interactions.
+                                The total is All Unduplicated Caregivers who had a Family Or PMP Interaction during the reporting period selected.
+                                Click the link to see a list of these Caregivers. 
+                                Note, the List view report is set to show "Last Fiscal Year" so you may need to adjust the dates if you need different reporting period.</p>
+                            <p> <apex:commandbutton value="Caregivers-Family & PMP Interactions" 
+                                                    onclick="window.location='https://sfcd.my.salesforce.com/00O16000007kiQ1'; return false;"/></p> </div>
+                         <!--<div>       <p> NOTE: Gus to add total number Interactions here also (rollup by Campaign Type?) </p> </div>-->
+                    </apex:pageBlock>
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageblock>
+        <apex:panelGrid columns="2" cellpadding="20" border="3"  cellspacing="80" >
+            <apex:pageBlock >
+                <apex:pageBlockSection >
+                    <apex:pageBlockSectionItem >
+                        <div>
+                            <p>
+                             
+                                   Campaign Query Paramters 
+                            </p>
+                        
+                      
+                           <p>
+                               
+                          
+                            AND contact.name !='Neale'
+                            AND contact.name !='test'
+                            AND No_Show__c = false
+                            AND  Status = 'Family Attendee'
+                            
+                            AND (campaign.Type = 'Clinic' 
+                            OR campaign.Type = 'Conference'
+                            OR campaign.Type = 'Family Event'
+                            OR campaign.Type = 'IRC Conference'
+                            OR campaign.Type = 'IRC Workshop'
+                            OR campaign.Type = 'Mini-Tech Lab'
+                            OR campaign.Type = 'Outreach'
+                            OR campaign.Type = 'Parent Panel'
+                            OR campaign.Type = 'Parent Team'
+                            OR campaign.Type = 'PMP Training'
+                            OR campaign.Type = 'PPW'
+                            OR campaign.Type = 'Workshop'
+                            OR campaign.Type LIKE '%Playgroup%')
+                            AND (NOT campaign.Name Like '%Childcare%')
+                            AND (NOT campaign.Name Like '%Cancelled%')
+                            AND (NOT campaign.Name Like '%No Show%')
+                            AND (NOT campaign.Name Like '%Postponed%')
+                            ];
+                                 </p> 
+                        </div>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <div>
+                            <p> 
+                            
+                          
+                               Low Income Zip Parameters 
+                            </p>
+                          
+                            <p>
+                                
+                           
+                            [select  MailingPostalCode aa, Count_Distinct (ID) bb                     
+                            From Contact
+                            WHERE id IN: setconMasterCG
+                            AND (MailingPostalCode = '94110' 
+                            OR MailingPostalCode = '94124'
+                            OR MailingPostalCode = '94108'
+                            OR MailingPostalCode = '94103'
+                            OR MailingPostalCode = '94102'
+                            OR MailingPostalCode = '94134'
+                            OR MailingPostalCode = '94115' )  
+                            group by rollup (MailingPostalCode)];
+                                 </p>
+                        </div>
+                    </apex:pageBlockSectionItem> 
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:panelGrid>
+        
+    </apex:form>
+</apex:page>

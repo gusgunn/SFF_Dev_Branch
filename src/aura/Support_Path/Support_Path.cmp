@@ -1,0 +1,128 @@
+<aura:component controller="IssuesActionsCtr"  implements="force:appHostable,flexipage:availableForAllPageTypes,lightning:isUrlAddressable,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <aura:attribute name="interactionID" type="String" default=""/> 
+    <aura:attribute name="interactionContact" type="String" default=""/> 
+    <aura:attribute name="interactionContactAgency" type="String" default=""/>
+    <aura:attribute name="interactionTime" type="String" default=""/> 
+    <aura:attribute name="issueList" type="Issue__c[]" default="[]"/>
+    <aura:attribute name="openIssuesIds" type="String[]" default="" />
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="pathStep" type="string" default="1"/>
+    <aura:registerEvent name="appEvent" type="c:aeEvent" /> 
+    <aura:attribute name="record" type="Object" />
+    <aura:attribute name="simpleInteraction" type="Object" />
+    <aura:attribute name="interactionError" type="String" />
+    <lightning:overlayLibrary aura:id="popuplib"/>
+    <aura:handler name="change" value="{!v.pathStep}" action="{!c.handlePathStepChange}"/>
+    <force:recordData aura:id="recordLoader"
+                      layoutType="FULL"
+                      recordId="{!v.recordId}"
+                      targetRecord="{!v.record}"
+                      targetFields="{!v.simpleInteraction}"
+                      targetError="{!v.interactionError}"
+                      recordUpdated="{!c.handleRecordUpdated}" />
+    
+    <lightning:card>
+        <div class="slds-grid slds-p-left_medium slds-p-right_medium">
+            <div class="slds-tabs--path" role="application" aura:id="path" >
+                <ul class="slds-tabs--path__nav" role="tablist">
+                    <!-- class="{!'slds-tabs_path__item '+item.state}" -->
+                    
+                    <li aura:id="1" class="slds-tabs--path__item slds-is-current" role="presentation" >
+                        <a class="slds-tabs--path__link" id="tabs-path-2326" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" onclick="{!c.selectPathStep1}"  aria-live="assertive">
+                            <span class="slds-tabs--path__stage">
+                                <lightning:icon iconName="utility:check" size="x-small" alternativeText="Indicates approval"/>
+                            </span>
+                            <span class="slds-tabs--path__title" ><div class="slds-text-heading_xx-small">Add Issues</div></span>
+                        </a>
+                    </li>
+                    <li aura:id="2" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                        <a class="slds-tabs--path__link" id="tabs-path-2327" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);"  onclick="{!c.selectPathStep2}" aria-live="assertive">
+                            <span class="slds-tabs--path__stage">
+                                <lightning:icon iconName="utility:check" size="x-small" alternativeText="Indicates approval"/>
+                            </span>
+                            <span class="slds-tabs--path__title" ><div class="slds-text-heading_xx-small">Add Actions</div></span>
+                        </a>
+                    </li>
+                    
+                    <li aura:id="3" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                        <a class="slds-tabs--path__link" id="tabs-path-2328" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" onclick="{!c.selectPathStep3}" aria-live="assertive">
+                            <span class="slds-tabs--path__stage">
+                                <lightning:icon iconName="utility:check" size="x-small" alternativeText="Indicates approval"/>
+                            </span>
+                            <span class="slds-tabs--path__title" ><div class="slds-text-heading_xx-small">Comments</div></span>
+                        </a>
+                    </li>
+                    
+                    <li aura:id="4" value="step4Indicator" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                        <a class="slds-tabs--path__link" id="tabs-path-2328" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" onclick="{!c.selectPathStep4}" aria-live="assertive">
+                            <span class="slds-tabs--path__stage">
+                                <lightning:icon iconName="utility:check" size="x-small" alternativeText="Indicates approval"/>
+                            </span>
+                            <span class="slds-tabs--path__title" ><div class="slds-text-heading_xx-small">Consent</div></span>
+                        </a>
+                    </li>
+                    
+                    <li aura:id="5" value="step5Indicator" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                        <a class="slds-tabs--path__link" id="tabs-path-2328" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" onclick="{!c.selectPathStep5}" aria-live="assertive">
+                            <span class="slds-tabs--path__stage">
+                                <lightning:icon iconName="utility:check" size="x-small" alternativeText="Indicates approval"/>
+                            </span>
+                            <span class="slds-tabs--path__title" ><div class="slds-text-heading_xx-small">Intakes/Assessments </div></span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+            </div>
+        </div>
+    </lightning:card>
+    <lightning:layout> 
+        <aura:if isTrue="{!v.pathStep == '1'}"> 
+            <lightning:layoutItem flexibility="auto"  size="12" aura:id ="issues" >
+                <div class="slds-card slds-has-top-magnet slds-p-around_none slds-m-around_none">
+                    <c:Support_AddIssuesContainer interactionID="{!v.recordId}"
+                                                  childID="{!v.simpleInteraction.Family__Child__c}" 
+                                                  contactID="{!v.simpleInteraction.ContactId}" /> 
+                    
+                </div>
+            </lightning:layoutItem>
+        </aura:if> 
+        
+        <aura:if isTrue="{!v.pathStep == '2'}"> 
+            <lightning:layoutItem flexibility="auto"  size="12" aura:id ="issues" >
+                <div class="slds-card slds-has-top-magnet slds-p-around_none slds-m-around_none">
+                    <c:Support_ViewIssuesActionsToggle  interactionID="{!v.recordId}"
+                                                       interactionContact ="{!v.simpleInteraction.ContactId}" 
+                                                       interactionContactAgency ="{!v.interactionContactAgency}" />
+                                         
+                    
+                </div>
+            </lightning:layoutItem>
+        </aura:if>
+        
+        
+        <aura:if isTrue="{!v.pathStep == '4'}"> 
+            <lightning:layoutItem flexibility="auto"  size="12" aura:id ="consent" >
+                <div class="slds-card slds-has-top-magnet slds-p-around_none slds-m-around_none">
+                    <c:Support_ConsentContainer filterId ="{!v.simpleInteraction.Family__Household__c}" />
+                </div>
+            </lightning:layoutItem>
+        </aura:if> 
+        <aura:if isTrue="{!v.pathStep == '5'}"> 
+            <lightning:layoutItem flexibility="auto"  size="12" aura:id ="issues" >
+                <div class="slds-card slds-has-top-magnet slds-p-around_none slds-m-around_none">
+                    todo: Add datatable
+                </div>
+            </lightning:layoutItem>
+        </aura:if>
+        
+        <aura:if isTrue="{!v.pathStep == '3'}"> 
+            <lightning:layoutItem flexibility="auto"  size="12" aura:id ="issues" >
+                <div class="slds-card slds-has-top-magnet slds-p-around_none slds-m-around_none">
+                    <c:Support_CaseComments_ViewAll kidId ="{!v.simpleInteraction.Family__Child__c}" />
+                </div>
+            </lightning:layoutItem>
+        </aura:if>
+    </lightning:layout>
+</aura:component>

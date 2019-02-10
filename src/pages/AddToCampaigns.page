@@ -1,0 +1,332 @@
+<apex:page standardController="Campaign"  extensions="AddToCampaigns_Ex" 
+           standardStylesheets="false"  sidebar="false">
+    <apex:variable var="lightningDesktop" value="{! $User.UIThemeDisplayed == 'Theme4d'}" />
+    
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+        <apex:slds />
+        <apex:pageMessages /> 
+        
+        <!-- jQuery plug in for table sort my multiple columns -->
+        <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"/>
+        <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"/>
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_TableSort, 'jquery-latest.js')}"  />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_TableSort, 'jquery.tablesorter.min.js')}"  />
+        <apex:stylesheet value="{!URLFOR($Resource.jQuery_TableSort   , '/themes/blue/style.css')}"  />
+        <apex:includeScript value="{!$Resource.Jquery}"/>   
+        <apex:includeScript value="{!$Resource.jMaskedInput}"/> 
+        <script src="jquery.js" type="text/javascript"></script>
+        <script>    
+            $(document).ready(function() {  
+            $(".txt-mask").mask("(999) 999-9999");  }); 
+        </script>
+        <script type="text/javascript">
+        $(document).ready(function(){
+            $('#search').keyup(function(){
+                searchTable($(this).val());
+            });
+        });
+        /*@gusgunn
+                Param 1:searchText
+                Description: this method takes an argument and
+                search records in the assigned table Id.
+            */
+        function searchTable(searchText)
+        {
+            /*get Table using its Id */
+            var table = $('table[id$=tblData]');
+            table.find('tr').each(function(index, row){
+                var allCells = $(row).find('td');
+                if(allCells.length > 0)
+                {
+                    var found = false;
+                    allCells.each(function(index, td)
+                                  {
+                                      var regExp = new RegExp(searchText, 'i');
+                                      if(regExp.test($(td).text()))
+                                      {
+                                          found = true;
+                                          return false;
+                                      }
+                                  });
+                    if(found == true)$(row).show();else $(row).hide();
+                }
+            });
+        }            
+        
+        document.getElementById("lkpParent").style.cursor = "pointer";
+        </script>
+        
+        
+        <apex:form >  
+            <!-- Stage Container -->
+            <div class="stage-container slds-grid slds-nowrap slds-size--1-of-1">
+                <!-- Stage -->
+                <section class="stage slds-grid slds-grid--vertical slds-nowrap">
+                    <div class="slds-shrink-none">
+                        <div class= "slds-page-header  slds-text-align_center slds-font-weight-bold slds-text-title_caps">
+                            <apex:outputtext id="ContactFirstName" value="{! '     Add  '   + ParticipantContact.FirstName + '  ' + ParticipantContact.LastName +  ' To  Campaigns       '  }"  /></div>
+                        
+                    </div>
+                    <!-- Stage Main -->
+                    <div class="stage-main slds-grid slds-wrap slds-grow slds-scrollable--y" role="main">
+                        
+                        
+                    </div>  
+                    <head>
+                        <title>Add To Campaigns</title>
+                        
+                    </head>    
+                    
+                    <body>    
+                        
+                        <!-- REQUIRED SLDS WRAPPER -->
+                        <div class="slds">    
+                            
+                            <!-- MASTHEAD -->
+                            <div class="slds-m-around_small"></div>
+                            <h1 class="slds-text-heading--label slds-m-bottom--small">
+                                
+                                
+                            </h1>
+                            <!-- / MASTHEAD -->    
+                            
+                            <!-- PRIMARY CONTENT WRAPPER -->
+                            
+                            <div class="slds-grid">
+                                <div class="slds-m-around_small"></div>
+                                <!-- CHILD DETAILS CONTENT WRAPPER -->
+                                <!--GRID FOR COLUMNS-->
+                                
+                                <div class="slds-grid slds-grid_align-center slds-grid_pull-padded-medium">
+                                    <!-- FIRST GRID COLUMN-->
+                                    <div class="slds-col slds-p-horizontal_medium"></div>
+                                    <div class="slds-form slds-form_stacked">
+                                        <div class="slds-form-element">
+                                            <legend class="slds-form-element__label slds-text-title_caps">Add Info</legend>
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="setParentphoneNum">Mobile Phone  </label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputText id="setParentphoneNum" styleClass="txt-mask"   value="{!ParticipantContact.MobilePhone}" onchange="setParentphoneNum(this.value);" required="false"/> 
+                                                </div> 
+                                            </div>
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="Email">Email</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField id="Email" onchange="setEmail(this.value);" value="{!ParticipantContact.Email}" required="False" />
+                                                </div>
+                                            </div>                                
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="zip">Zipcode</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField id="zip" onchange="setZip(this.value);" value="{!ParticipantContact.MailingPostalCode}" required="False" />
+                                                </div>
+                                            </div>  
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="statusSelect">Adult Campaign Status</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:selectList size="1" styleClass="slds-select" id="statusSelect" onchange="setStatus(this.value);"
+                                                                     value="{!Status}" >
+                                                        <apex:selectOptions value="{!items}"/> </apex:selectlist>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- SECOND GRID COLUMN-->
+                                    <div class="slds-col slds-p-horizontal_medium"></div>
+                                    <div class="slds-form slds-form_stacked">
+                                        <div class="slds-form-element">
+                                            <legend class="slds-form-element__label slds-text-title_caps">Details</legend>
+                                            
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="pLanguage"> Primary Language</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField id="pLanguage" onchange="setpLanguage(this.value);" value="{!ParticipantContact.Family__Primary_Language__c}" required="false"/>
+                                                </div>
+                                            </div>
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="Interp">Interpreter?</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputCheckbox id="Interp" onchange="setInterp(this.value);" value="{!Interp}" required="false" />  
+                                                </div>
+                                            </div>
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="spec">Special Accomodations?</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField id="spec" onchange="setspec(this.value);" value="{!ParticipantContact.Childcare_Special_Considerations__c}" required="false" /> 
+                                                </div>
+                                            </div>
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="Prof">Professional </label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField id="Prof" onchange="setProf(this.value);" value="{!ParticipantContact.Family__Professional__c}" required="false"/>
+                                                </div>
+                                            </div> 
+                                            
+                                            
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- THIRD GRID COLUMN -->
+                                    
+                                    <div class="slds-col slds-p-horizontal_medium"></div>
+                                    <div class="slds-form slds-form_stacked">
+                                        <div class="slds-form-element">
+                                            <legend class="slds-form-element__label slds-text-title_caps">Details</legend>
+                                            
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="Birthdate">Birthdate</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField id="Birthdate" onchange="setBirthdate(this.value);" value="{!ParticipantContact.Birthdate}" required="false"/>  
+                                                </div>
+                                            </div>
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                
+                                                <label class="slds-form-element__label" for="Gender">Gender</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField id="Gender" onchange="setGender(this.value);" value="{!ParticipantContact.Family__Gender__c}" required="false"/>
+                                                </div>
+                                            </div> 
+                                            
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="Role">Family Role</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField id="Role" onchange="setRole(this.value);" value="{!ParticipantContact.Family_Role__c}" required="false"/>
+                                                </div>
+                                            </div> 
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- FOURTH GRID COLUMN -->
+                                    
+                                    <div class="slds-col slds-p-horizontal_medium"></div>
+                                    <div class="slds-form slds-form_stacked">
+                                        <div class="slds-form-element">
+                                            <legend class="slds-form-element__label slds-text-title_caps">Details</legend>
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="Eth">Ethnicity</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField id="eth" onchange="seteth(this.value);" value="{!ParticipantContact.Family__Ethnicity__c}" required="false"/>
+                                                </div>
+                                            </div> 
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="lat">Hispanic/Latino Specify</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField id="lat" onchange="setlat(this.value);" value="{!ParticipantContact.Hispanic_Latino_please_specify__c}" required="false" />
+                                                </div>
+                                            </div>
+                                            <div class="slds-form-element__group slds-m-around_medium">
+                                                <label class="slds-form-element__label" for="Race">Race</label>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputField id="Race" onchange="setRace(this.value);" value="{!ParticipantContact.Family__Race__c}" required="false"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/ GRID FOR COLUMNS -->
+                                </div>
+                                
+                                <!-- /  DETAILS CONTENT WRAPPER -->
+                            </div>
+                            <!-- JQUERY SEARCHBOX -->
+                            
+                            <apex:actionFunction action="{!doQuery}" name="apexDoQuery" reRender="myData"/>
+                            
+                            <!--  <div class="slds-size--1-of-3 slds-p-around--large" role="complementary">-->
+                            <section class="stage slds-grid slds-grid--vertical slds-nowrap">
+                                <div class="slds-shrink-none">
+                                    <div class= "slds-theme--shade slds-text-align--left slds-size--1-of-1 slds-p-around--medium" role="complementary" > 
+                                        <label class="slds-form-element__label">  <i>                                        
+                                            Filter by Campaign Name  </i> </label>  <input type="text" id="search"   /> &nbsp; <apex:commandButton id="Submit" action="{!Submit}" value="Submit" 
+                                                                                                                                                   disabled="{!SubmitDisabled}" styleClass="slds-button slds-button--neutral"/> 
+                                        <apex:commandButton id="Back" action="{!GoToParticipant}" value="Back To Contact Record" styleClass="slds-button slds-button--neutral" />  </div>  </div> </section>
+                            
+                            
+                            <!-- / PRIMARY CONTENT WRAPPER -->    
+                            
+                            <!-- CAMPAIGN SELECTIONS -->
+                            <apex:pageblock id="results">
+                                <apex:pageBlockTable value="{!Campaign_List}" cellPadding="4" 
+                                                     border="1" var="Camp" id="tblData" > 
+                                    
+                                    <table class="slds-table slds-table--bordered slds-table--cell-buffer"> 
+                                        <thead>
+                                            <tr class="slds-text-title--caps">
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Select">Select</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Name">Name</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Start Date">Start Date / Time</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Type">Type</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Status">Status</div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                         
+                                            <apex:column >
+                                                <apex:facet name="header" >Adult Spots Left</apex:facet> 
+                                                <apex:outputtext style="color:{!IF(Camp.Camp.Number_of_adult_spots_remaining__c<1, "#D98880", "#538A61")}" id="AdultSpots" value="{!Camp.Camp.Number_of_adult_spots_remaining__c}"/>
+                                            </apex:column>
+                                           
+                                               <apex:column >
+                                                <apex:facet name="header" >Select</apex:facet> 
+                                                <apex:inputCheckbox id="Selected"  value="{!Camp.checked}" disabled="{!Camp.disabled}"  rendered="{!IF(contains(Camp.Camp.Status,"Cancelled"),false,true)}" style="color:{!IF(Camp.disabled, "#696969", "#538A61")}"/> <!--  -->
+                                                
+                                            </apex:column>
+                                            
+                                            <apex:column headerValue="Name"  headerClass="ct">
+                                                <div class="slds-truncate" title="{!Camp.Camp.Name }"> 
+                                                    <a href="/{!Camp.Camp.ID}"  onclick="window.open(this.href, 'mywin', 'height=600,width=1100'); return false;" > <apex:outputField id="Name" value="{!Camp.Camp.Name}"/></a></div> 
+                                            </apex:column>
+                                            <apex:column >
+                                                <apex:facet name="header" >Start Date / Time  </apex:facet>
+                                                <apex:outputField id="StartDate" value="{!Camp.Camp.Start_Date_Time__c}"/>
+                                            </apex:column>
+                                           <!--  <apex:column >
+                                                <apex:facet name="header" >FYI - Child Spots Left</apex:facet> 
+                                                <apex:outputtext style="color:{!IF(Camp.Camp.Number_of_child_spots_remaining__c<1, "#D98880", "#538A61")}" id="ChildSpots" value="{!Camp.Camp.Number_of_child_spots_remaining__c}"/>
+                                            </apex:column>-->
+                                            
+                                            <apex:column headerValue="Status"  headerClass="ct">
+                                                <!--  <apex:facet name="header" >Status</apex:facet> -->
+                                                <apex:outputField id="Status" value="{!Camp.Camp.Status}"/>
+                                            </apex:column>
+                                            <apex:column >
+                                                <apex:facet name="header" >Type</apex:facet>
+                                                <apex:outputField id="Type" value="{!Camp.Camp.Type}"/>
+                                            </apex:column>
+                                            
+                                            <apex:column >
+                                                <apex:facet name="header" >Presentation Language</apex:facet>
+                                                <apex:outputField id="Language" value="{!Camp.Camp.Presentation_Language__c}"/>
+                                            </apex:column> 
+                                            <apex:column >
+                                                <apex:facet name="header" >Interpreter Provided</apex:facet>
+                                                <apex:outputField id="IntProvided" value="{!Camp.Camp.Language_Interpreter_Services__c}"/>
+                                            </apex:column>
+                                            
+                                            
+                                        </tbody>
+                                    </table>
+                                </apex:pageBlockTable>
+                            </apex:pageblock> 
+                        </div>
+                        <!-- / REQUIRED SLDS WRAPPER --> 
+                    </body>
+                </section>
+            </div>   
+        </apex:form>
+    </html>
+    
+</apex:page>

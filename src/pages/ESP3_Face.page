@@ -1,0 +1,44 @@
+<apex:page readOnly="true" controller="ESP3_Face" 
+           docType="html-5.0" sidebar="false" >
+    
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        
+        <apex:pageBlock title="ESP Dashboard">
+            <apex:pageMessages id="messages" ></apex:pageMessages>
+            <apex:pageBlockSection title="Enter Month" columns="1" >
+                <apex:panelGroup >
+                    <apex:outputLabel value="Date From" />
+                    <apex:input label="Date From" value="{!dateFrom}" type="auto" />
+                    <apex:outputLabel value="Date To" />
+                    <apex:input label="Date To" value="{!dateTo}" type="auto" />
+                    <apex:outputLabel value="" />
+                    <apex:commandButton value="Generate" action="{!startGenerateEISDashboard}" />
+                </apex:panelGroup>    		
+            </apex:pageBlockSection>    
+            
+            <apex:pageblock title="Face TO Face" >
+                <apex:pageBlockSection columns="2">
+           
+                    
+                    <apex:pageBlockTable value="{!generateFaceInt}" var="ex"> 
+                        <apex:column value="{!ex.face}" headervalue="Current Month Inteactions" />
+                        <apex:column value="{!ex.ConTactDistinctF}" headervalue="Current Month Unduplicated" />
+                    </apex:pageBlockTable>
+                    
+                   <apex:pageBlockTable value="{!generateFaceEv}" var="exY"> 
+                        <apex:column value="{!exY.FE}" headervalue="Events" />
+                        <apex:column value="{!exY.ConTactDistinctFE}" headervalue="Month Unduplicated" />  
+                    </apex:pageBlockTable>
+                
+                </apex:pageBlockSection> 
+            </apex:pageblock>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

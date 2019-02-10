@@ -1,0 +1,36 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" >
+    <lightning:card title = "SFCD Links">
+        <div aura:id="container">
+            
+            <lightning:layout>
+            <lightning:layoutItem >
+            <p> <lightning:formattedUrl icon:name="utility:setup_assistant_guide"  class="slds-p-left_medium" value ="https://sfcd15.atlassian.net/wiki/spaces/SFDC/overview" label ="Salesforce Guide" tooltip="How to enter data into Salesforce" target="_blank" />
+            </p>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+        
+       
+       <!-- <p><lightning:formattedUrl value="https://my/path" tooltip="Go to https://my/path" label="My Cool Website" target="_blank" /></p>
+        <p><lightning:formattedUrl value="ftp://my/path" tooltip="Go to ftp://my/path" /></p>
+        <p><lightning:formattedUrl value="http://my/path" /></p>
+        <p><lightning:formattedUrl value="/my/path" /></p>
+        <p><lightning:formattedUrl value=".my/path" /></p>
+        <div aura:id="container">
+            <p> <lightning:formattedUrl value ="" label ="" tooltip="" target="_blank" />
+            </p>
+        </div>
+        <div aura:id="container">
+            <p> <lightning:formattedUrl value ="" label ="" tooltip="" target="_blank" /> </p>
+        </div>
+        <div aura:id="container">
+            <p> <lightning:formattedUrl value ="" label ="" tooltip="" target="_blank" /> </p>
+        </div>
+        <div aura:id="container">
+            <p> <lightning:formattedUrl value ="" label ="" tooltip="" target="_blank" /> </p>
+        </div>
+        <div aura:id="container">
+            <p> <lightning:formattedUrl value ="" label ="" tooltip="" target="_blank" /> </p>
+        </div> -->
+    </lightning:card>
+</aura:component>

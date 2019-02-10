@@ -1,0 +1,112 @@
+<aura:component controller="IssuesActionsCtr" access ="global">
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <aura:attribute name="issue" type="Object[]" default="[]"/>
+    <aura:attribute name="interactionContact" type="String" /> 
+    <aura:attribute name="interactionContactAgency" type="String" /> 
+    <aura:attribute name="interactionID" type="String" default=""/> 
+    <aura:attribute name="issueList" type="Object[]" default="[]"/>
+    <aura:attribute name="mapOfRecordTypes" type="Map" />
+    <aura:attribute name="lstOfRecordTypes" type="String[]" />
+    <aura:attribute name="selectedIssue" type="String" />
+    <aura:attribute name="isOpen" type="Boolean" default="false" />
+    <aura:attribute name="viewIssue" type="Boolean" default = "false" />
+    <aura:attribute name="open" type="String" default="1"/> 
+    <aura:attribute name="viewIssuelabel" type="String" default="View Issue Detail"/> 
+    <aura:attribute name="showViewIssueLabel" type="Boolean" default = "true" />
+    <aura:attribute name="issId" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler  event="c:evt_AddNewActionToTable" action="{!c.doInit}"/> 
+    <aura:handler  event="c:evt_dataTableUpdate" action="{!c.doInit}"/> 
+    <aura:registerEvent name="evtApp_toggleColumn" type="c:evtApp_toggleColumn"/>
+    <aura:registerEvent name="evt_Support_ViewIssuesActionsToggle" type="c:evt_Support_ViewIssuesActionsToggle"/>
+    <aura:registerEvent name="evtApp_Support_ActionDatatable_ViewIssueRecord" type="c:evtApp_Support_ActionDatatable_ViewIssueRecord"/>
+    
+    <lightning:overlayLibrary aura:id="popuplib"/>
+    
+    <div class="c-container">
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem padding="around-xx-small" size="12">
+                <div class="page-section page-main"> 
+                    <lightning:accordion aura:id="accordion" activeSectionName ="{!v.open}" >
+                        <aura:iteration items="{!v.issueList}" var="iss" indexVar="indx">
+                            <div id= "{!iss.Id}" >
+                                
+                                <lightning:accordionSection  name="{!indx}"    class="{! iss.Actions__c eq 0  ? ' needAction ' : '' }" label="{!iss.Name + '  (  Total Actions ' +  iss.Actions__c  +  ' )'}" >
+                                    <aura:set attribute="actions">
+                                        <lightning:buttonGroup   class="slds-button-group-row">
+                                            
+                                            <lightning:buttonIcon aura:id ="openSection"  iconName="utility:preview"  variant="border-filled" iconClass="dark" onclick="{!c.openSection}" value="{!indx}" alternativeText="View Issue Actions" />
+                                            <div class="slds-p-around-large"></div>
+                                            
+                                            <lightning:buttonIcon aura:id ="closeSection"  iconName="utility:arrowdown" variant="border-filled" iconClass="dark" onclick="{!c.closeSection}" value="{!indx}" alternativeText="Go to next Issue" />
+                                            <div class="slds-p-around-large"></div>
+                                            <lightning:button aura:id ="newAction" label="New Action" onclick="{!c.openRecordTypeSelector}" value="{!iss}"  />
+                                            <div class="slds-p-bottom_xx-small"></div>
+                                            
+                                            <!--  <lightning:button aura:id ="issueLink" label="{!v.viewIssuelabel}" onclick="{!c.gotoIssue}" value="{!iss.Id}"  /> -->
+                                            
+                                            <lightning:button aura:id ="issueLink" label="{!v.viewIssuelabel}" onclick="{!c.viewIssue}" value="{!iss.Id}"  /> 
+                                            <div class="slds-p-bottom_xx-small"></div>
+                                        </lightning:buttonGroup> 
+                                    </aura:set>
+                                    <aura:set attribute="body" > 
+                                        <aura:If isTrue="{!iss.Actions__r}"> 
+                                            <c:Support_ActionDatatable dataIn="{#iss.Actions__r}" />  
+                                        </aura:If>  
+                                    </aura:set>  
+                                </lightning:accordionSection>
+                            </div> 
+                        </aura:iteration>
+                    </lightning:accordion>  
+                </div>
+            </lightning:layoutItem>
+            <aura:if isTrue="{!v.viewIssue}">
+                <lightning:layoutItem aura:id="rtCol" size="4" class="slds-p-left_small slds-hide">
+                    <c:Support_IssueView recordId ="{!v.issId}" /> 
+                </lightning:layoutItem>
+            </aura:if>
+            
+            <!-- <lightning:layoutItem padding="around-xx-small" size="3">
+                <div class="page-section page-right">
+                
+                </div>
+            </lightning:layoutItem> -->
+        </lightning:layout>      
+    </div>      
+    
+    
+    <!-- Model Box Start -->    
+    <aura:if isTrue="{!v.isOpen}">
+        <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <button class="slds-button slds-modal__close slds-button" title="Close" onclick="{!c.closeModal}">
+                        X<span class="slds-assistive-text">Cancel</span>
+                    </button>
+                </div>
+                <div class="slds-modal__content slds-p-around--x-small">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-size--1-of-2 slds-large-size--1-of-2">
+                            <div class="slds-align--absolute-center">Select an Action Type</div>                            
+                        </div>
+                        <div class="slds-size--1-of-2 slds-large-size--1-of-2">
+                            <lightning:select aura:id="recordTypePickList" name ="selectedRecordType" 
+                                              label = "Select Action Type"  >
+                                <option value="" text ="Select An Action Type" />
+                                <aura:iteration items="{!v.lstOfRecordTypes}" var="action">                            
+                                    <option value="{!action}" text="{!action}"  />
+                                </aura:iteration>
+                            </lightning:select>
+                        </div>&nbsp; &nbsp;
+                    </div>                   
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning:button class="slds-button slds-button--neutral" onclick="{!c.closeModal}">Cancel</lightning:button>
+                    <lightning:button class="slds-button slds-button--brand" onclick="{!c.createNewAction}">Next</lightning:button>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+    </aura:if>
+    
+</aura:component>

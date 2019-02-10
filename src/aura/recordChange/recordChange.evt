@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="I_Rewis_Datatable">
+    <aura:attribute name="message" type="String"/>
+    <!-- <aura:attribute name="row" type="Object"/>-->
+</aura:event>

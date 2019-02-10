@@ -1,0 +1,285 @@
+<apex:page readOnly="true" controller="HMG_Age" 
+           docType="html-5.0" sidebar="false" >
+    
+    <style>
+    .slds [hidden], .slds template {
+    display: block;
+}
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        
+        <apex:pageBlock title="HMG Demographics Dashboard">
+            <apex:pageMessages id="messages" ></apex:pageMessages>
+            <apex:pageBlockSection title="Enter Quarter Ending" columns="1" collapsible="false" >
+                <apex:panelGroup >
+                    <apex:outputLabel value="Date From " />
+                    <apex:input label="Date From " value="{!dateFrom}" type="auto" /> 
+                    <apex:outputLabel value="Date To " />
+                    <apex:input label="Date To " value="{!dateTo}" type="auto" />
+                    <apex:outputLabel value=" " />
+                    <apex:commandButton value="Generate" action="{!startGenerateEISDashboard}" />
+                </apex:panelGroup>          
+            </apex:pageBlockSection>    
+            
+       
+          <apex:pageblock title="Age Ranges - New Kids This Current Quarter, Unduplicated" >
+              <apex:pageBlockSection columns="3">
+                 
+                 <apex:pageBlockTable value="{!GenerateAge1}" var="a">  
+                    
+                    <apex:column value="{!a.num1}" headervalue=" Total Children: 0 to <12 Months"/>
+                     </apex:pageBlockTable>
+                   
+                  <apex:pageBlockTable value="{!GenerateAge2}" var="a">  
+                   
+                      <apex:column value="{!a.num1}" headervalue=" Total Children: 12 to < 24 Months"/>
+                      </apex:pageBlockTable>
+                  
+                    <apex:pageBlockTable value="{!GenerateAge3}" var="a">  
+                   
+                        <apex:column value="{!a.num1}" headervalue="Total Children:  24 to < 36 Months"/>
+                     </apex:pageBlockTable>
+                  
+                   
+                    <apex:pageBlockTable value="{!GenerateAge4}" var="a">  
+                    
+                        <apex:column value="{!a.num1}" headervalue="Total Children:  36 to < 48 Months"/>
+                     </apex:pageBlockTable>
+                  
+                        <apex:pageBlockTable value="{!GenerateAge5}" var="a">  
+                       
+                            <apex:column value="{!a.num1}" headervalue="Total Children: 48 to < 60 Months"/>
+                     </apex:pageBlockTable>
+                  
+                            <apex:pageBlockTable value="{!GenerateAge6}" var="a">  
+                             
+                                <apex:column value="{!a.num1}" headervalue="Total Children: 60 to < 72 Months"/> -
+                    </apex:pageBlockTable>
+                  
+             
+               </apex:pageBlockSection>  
+    
+            
+            
+            </apex:pageblock>
+            
+            
+            <apex:pageblock title="Unduplicated Caregivers: Language " >
+            
+            <apex:pageBlockSection collapsible="True" >
+               <apex:panelGrid columns="3">
+                    
+                    <apex:pageBlockTable value="{!GenerateParentLanguageP}" var="ex"  style="text-align:center; font-weight: bold" border="3"> 
+                        <apex:column value="{!ex.ag1}" headervalue=" Prior Quarter Language" />
+                        <apex:column value="{!ex.num1}" headervalue="Prior Quarter" />
+                    </apex:pageBlockTable>
+                    
+                      <apex:pageBlockTable value="{!GenerateParentLanguage}" var="ex"  style="text-align:center; font-weight: bold"  border="3"> 
+                        <apex:column value="{!ex.ag1}" headervalue="Current Quarter Language" />
+                        <apex:column value="{!ex.num1}" headervalue="Current Quarter Unduplicated" />
+                    </apex:pageBlockTable>  
+                    
+                    <apex:pageBlockTable value="{!GenerateParentLanguageYTD}" var="ex"  style="text-align:center; font-weight: bold"  border="3"> 
+                        <apex:column value="{!ex.ag1}" headervalue="YTD Language" />
+                        <apex:column value="{!ex.num1}" headervalue="YTD Unduplicated" />
+                    </apex:pageBlockTable>
+                    </apex:panelGrid>
+                      
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                           <div style="word-wrap:break-word; width:250px;" >
+                            <p>  Add Note Here
+                               </p> </div>
+                        </div>
+                        </apex:pageBlock>
+                    
+                    
+                      
+                
+            </apex:pageBlockSection>
+            </apex:pageblock>
+
+
+
+        <apex:pageblock title="Unduplicated Children: Ethnicity & Race (Current quarter)"  >
+
+            <apex:pageBlockSection collapsible="True" columns="2">
+                
+                     <apex:pageBlockTable value="{!GenerateEthnicity}" var="ex"  style="text-align:center; font-weight: bold" border="3" title="Ethnicity"> 
+                        <apex:column value="{!ex.ag1}" headervalue=" Ethnicity" />
+                        <apex:column value="{!ex.num1}" headervalue="Current Quarter" />
+                    </apex:pageBlockTable>
+                 
+               
+        <apex:pageblock >
+                      <apex:pageBlockTable value="{!GenerateRace}" var="ex"  style="text-align:center; font-weight: bold" border="3" title=" Race "> 
+                        <apex:column value="{!ex.ag1}" headervalue=" Race" />
+                        <apex:column value="{!ex.num1}" headervalue="Current Quarter" />
+                    </apex:pageBlockTable>
+        </apex:pageblock>
+            
+                
+            </apex:pageBlockSection>
+            </apex:pageblock>
+            
+              <apex:pageblock title="Unduplicated Children: Ethnicity & Race (Year To Date)"  >
+
+            <apex:pageBlockSection collapsible="True" columns="2">
+                
+                     <apex:pageBlockTable value="{!GenerateEthnicityYTD}" var="ex"  style="text-align:center; font-weight: bold" border="3" title="Ethnicity"> 
+                        <apex:column value="{!ex.ag1}" headervalue=" Ethnicity" />
+                        <apex:column value="{!ex.num1}" headervalue="Current Quarter" />
+                    </apex:pageBlockTable>
+                 
+               
+        <apex:pageblock >
+                      <apex:pageBlockTable value="{!GenerateRaceYTD}" var="ex"  style="text-align:center; font-weight: bold" border="3" title=" Race "> 
+                        <apex:column value="{!ex.ag1}" headervalue=" Race" />
+                        <apex:column value="{!ex.num1}" headervalue="Current Quarter" />
+                    </apex:pageBlockTable>
+        </apex:pageblock>
+            
+                
+            </apex:pageBlockSection>
+            </apex:pageblock>
+            
+            
+            
+            
+             
+            <apex:pageblock title="Gender (For Prior/Current/YTD Count)" >
+                <apex:pageBlockSection columns="3">
+                    <apex:pageBlockTable value="{!GenerateGenP}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="YTPrior Quarter Gender" /> 
+                        <apex:column value="{!exP.num1}" headervalue="YTPrior Quarter Unduplicated" />  
+                    </apex:pageBlockTable>   
+                   
+                    <apex:pageBlockTable value="{!GenerateGenC}" var="ex"> 
+                        <apex:column value="{!ex.ag1}" headervalue="Current Quarter Gender" />
+                        <apex:column value="{!ex.num1}" headervalue="Current Quarter Unduplicated" />
+                    </apex:pageBlockTable>
+                   <apex:pageBlockTable value="{!GenerateGenYTD}" var="exY"> 
+                        <apex:column value="{!exY.ag1}" headervalue="YTD Gender" />
+                        <apex:column value="{!exY.num1}" headervalue="YTD Unduplicated" />  
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection> 
+            </apex:pageblock>
+            
+              <apex:pageblock title="List Current" >
+                <apex:pageBlockSection columns="3" collapsible="true">
+                    
+                       <apex:pageBlockTable value="{!Age1}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                       <apex:pageBlockTable value="{!Age2}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                       <apex:pageBlockTable value="{!Age3}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                       <apex:pageBlockTable value="{!Age4}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                       <apex:pageBlockTable value="{!AGe5}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                     <apex:pageBlockTable value="{!AGe6}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!All}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                  </apex:pageBlockSection>
+            </apex:pageblock>
+                   
+        </apex:pageBlock>
+        <apex:pageBlock >
+        <!--
+           <apex:pageBlock title="Screen 8" >
+            <apex:panelGrid Columns="1">
+            <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007kYMY" id="espUndup">ESP Screen 8: FaceToFace New Contacts Unduplicated (Interactions)</apex:outputLink>
+            </apex:panelGrid>
+            
+            <apex:panelGrid Columns="1">
+            <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007lA6s" id="espEventUndup">ESP Screen 8: FaceToFace New Contacts Unduplicated (Events)</apex:outputLink>
+            </apex:panelGrid>
+             <apex:panelGrid Columns="1">
+            <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007lA4w" id="IntALL">ESP Screen 8: FaceToFace - Duplicated (Interaction)</apex:outputLink> 
+            </apex:panelGrid> 
+            
+             <apex:panelGrid Columns="1">
+            <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007lA6i" id="EventAll">ESP Screen 8: FaceToFace - Duplicated (Events) </apex:outputLink> 
+            </apex:panelGrid>
+            
+             <apex:panelGrid Columns="1">
+            <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007VcRB" id="Kids">ESP Screen 8: Other Contacts - Duplicated</apex:outputLink>
+            </apex:panelGrid>
+             <apex:panelGrid Columns="1">
+             <apex:outputLink value="https://na76.salesforce.com/00O16000007kYNR" id="Support">ESP Screen 8: Support Contact Purpose</apex:outputLink>
+         
+        </apex:panelGrid>
+            
+             <apex:panelGrid Columns="1">
+             <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007lA64" id="Info">ESP Screen 8: Information Contact Purpose</apex:outputLink>
+         
+        </apex:panelGrid>
+         <apex:panelGrid Columns="1">
+             <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007kKJ1" id="Referral">ESP Screen 8: Referral Contact Purpose</apex:outputLink>
+         
+        </apex:panelGrid>
+        
+         <apex:panelGrid Columns="1">
+             <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007kYNM" id="Trans">ESP Screen 8: Transition Contact Purpose</apex:outputLink>
+         
+        </apex:panelGrid>
+              </apex:pageBlock>
+              <apex:pageBlock Title="Screen 9">
+              <apex:panelGrid Columns="1">
+             <apex:outputLink value="https://na76.salesforce.com/00O1L000007pTLD" id="ReferralFromGGRC">ESP Screen 9: Referral From GGRC</apex:outputLink>
+         
+        </apex:panelGrid>
+        
+         <apex:panelGrid Columns="1">
+             <apex:outputLink value="https://na76.salesforce.com/00O1L000007pTLD" id="ReferralFromOther">ESP Screen 9: Referral From Other</apex:outputLink>
+         
+        </apex:panelGrid>
+              
+               <apex:panelGrid Columns="1">
+             <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007kYfG" id="ReferralToGGRC">ESP Screen 9: Referral To GGRC</apex:outputLink>
+         
+        </apex:panelGrid>
+        
+              
+              
+         <apex:panelGrid Columns="1">
+             <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007kYfG" id="ReferralTo">ESP Screen 9: Referral From Community (not GGRC)</apex:outputLink>
+         
+        </apex:panelGrid>
+        <apex:panelGrid Columns="1">
+             <apex:outputLink value="https://na76.salesforce.com/00O1L000007pTLS" id="ReferralFor">ESP Screen 9: Referral For</apex:outputLink>
+         
+        </apex:panelGrid>
+        </apex:pageBlock>
+        -->
+     
+        
+        
+        
+     
+       
+      
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

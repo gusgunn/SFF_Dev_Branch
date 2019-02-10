@@ -1,0 +1,2 @@
+<aura:event type="APPLICATION" 
+            description="Change Household Owners - updates dispaly card. Fires onSupport_QA_HouseholdOwnerChange_Utility " />

@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="Passes record to issuesContainer">
+    <aura:attribute name="recordName" type="sObject[]" /> 
+</aura:event>

@@ -1,0 +1,141 @@
+<!-- relatedRecordForm_byDesign code for the Component File in the lightning bundle -->
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" >   
+    <aura:attribute name="recordId" type="Id"   />
+    <aura:attribute name="contactId" type="Id"   />
+    <aura:attribute name="sObjectName" type="Object" default = "Case" />
+    <aura:attribute name="household" type="String" />
+    <aura:attribute name="relatedId" type="String"/>    
+    <aura:attribute name="recTypeID" type="String" /> 
+    <aura:attribute name="recordlabel" type="String"  />
+    <aura:attribute name="simpleRecord" type="String" />
+    <aura:attribute name="contact" type="Object" />
+    <aura:attribute name="isOpen" type="Boolean" default="true" />
+    <aura:attribute name="errors" type="String"  />   
+    <aura:attribute name="disabled" type="Boolean" default="false" />
+     <aura:attribute name="record" type="Object" />
+    <lightning:overlayLibrary aura:id="popuplib"/>
+   
+    
+    <aura:attribute name="recordError" type="String" />
+    <aura:handler event="c:recordChange" action="{!c.onDoneloading}"/>
+    <force:recordData aura:id ="service"
+                      layoutType="FULL"
+                      recordId="{!v.recordId}"
+                      targetRecord = "{!v.record}"
+                      targetFields="{!v.simpleRecord}"
+                      fields ="{Family__Household__c,Relationship_to_Child_Person_wDisability__c]"
+                      targetError="{!v.errors}"
+                      /> 
+    <aura:if isTrue="{!v.isOpen}">
+        
+        <div class="slds-p-left_small slds-p-right_small">	
+            <lightning:recordEditForm aura:id="recordEditForm" 
+                                      objectApiName="Case"
+                                      recordTypeId ="{!v.recTypeID}"
+                                      onload ="{!c.prefillForm}"
+                                      onsubmit ="{!c.onSubmit}"
+                                      onsuccess="{!c.showToast}"
+                                      onerror="{!c.errors}"
+                                      >   
+                <lightning:messages />
+                
+                <aura:if isTrue="{!v.recordlabel == 'intakeChild' || v.recordlabel == 'child' || v.recordlabel == 'surveyChild'}"> 
+                    <lightning:layout multipleRows="true" horizontalAlign="spread">  
+                        <lightning:layoutItem padding="around-small" size="6">
+                            <lightning:inputField fieldName= "ContactId" aura:id ="contactName"  />   
+                            <lightning:inputField fieldName= "Family__Household__c"  aura:id ="household" /> <!--</lightning:in>onchange ="{c.updateKidOptions}"/>-->
+                            <lightning:inputField fieldName= "Family__Child__c"  aura:id ="childName" />
+                            <lightning:inputField fieldName= "Relationship_to_Child_Person_wDisability__c"  aura:id ="relationship" />  
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="6"> 
+                            <lightning:inputField fieldName= "Origin"  aura:id ="origin" required ="true"/>
+                            <lightning:inputField fieldName= "Call_Type__c"  aura:id ="callType" required ="true"/>
+                            <lightning:inputField fieldName= "Add_5_Mins_to_Start_Time_For_End_Time__c"  aura:id ="minutesSpent" />
+                            <lightning:inputField fieldName= "Start_Time__c"  aura:id ="startTime"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    
+                    <aura:set attribute="else">
+                        <aura:if isTrue="{!v.recordlabel == 'childObo'}"> 
+                            <lightning:layout  horizontalAlign="spread">  
+                                <lightning:layoutItem padding="around-small" size="12">
+                                    <lightning:inputField fieldName= "ContactId" aura:id ="contactName"  required = "true" />   
+                                    <lightning:inputField fieldName= "Family__Household__c"  aura:id ="household" />
+                                    <lightning:inputField fieldName= "Family__Child__c"  aura:id ="childName" />
+                                    <lightning:inputField fieldName= "Origin"  aura:id ="origin" required ="true"/>
+                                    <lightning:inputField fieldName= "Call_Type__c"  aura:id ="callType" required ="true"/>
+                                    <lightning:inputField fieldName= "Add_5_Mins_to_Start_Time_For_End_Time__c"  aura:id ="minutesSpent" />
+                                    <lightning:inputField fieldName= "Start_Time__c"  aura:id ="startTime"/>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                            <aura:set attribute="else">
+                                <aura:if isTrue="{!v.recordlabel == 'adult' || v.recordlabel == 'intakeAdult' || v.recordlabel == 'surveyAdult'}"> 
+                                    <lightning:layout  horizontalAlign="spread">  
+                                        <lightning:layoutItem padding="around-small" size="12">
+                                            <lightning:inputField fieldName= "ContactId" aura:id ="contactName"  required = "true" />   
+                                            <lightning:inputField fieldName= "Family__Household__c"  aura:id ="household" />
+                                            <lightning:inputField fieldName= "Origin"  aura:id ="origin" required ="true"/>
+                                            <lightning:inputField fieldName= "Call_Type__c"  aura:id ="callType" required ="true"/>
+                                            <lightning:inputField fieldName= "Add_5_Mins_to_Start_Time_For_End_Time__c"  aura:id ="minutesSpent" />
+                                            <lightning:inputField fieldName= "Start_Time__c"  aura:id ="startTime"/>
+                                            <!--  <lightning:inputField fieldName= "Relationship_to_Child_Person_wDisability__c"  aura:id ="relationship" /> -->
+                                        </lightning:layoutItem>
+                                    </lightning:layout>
+                                    <aura:set attribute="else">
+                                        <aura:if isTrue="{!v.recordlabel == 'prof'}"> 
+                                            <lightning:layout  horizontalAlign="spread">  
+                                                <lightning:layoutItem padding="around-small" size="12">
+                                                    <lightning:inputField fieldName= "ContactId" aura:id ="contactName"  required = "true" />   
+                                                    <lightning:inputField fieldName= "Origin"  aura:id ="origin" required ="true"/>
+                                                    <lightning:inputField fieldName= "Call_Type__c"  aura:id ="callType" required ="true"/>
+                                                    <lightning:inputField fieldName= "Add_5_Mins_to_Start_Time_For_End_Time__c"  aura:id ="minutesSpent" />
+                                                    <lightning:inputField fieldName= "Start_Time__c"  aura:id ="startTime"/>
+                                                </lightning:layoutItem>
+                                            </lightning:layout>
+                                            <aura:set attribute="else">
+                                                <aura:if isTrue="{!v.recordlabel == 'oboAdult'}"> 
+                                                    <lightning:layout  horizontalAlign="spread">  
+                                                        <lightning:layoutItem padding="around-small" size="12">
+                                                            <lightning:inputField fieldName= "ContactId" aura:id ="contactName"  required = "true" />   
+                                                            <lightning:inputField fieldName= "Family__Household__c"  aura:id ="household" />
+                                                            <lightning:inputField fieldName= "Prof_OBO_Adult__c"  aura:id ="adultOBO" />
+                                                            <lightning:inputField fieldName= "Family__Child__c"  aura:id ="childName" />
+                                                            <lightning:inputField fieldName= "Origin"  aura:id ="origin" required ="true"/>
+                                                            <lightning:inputField fieldName= "Call_Type__c"  aura:id ="callType" required ="true"/>
+                                                            <lightning:inputField fieldName= "Add_5_Mins_to_Start_Time_For_End_Time__c"  aura:id ="minutesSpent" />
+                                                            <lightning:inputField fieldName= "Start_Time__c"  aura:id ="startTime"/> 
+                                                             <lightning:inputField fieldName= "Development_Screening__c"  aura:id ="startTime"/>
+                                                            
+                                                        </lightning:layoutItem>
+                                                    </lightning:layout>
+                                                </aura:if>
+                                            </aura:set>
+                                        </aura:if>
+                                    </aura:set>
+                                </aura:if>
+                            </aura:set>
+                        </aura:if>
+                    </aura:set>
+                </aura:if>
+                
+                <lightning:workspaceAPI aura:id="workspace"/>
+                <lightning:layout >
+                    <lightning:button class="slds-align_left" variant="brand" label="Cancel" onclick="{!c.cancel}"/>
+                    <lightning:button class="slds-align_right" disabled="{!v.disabled}" variant="brand" type="submit" name="save" label="Next" onclick="{!c.onSubmit}" />
+                    
+                </lightning:layout>           
+            </lightning:recordEditForm>
+        </div>
+        
+        <aura:if isTrue="{!not(empty(v.errors))}">
+            <div class="recordError">
+                <ui:message title="Error" severity="error" closable="true">
+                    here is the error   {!v.errors}
+                </ui:message>
+            </div>
+        </aura:if>
+        
+        
+        
+    </aura:if>
+</aura:component>

@@ -1,0 +1,70 @@
+<!-- relatedRecordForm_byDesign code for the Component File in the lightning bundle -->
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId,lightning:actionOverride,force:lightningQuickAction" access="global" >   
+    
+    
+    <aura:attribute name="relatedId" type="Id"  />
+    <aura:attribute name="recordId" type="Id" default=""  />
+    <aura:attribute name="sObjectName" type="Object" default = "Case"/>
+    <aura:attribute name="fieldsToDisplay" type="String" />
+    <aura:attribute name="title" type="String" />
+    <aura:attribute name="fieldsArray" type="String[]"  />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> 
+    <aura:attribute name="disabled" type="Boolean" default="false" />
+    <aura:attribute name="saved" type="Boolean" default="false" />
+    <aura:attribute name="showSpinner" type="Boolean" default="true" />
+    
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner />
+    </aura:if>
+    <lightning:card  title="{!v.title}"> 
+        <aura:if isTrue="{!!v.saved}">
+            
+            <lightning:recordEditForm aura:id="recordCreateForm" 
+                                      onload ="{!c.prefillForm}"
+                                      objectApiName="{!v.sObjectName}"
+                                      onsubmit="{!c.handleSubmit}"
+                                      onsuccess="{!c.handleSuccess}" />
+            
+            
+            <lightning:messages />
+
+                <div class="c-container">
+                    <lightning:layout multipleRows="true" horizontalAlign="spread">  
+                        
+                        <lightning:layoutItem padding="around-small" size="6">  
+                            <lightning:inputField fieldName= "ContactId" aura:id ="contactName"/>
+                            <lightning:inputField fieldName= "Family__Household__c"  aura:id ="household"/>
+                            
+                            
+                            <lightning:inputField fieldName= "Origin"  aura:id ="origin"/>
+                            <lightning:inputField fieldName= "Call_Type__c"  aura:id ="callType"/>
+                            <lightning:inputField fieldName= "Family__Child__c"  aura:id ="childName" />
+                            
+                            <lightning:inputField fieldName= "Start_Time__c"  aura:id ="startTime"/>
+                            <lightning:inputField fieldName= "Time_Spent_minutes__c"  aura:id ="minutesSpent" />
+                            
+                      
+                        
+                        <div class="slds-modal__footer">
+                            <lightning:button class="slds-button_brand" label="Cancel" onclick="{!c.cancel}" />
+                            <lightning:button class="slds-button_neutral" label="Save" onclick="{!c.handleSaveRecord}" />
+                        </div>
+                        
+                        <lightning:navigation aura:id="navService" />
+                        <a href="(!.v.url}"> link</a>
+                        <!-- The height of the modal is defined in Salesforce when you create the new action. -->
+                        <!-- Recommended height: 250px -->
+                        </lightning:layoutItem>
+                        
+                    </lightning:layout>
+                </div>
+           
+     
+
+<aura:set attribute="else">
+    <p>Saved! New record id is {!v.recordId}</p>
+</aura:set>
+        </aura:if>
+    </lightning:card>
+</aura:component>

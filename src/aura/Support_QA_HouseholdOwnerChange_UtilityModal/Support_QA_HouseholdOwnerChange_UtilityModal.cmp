@@ -1,0 +1,46 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:lightningQuickAction" access="global" >   
+    <aura:attribute name="recordId" type="Id"   />
+    <aura:attribute name="sObjectName" type="Object" default = "npo02__Household__c" />
+    <aura:attribute name="fieldsToDisplay" type="String" default="Name" />
+    <aura:attribute name="fieldsArray" type="String[]" default = "[ 'Household_Name__c', 'OwnerId', 'Change_Household_Owner_FRS__c']"  />
+    <aura:attribute name="updateType" type="String" default ="FRS"/>
+    <aura:attribute name="errors" type="String" />
+    <aura:attribute name="contact" type="Object" default = "Contact"  />
+    <aura:attribute name="simpleRecord" type="Object"  />
+    <aura:attribute name="record" type="Object" />
+
+    <aura:attribute name="isOpen" type="String" default ="true" />
+    <aura:attribute name="householdOwnerName" type="String"  />
+    <aura:registerEvent name="Support_evtApp_reloadSFCDTeam" type ="c:Support_evtApp_reloadSFCDTeam" />
+    <lightning:overlayLibrary aura:id="popuplib"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+     <aura:if isTrue="{!v.isOpen}">
+       
+        	<lightning:recordForm aura:id="changeOwnerForm"
+                 objectApiName="npo02__Household__c" 
+                 recordId="{!v.recordId}"
+                 fields="{!v.fieldsArray}"
+                 columns="1"
+                 mode="edit"
+                 oncancel="{!c.oncancel}"
+                 onsuccess="{!c.handleOwnerChanged}"
+                 onsubmit="{!c.handleSaveNewOwner}"/>
+      
+    </aura:if>
+
+    <force:recordData aura:id="recorddata"
+                      recordId = "{!v.recordId}"
+                      targetRecord="{!v.record}"
+                      targetFields="{!v.simpleRecord}"
+                      fields="OwnerId, Change_Household_Owner_FRS__c, Id"
+                      targetError="{!v.errors}"
+                      recordUpdated="{!c.onRecordUpdated}"/> 
+    
+   
+    <aura:if isTrue="{!not(empty(v.errors))}">
+        <div class="recordError">
+            {!v.errors}</div>
+    </aura:if>
+    
+</aura:component>

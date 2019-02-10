@@ -1,0 +1,170 @@
+<apex:page readOnly="true" controller="HMG" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+  
+<style>
+      .filterDiv{ padding: 10px; }
+        label{ padding: 4px; }
+    </style>
+<style>
+      .centerHeaderBold { text-align:center; font-weight:bold; }
+</style>
+ <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"/>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+    <apex:includeScript value="{!URLFOR($Resource.tablesorter, 'jquery.tablesorter.min.js')}"/>
+        
+    <!--Sort on load -->
+    <script type="text/javascript">
+        $j = jQuery.noConflict();    
+        $j(document).ready(function () {
+        $j('a').attr("target","_blank");
+        $j("[id$=sortIt]").tablesorter();
+        });    
+    </script>
+  
+    <apex:messages />
+   
+    
+    <apex:form >
+        
+        <apex:pageBlock title="HMG Dashboard">
+            
+            <apex:pageMessages id="messages" ></apex:pageMessages>
+            <apex:pageBlockSection title="Enter Quarter Ending" columns="1" collapsible="true">
+                <apex:panelGroup >
+                    <apex:outputLabel value="Date From" />
+                    <apex:input label="Date From" value="{!dateFrom}" type="auto" /> 
+                    <apex:outputLabel value="Date To" />
+                    <apex:input label="Date To" value="{!dateTo}" type="auto" />
+                    <apex:outputLabel value="" />
+                    <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                    
+                    
+                </apex:panelGroup>          
+            </apex:pageBlockSection>  
+            <apex:pageBlockSection > 
+                <apex:panelGroup >          
+                    
+                    <apex:outputLink value="https://sfcd.my.salesforce.com/" id="IntAll"> </apex:outputLink> 
+                </apex:panelGroup>          
+            </apex:pageBlockSection> 
+            
+            <apex:pageblock title="Click ▲▼ to sort"  >
+                <apex:pageBlockSection collapsible="True" title="Interactions Only - One Interaction (Households With  Children 0 Through 5) ">
+                    <apex:panelGrid columns="4"  cellspacing="75" border="1"   >
+                        
+                        <apex:pageBlockTable value="{!AggHouseholdCases1}" var="ex" id="sortIt" styleClass="tablesorter" headerClass="TableTitle"  style="text-align:center; font-weight: bold " > 
+                            <apex:column headervalue="Household ▲▼" style="Center"  >
+                         
+                            <apex:outputLink value="/{!ex.s}"> {!ex.s}  </apex:outputLink>
+                        </apex:column>
+                           
+                            <apex:column value="{!ex.i}" headervalue="Total Interactions ▲▼"  /> 
+                             <apex:column value="{!ex.m}" headervalue=" Counter (One Only) ▲▼"  /> 
+                            
+                    
+                            
+                        </apex:pageBlockTable>     
+                        </apex:panelGrid>
+                    
+                    </apex:pageBlockSection>
+                
+            <apex:pageBlockSection collapsible="True" title="Interactions Only - Multiple (Households With  Children 0 Through 5) ">
+                    <apex:panelGrid columns="4"  cellspacing="75" border="1"   >
+                        
+                        <apex:pageBlockTable value="{!AggHouseholdCases}" var="ex" id="sortIt" styleClass="tablesorter" headerClass="TableTitle"  style="text-align:center; font-weight: bold " > 
+                            <apex:column headervalue="Household ▲▼" style="Center"  >
+                         
+                            <apex:outputLink value="/{!ex.s}"> {!ex.s}  </apex:outputLink>
+                        </apex:column>
+                           
+                            <apex:column value="{!ex.i}" headervalue="Total Interactions ▲▼"  /> 
+                            
+                            <apex:column value="{!ex.m}" headervalue="Counter (Multiple) ▲▼"   />  
+                    
+                            
+                        </apex:pageBlockTable>     
+                        </apex:panelGrid>
+            
+                </apex:pageBlockSection>
+ <apex:pageBlockSection collapsible="True" title="Interactions & Events - One Interaction Only  (Households With  Children 0 Through 5) ">
+                    <apex:panelGrid columns="4"  cellspacing="75" border="1"   >
+                        
+                          <apex:pageBlockTable value="{!AggHouseholdEventsCases1}" var="ex"  id="sortIt" styleClass="tablesorter" headerClass="TableTitle" style="text-align:center; font-weight: bold " > 
+                            
+                             <apex:column headervalue="Household ▲▼" style="Center"  >
+                         
+                            <apex:outputLink value="/{!ex.s}"> {!ex.s}  </apex:outputLink>
+                        </apex:column>
+                           
+                            <apex:column value="{!ex.i}" headervalue="Total Interactions ▲▼"  /> 
+                             <apex:column value="{!ex.m}" headervalue=" Counter (One Only) ▲▼"  /> 
+                          
+                    
+                            
+                        </apex:pageBlockTable>  
+                        </apex:panelGrid>
+                </apex:pageBlockSection>
+                
+ <apex:pageBlockSection collapsible="True" title="Interactions & Events - Multiple Interactions (Households With  Children 0 Through 5) ">
+                    <apex:panelGrid columns="4"  cellspacing="75" border="1"   >
+                        
+                          <apex:pageBlockTable value="{!AggHouseholdEventsCases}" var="ex"  id="sortIt" styleClass="tablesorter" headerClass="TableTitle" style="text-align:center; font-weight: bold " > 
+                            
+                             <apex:column headervalue="Household ▲▼" style="Center"  >
+                         
+                            <apex:outputLink value="/{!ex.s}"> {!ex.s}  </apex:outputLink>
+                        </apex:column>
+                           
+                            <apex:column value="{!ex.i}" headervalue="Total Interactions ▲▼"  /> 
+                               <apex:column value="{!ex.m}" headervalue="Counter (Multiple) ▲▼"   /> 
+                    
+                              
+                          
+                    
+                            
+                        </apex:pageBlockTable>  
+                        </apex:panelGrid>
+                </apex:pageBlockSection>
+                
+                 <apex:pageBlockSection collapsible="True" title="Events Only - One Attendance Only (Households With Children 0 Through 5) ">
+                    <apex:panelGrid columns="2"  cellspacing="20" border="1"   >
+                          <apex:pageBlockTable value="{!AggHouseholdEvents1}" var="ex" id="sortIt" styleClass="tablesorter" headerClass="TableTitle" style="text-align:center; font-weight: bold " > 
+                            
+                            <apex:column headervalue="Household ▲▼" style="Center"  >
+                         
+                            <apex:outputLink value="/{!ex.s}"> {!ex.s}  </apex:outputLink>
+                        </apex:column>
+                           
+                            <apex:column value="{!ex.i}" headervalue="Total Events ▲▼"  /> 
+                              <apex:column value="{!ex.m}" headervalue=" Counter (One Only) ▲▼"  />
+                            
+                            
+                    
+                            
+                        </apex:pageBlockTable> 
+                     </apex:panelGrid>
+                </apex:pageBlockSection>
+            
+            <apex:pageBlockSection collapsible="True" title="Events Only - Multiple Attendance (Households With Children 0 Through 5) ">
+                         <apex:panelGrid columns="2"  cellspacing="20" border="1"   >
+                         <apex:pageBlockTable value="{!AggHouseholdEvents}" var="ex" id="sortIt" styleClass="tablesorter" headerClass="TableTitle" style="text-align:center; font-weight: bold " > 
+                            
+                            <apex:column headervalue="Household ▲▼" style="Center"  >
+                         
+                            <apex:outputLink value="/{!ex.s}"> {!ex.s}  </apex:outputLink>
+                        </apex:column>
+                           
+                            <apex:column value="{!ex.i}" headervalue="Total Events ▲▼"  /> 
+                            
+                          <apex:column value="{!ex.m}" headervalue="Counter (Multiple) ▲▼"   /> 
+                    
+                            
+                        </apex:pageBlockTable>  
+                    </apex:panelGrid>
+                </apex:pageBlockSection>  
+            </apex:pageblock> 
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

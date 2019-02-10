@@ -1,0 +1,36 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId,force:lightningQuickAction" access="global">
+     <lightning:notificationsLibrary aura:id="notifLib"/>
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="sObjectName" type="String" default="Contact" />
+    <aura:attribute name="recordTypeId" type="String" />
+    <aura:attribute name="layoutType" type="String" default="Custom" />
+    <aura:attribute name="numberOfColumns" type="String" default="1" />
+     <aura:attribute name="title" type="String" />
+    <aura:attribute name="fieldsToDisplay" type="String" />
+    <aura:attribute name="fieldsArray"  type="String[]"    />
+    <aura:attribute name="error" type="String"  />           
+    <aura:attribute name="mode" type="String"  default ="edit"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> 
+    <aura:attribute name="isOpen" type="String" default ="true" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> 
+    <lightning:overlayLibrary aura:id="popuplib"/>
+    
+    <aura:if isTrue="{!v.isOpen}">
+        <lightning:card title="{!'Create New ' + v.title}">
+            <div class="slds-p-left_small slds-p-right_small">
+                
+                <lightning:recordForm aura:id="recordForm" objectApiName="{!v.sObjectName}" recordTypeId="{!v.recordTypeId}" 
+                                      fields="{!v.fieldsArray}" columns="{!v.numberOfColumns}" mode="{!v.mode}"  
+                                      onerror= "{!c.onErrors}" oncancel="{!c.onCloseModal}" onsubmit="{!c.onSubmit}" onsuccess="{!c.showToast}" />
+            </div>
+            <lightning:workspaceAPI aura:id="workspace"/>
+        </lightning:card>
+        
+    </aura:if>
+    
+    <aura:if isTrue="{!not(empty(v.error))}">
+        <div class="recordError">
+            {!v.error}</div>
+    </aura:if>
+    
+</aura:component>

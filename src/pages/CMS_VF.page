@@ -1,0 +1,401 @@
+<apex:page readOnly="true" controller="CMSctr" 
+   docType="html-5.0" sidebar="false" >
+
+<apex:slds />
+     <style>
+        .tablesorter {
+        counter-reset: rowCounter;
+        }
+        .tablesorter .row {
+        counter-increment: rowCounter;
+        }
+        .tablesorter .row .counter::before {
+        content: counter(rowCounter);
+        }
+        
+        
+    </style>
+<style type="text/css">        /* Color for the title bar */
+
+.centerHeader { text-align:center;}
+</style>
+
+<style>
+.centerHeaderBold { text-align:center; font-weight:bold; }
+</style>
+
+
+
+
+<apex:form >
+
+<apex:pageBlock title="CMS Support Groups Dashboard">
+
+    <apex:pageMessages id="messages" ></apex:pageMessages>
+    <apex:pageBlockSection title="For 'Date From', enter the CMS FYB. This is to calculate 'unduplicated caregivers to date' in the FY.  EG 7/1/20xx. For 'End Date', enter end of quarter you are reporting on - EG Q2 would be 12/31/20xx. Then click generate" columns="1" collapsible="false">
+        <apex:panelGroup >
+            <apex:outputLabel value="Date From" />
+            <apex:input label="Date From  " value="{!dateFrom}" type="auto" /> 
+            <apex:outputLabel value="Date To" />
+            <apex:input label="Date To" value="{!dateTo}" type="auto" />
+            <apex:outputLabel value="" />
+            <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+           
+        </apex:panelGroup> 
+         <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007kuTq" id="EventPrepFile">Group Activity Download File</apex:outputLink>         
+    </apex:pageBlockSection>    
+    
+    <apex:pageblock title="ES1 Summary By Quarter   -- Triple P "  >
+        <apex:pageBlockSection collapsible="True" title="Manager: -. Data: Kiely">
+            <apex:panelGrid columns="4">
+                 <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007BBap" id="ES1">ES1 Details Report</apex:outputLink>
+                
+                <apex:pageBlockTable value="{!generateES1}" var="ex" style="text-align:center; font-weight: bold " > 
+                 <apex:column style="background-color:{!IF(ex.ES ="", "#F4F6F6", "#c3c4c4")}" value="{!ex.ES}" headervalue="Q" />
+
+                    <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                    <apex:column value="{!ex.CampsC}" headervalue="Campaigns"  /> 
+
+                    <apex:column style="background-color:{!IF(ex.TargetC = 0, "#D98880", "#c3c4c4")}" value="{!ex.TargetC}" headervalue="Target"  />
+                    <apex:column headervalue="T v A" >
+                        <apex:outputtext style="color:{!IF(ex.TargetC >ex.CampsC, "#D98880", "#538A61")}" value="{!(ex.CampsC - ex.TargetC)}" />
+                    </apex:column> 
+                    <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+
+                   <apex:column value="{!ex.ConTactD1}" headervalue="Duplicated Contacts"  /> 
+                        <apex:column style="background-color:{!IF(ex.TargetD =0, "#D98880", "#dbdbdb ")}" value="{!ex.TargetD}" headervalue="Target"  />
+                        <apex:column headervalue="T v A" >
+                            <apex:outputtext style="color:{!IF(ex.TargetD >ex.ConTactD1, "#D98880", "#538A61")}" value="{!(ex.ConTactD1 - ex.TargetD)}" />
+                        </apex:column>
+                         
+                     <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                        <apex:column headervalue="New This Quarter"> 
+                       <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#0073e5")}" value="{!ex.cString}" />
+                       </apex:column>
+ <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                        <apex:column headervalue="FYTD Unduplicated  " > 
+                         <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#0073e5")}" value="{!ex.ConTactDistinctU1}" />
+                       </apex:column>
+                           <apex:column style="background-color:{!IF(ex.TargetU = 0, "#D98880", "#dbdbdb ")}"  headervalue="Target" >
+                      <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#dbdbdb ", "#303030")}" value="{!ex.TargetU}" />
+                       </apex:column> 
+                       
+                    <apex:column headervalue="T v A" >
+                        <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", IF(ex.TargetU > ex.ConTactDistinctU1 , "#D98880", "#538A61"))}" value="{!(ex.ConTactDistinctU1 - ex.TargetU)}" />
+                    </apex:column>
+                       
+                      <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+
+                </apex:pageBlockTable>
+                  
+
+         
+                 </apex:panelGrid>
+               </apex:pageBlockSection>
+                <apex:pageBlockSection collapsible="True"  title="ES1 Current Quarter Campaigns">
+             
+            <apex:panelGrid columns="2" cellpadding="20">
+                <apex:pageBlockTable value="{!generateES1List}" var="ex" style="text-align:center"  styleClass="tablesorter"  rowClasses="row" > 
+                   <apex:column headervalue="Counter">
+                                <span class="counter"></span>
+                            </apex:column>
+                    <apex:column headervalue="ES1 Campaigns Completed " >
+                        <a href="/{!ex.campLink}"  onclick="window.open(this.href, 'mywin', 'height=400,width=1100'); return false;" >
+                            <apex:outputtext value="{!ex.ES}"/>
+                        </a>
+                    </apex:column>   
+                    
+                    <apex:column value="{!ex.cDte}" headervalue="StartDate" />                      
+                    <apex:column value="{!ex.ConTactD1}" headervalue="Caregivers" />  
+                    <!--   <apex:column value="{!ex.TargetU}" headervalue="Community Members" />  
+                    <apex:column value="{!ex.TargetD}" headervalue="Professionals" />  -->
+                    
+                     <!--  <apex:column value="{!ex.ConTactDistinctU1}" headervalue="Evaluations" /> -->
+                </apex:pageBlockTable>
+                
+                <apex:pageBlockTable value="{!generateES1NoList}" var="ex" style="text-align:center"> 
+                    <apex:column headervalue="ES1 Not Completed This Quarter" >
+                        <a href="/{!ex.campLink}"  onclick="window.open(this.href, 'mywin', 'height=400,width=1100'); return false;" >
+                            <apex:outputtext value="{!ex.ES}"/>
+                        </a>
+                    </apex:column>  
+
+  <apex:column value="{!ex.target1}" headervalue="Caregivers" /> 
+                    <apex:column value="{!ex.cDte}" headervalue="StartDate" />  
+                    
+                  
+                    <apex:column style="background-color:{!IF(CONTAINS(ex.cString, "Cancelled"), "#bbbfbf", "#ffffff")}"  value="{!ex.cString}" headervalue="Status" />    
+                </apex:pageBlockTable>
+                
+                
+            </apex:panelGrid>
+        </apex:pageBlockSection> 
+    </apex:pageblock>
+    <apex:pageblock title="ES2 Summary By Quarter -- Parent/Peer Support Groups " >
+        <apex:pageBlockSection collapsible="True"  title=" Manager: Steve. Data: Linda">
+            <apex:panelGrid columns="2">
+             <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007BBaf" id="ES2">ES2 Details Report</apex:outputLink>
+                <apex:pageBlockTable value="{!generateES2}" var="ex" style="text-align:center; font-weight: bold " > 
+                    <apex:column style="background-color:{!IF(ex.ES =="", "#F4F6F6", "#c3c4c4")}" value="{!ex.ES}" headervalue="Q" />
+                    <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                    <apex:column value="{!ex.CampsC}" headervalue="Campaigns"  /> 
+
+                    <apex:column style="background-color:{!IF(ex.TargetC = 0, "#D98880", "#c3c4c4")}" value="{!ex.TargetC}" headervalue="Target"  />
+                    <apex:column headervalue="T v A" >
+                        <apex:outputtext style="color:{!IF(ex.TargetC >ex.CampsC, "#D98880", "#538A61")}" value="{!(ex.CampsC - ex.TargetC)}" />
+                    </apex:column> 
+                    <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+
+                   <apex:column value="{!ex.ConTactD1}" headervalue="Duplicated Contacts"  /> 
+                        <apex:column style="background-color:{!IF(ex.TargetD =0, "#D98880", "#dbdbdb ")}" value="{!ex.TargetD}" headervalue="Target"  />
+                        <apex:column headervalue="T v A" >
+                            <apex:outputtext style="color:{!IF(ex.TargetD >ex.ConTactD1, "#D98880", "#538A61")}" value="{!(ex.ConTactD1 - ex.TargetD)}" />
+                        </apex:column>
+                         
+                     <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                        <apex:column headervalue="New This Quarter"> 
+                       <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#0073e5")}" value="{!ex.cString}" />
+                       </apex:column>
+ <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                        <apex:column headervalue="FYTD Unduplicated  " > 
+                         <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#0073e5")}" value="{!ex.ConTactDistinctU1}" />
+                       </apex:column>
+                           <apex:column style="background-color:{!IF(ex.TargetU = 0, "#D98880", "#dbdbdb ")}"  headervalue="Target" >
+                      <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#dbdbdb ", "#303030")}" value="{!ex.TargetU}" />
+                       </apex:column> 
+                       
+                    <apex:column headervalue="T v A" >
+                        <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", IF(ex.TargetU > ex.ConTactDistinctU1 , "#D98880", "#538A61"))}" value="{!(ex.ConTactDistinctU1 - ex.TargetU)}" />
+                    </apex:column>
+                       
+                      <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                     
+
+                </apex:pageBlockTable>
+
+                
+                
+            </apex:panelGrid>
+        </apex:pageBlockSection> 
+    </apex:pageblock>
+             
+                <apex:pageBlockSection collapsible="True"  title="ES2 Current Quarter Campaigns">
+            <apex:panelGrid columns="2" cellpadding="20">
+                <apex:pageBlockTable value="{!generateES2List}" var="ex" style="text-align:center" styleClass="tablesorter"  rowClasses="row"> 
+                   <apex:column headervalue="Counter">
+                                <span class="counter"></span>
+                            </apex:column>
+                    <apex:column headervalue="ES2 Campaigns Completed " >
+                        <a href="/{!ex.campLink}"  onclick="window.open(this.href, 'mywin', 'height=400,width=1100'); return false;" >
+                            <apex:outputtext value="{!ex.ES}"/>
+                        </a>
+                    </apex:column>  />  
+                    
+                      
+                     
+                    <apex:column value="{!ex.cDte}" headervalue="StartDate" />                     
+                   <apex:column value="{!ex.ConTactD1}" headervalue="Caregivers" />  
+               <!--        <apex:column value="{!ex.TargetU}" headervalue="Community Members" />  
+                    <apex:column value="{!ex.TargetD}" headervalue="Professionals" />  -->
+                    
+                     <!--  <apex:column value="{!ex.ConTactDistinctU1}" headervalue="Evaluations" /> -->
+                </apex:pageBlockTable>
+                
+                <apex:pageBlockTable value="{!generateES2NoList}" var="ex" style="text-align:center"> 
+                    <apex:column headervalue="ES2 Not Completed" >
+                        <a href="/{!ex.campLink}"  onclick="window.open(this.href, 'mywin', 'height=400,width=1100'); return false;" >
+                            <apex:outputtext value="{!ex.ES}"/>
+                        </a>
+                    </apex:column>  
+                    <apex:column value="{!ex.target1}" headervalue="Caregivers" /> 
+                    <apex:column value="{!ex.cDte}" headervalue="StartDate" />  
+                    <apex:column value="{!ex.cString}" headervalue="Status" />
+                    <!-- <apex:column style="background-color:{!IF(CONTAINS(ex.cString, "Cancelled"), "#4d5454", "#F4F6F6")}" value="{!ex.cString}" headervalue="Status" />  -->  
+                </apex:pageBlockTable>
+                   </apex:panelGrid>
+        </apex:pageBlockSection> 
+    </apex:pageblock>
+                
+                   
+     
+  <apex:pageblock title="ES3 Summary By Quarter -- Parent/Child Interactive Groups  -- Caregivers" >
+
+        <apex:pageBlockSection collapsible="True" Title="Manager: -. Data: Linda">
+            <apex:panelGrid columns="2" cellpadding="20">
+             <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007BBak" id="ES3">ES3 Details Report</apex:outputLink>
+                <apex:pageBlockTable value="{!generateES3}" var="ex" style="text-align:center; font-weight: bold " > 
+                     <apex:column style="background-color:{!IF(ex.ES =='', '#F4F6F6', "#c3c4c4")}" value="{!ex.ES}" headervalue="Q" />
+                      <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                    <apex:column value="{!ex.CampsC}" headervalue="Campaigns"  /> 
+
+                    <apex:column style="background-color:{!IF(ex.TargetC = 0, "#D98880", "#c3c4c4")}" value="{!ex.TargetC}" headervalue="Target"  />
+                    <apex:column headervalue="T v A" >
+                        <apex:outputtext style="color:{!IF(ex.TargetC >ex.CampsC, "#D98880", "#538A61")}" value="{!(ex.CampsC - ex.TargetC)}" />
+                    </apex:column> 
+                    <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+
+                   <apex:column value="{!ex.ConTactD1}" headervalue="Duplicated Contacts"  /> 
+                        <apex:column style="background-color:{!IF(ex.TargetD =0, "#D98880", "#dbdbdb ")}" value="{!ex.TargetD}" headervalue="Target"  />
+                        <apex:column headervalue="T v A" >
+                            <apex:outputtext style="color:{!IF(ex.TargetD >ex.ConTactD1, "#D98880", "#538A61")}" value="{!(ex.ConTactD1 - ex.TargetD)}" />
+                        </apex:column>
+                         
+                     <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                        <apex:column headervalue="New This Quarter"> 
+                       <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#0073e5")}" value="{!ex.cString}" />
+                       </apex:column>
+ <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                        <apex:column headervalue="FYTD Unduplicated  " > 
+                         <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#0073e5")}" value="{!ex.ConTactDistinctU1}" />
+                       </apex:column>
+                           <apex:column style="background-color:{!IF(ex.TargetU = 0, "#D98880", "#dbdbdb ")}"  headervalue="Target" >
+                      <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#dbdbdb ", "#303030")}" value="{!ex.TargetU}" />
+                       </apex:column> 
+                       
+                    <apex:column headervalue="T v A" >
+                        <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", IF(ex.TargetU > ex.ConTactDistinctU1 , "#D98880", "#538A61"))}" value="{!(ex.ConTactDistinctU1 - ex.TargetU)}" />
+                    </apex:column>
+                       
+                      <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                     
+
+                </apex:pageBlockTable>
+
+               </apex:panelGrid>
+               </apex:pageBlockSection>
+                
+             
+     <apex:pageblock title="ES3 Summary By Quarter -- Parent/Child Interactive Groups  -- Children" >
+      <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007l9Uo" id="ES3Kids5">ES3 Kids 0-5 Details Report</apex:outputLink>
+        <apex:pageBlockSection collapsible="True" Title="ES3 Kids 0 - 5">
+            <apex:panelGrid columns="2" cellpadding="20">
+                <apex:pageBlockTable value="{!generateES3Kids5}" var="ex" style="text-align:center; font-weight: bold " > 
+                      <apex:column style="background-color:{!IF(ex.ES =='', '#F4F6F6', "#c3c4c4")}" value="{!ex.ES}" headervalue="Q" />
+                   
+                      <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                    <apex:column value="{!ex.CampsC}" headervalue="Campaigns"  /> 
+
+                    <apex:column style="background-color:{!IF(ex.TargetC = 0, "#D98880", "#c3c4c4")}" value="{!ex.TargetC}" headervalue="Target"  />
+                    <apex:column headervalue="T v A" >
+                        <apex:outputtext style="color:{!IF(ex.TargetC >ex.CampsC, "#D98880", "#538A61")}" value="{!(ex.CampsC - ex.TargetC)}" />
+                    </apex:column> 
+                    <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+
+                   <apex:column value="{!ex.ConTactD1}" headervalue="Duplicated Contacts"  /> 
+                        <apex:column style="background-color:{!IF(ex.TargetD =0, "#D98880", "#dbdbdb ")}" value="{!ex.TargetD}" headervalue="Target"  />
+                        <apex:column headervalue="T v A" >
+                            <apex:outputtext style="color:{!IF(ex.TargetD >ex.ConTactD1, "#D98880", "#538A61")}" value="{!(ex.ConTactD1 - ex.TargetD)}" />
+                        </apex:column>
+                         
+                     <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                        <apex:column headervalue="New This Quarter"> 
+                       <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#0073e5")}" value="{!ex.cString}" />
+                       </apex:column>
+ <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                        <apex:column headervalue="FYTD Unduplicated  " > 
+                         <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#0073e5")}" value="{!ex.ConTactDistinctU1}" />
+                       </apex:column>
+                           <apex:column style="background-color:{!IF(ex.TargetU = 0, "#D98880", "#dbdbdb ")}"  headervalue="Target" >
+                      <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#dbdbdb ", "#303030")}" value="{!ex.TargetU}" />
+                       </apex:column> 
+                       
+                    <apex:column headervalue="T v A" >
+                        <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", IF(ex.TargetU > ex.ConTactDistinctU1 , "#D98880", "#538A61"))}" value="{!(ex.ConTactDistinctU1 - ex.TargetU)}" />
+                    </apex:column>
+                       
+                      <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                     
+
+                </apex:pageBlockTable>
+                </apex:panelGrid>
+                </apex:pageBlockSection>
+                  <apex:pageBlockSection collapsible="True" Title="ES3 Kids 6+">
+           <apex:panelGrid columns="2" cellpadding="20">
+               
+                 <apex:pageBlockTable value="{!generateES3Kids6}" var="ex" style="text-align:center; font-weight: bold " > 
+                     <apex:column style="background-color:{!IF(ex.ES =='', '#F4F6F6', "#c3c4c4")}" value="{!ex.ES}" headervalue="Q" />
+                    <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                    <apex:column value="{!ex.CampsC}" headervalue="Campaigns"  /> 
+
+                    <apex:column style="background-color:{!IF(ex.TargetC = 0, "#D98880", "#c3c4c4")}" value="{!ex.TargetC}" headervalue="Target"  />
+                    <apex:column headervalue="T v A" >
+                        <apex:outputtext style="color:{!IF(ex.TargetC >ex.CampsC, "#D98880", "#538A61")}" value="{!(ex.CampsC - ex.TargetC)}" />
+                    </apex:column> 
+                    <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+
+                   <apex:column value="{!ex.ConTactD1}" headervalue="Duplicated Contacts"  /> 
+                        <apex:column style="background-color:{!IF(ex.TargetD =0, "#D98880", "#dbdbdb ")}" value="{!ex.TargetD}" headervalue="Target"  />
+                        <apex:column headervalue="T v A" >
+                            <apex:outputtext style="color:{!IF(ex.TargetD >ex.ConTactD1, "#D98880", "#538A61")}" value="{!(ex.ConTactD1 - ex.TargetD)}" />
+                        </apex:column>
+                         
+                     <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                        <apex:column headervalue="New This Quarter"> 
+                       <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#0073e5")}" value="{!ex.cString}" />
+                       </apex:column>
+ <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                        <apex:column headervalue="FYTD Unduplicated  " > 
+                         <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#0073e5")}" value="{!ex.ConTactDistinctU1}" />
+                       </apex:column>
+                           <apex:column style="background-color:{!IF(ex.TargetU = 0, "#D98880", "#dbdbdb ")}"  headervalue="Target" >
+                      <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#dbdbdb ", "#303030")}" value="{!ex.TargetU}" />
+                       </apex:column> 
+                       
+                    <apex:column headervalue="T v A" >
+                        <apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", IF(ex.TargetU > ex.ConTactDistinctU1 , "#D98880", "#538A61"))}" value="{!(ex.ConTactDistinctU1 - ex.TargetU)}" />
+                    </apex:column>
+                       
+                      <apex:column style="background-color:{!IF(ex.TargetU = 0, "#FFFFFF", "#FFFFFF")}"  headervalue="" > </apex:column> 
+                     
+
+                </apex:pageBlockTable>
+                 </apex:panelGrid>
+        </apex:pageBlockSection> 
+    </apex:pageblock>
+        <apex:pageBlockSection collapsible="True" Title="ES3 Current Quarter Campaigns" >
+           <apex:panelGrid columns="2" cellpadding="20">
+                <apex:pageBlockTable value="{!generateES3List}" var="ex" style="text-align:center" styleClass="tablesorter"  rowClasses="row" >
+  <apex:column headervalue="Counter">
+                                <span class="counter"></span>
+                            </apex:column>
+                    <apex:column headervalue="ES3 Campaigns Completed " >
+                        <a href="/{!ex.campLink}"  onclick="window.open(this.href, 'mywin', 'height=400,width=1100'); return false;" >
+                            <apex:outputtext value="{!ex.ES}"/>
+                        </a>
+                        </apex:column> 
+                         <apex:column headervalue="#">
+                                <span class="counter"></span>
+                            </apex:column>
+                                
+                     <apex:column value="{!ex.cDte}" headervalue="StartDate" />            
+                    <apex:column value="{!ex.ConTactD1}" headervalue="Caregivers" />  
+                    <!--  <apex:column value="{!ex.TargetU}" headervalue="Community Members" />  
+                    <apex:column value="{!ex.TargetD}" headervalue="Professionals" />  -->
+                   
+                     <!--  <apex:column value="{!ex.ConTactDistinctU1}" headervalue="Evaluations" /> -->
+                </apex:pageBlockTable>
+                
+                <apex:pageBlockTable value="{!generateES3NoList}" var="ex" style="text-align:center"> 
+                    <apex:column headervalue="ES3 Not Completed This Quarter" >
+                        <a href="/{!ex.campLink}"  onclick="window.open(this.href, 'mywin', 'height=400,width=1100'); return false;" >
+                            <apex:outputtext value="{!ex.ES}"/>
+                        </a>
+                    </apex:column>  
+                    <apex:column value="{!ex.target1}" headervalue="Caregivers" /> 
+                    <apex:column value="{!ex.cDte}" headervalue="StartDate" />                   
+                    <apex:column style="background-color:{!IF(CONTAINS(ex.cString, "Cancelled"), "#bbbfbf", "#ffffff")}"  value="{!ex.cString}" headervalue="Status" />    
+                </apex:pageBlockTable>
+                
+                
+                
+            
+                
+                
+            </apex:panelGrid>
+        </apex:pageBlockSection> 
+    </apex:pageblock>
+    
+
+
+</apex:form>
+</apex:page>

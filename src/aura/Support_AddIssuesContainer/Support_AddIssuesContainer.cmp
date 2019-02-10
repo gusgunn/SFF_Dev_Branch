@@ -1,0 +1,45 @@
+<aura:component controller="IssueMultiSelectLookupCtr"  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" 
+                access="global" >
+    <aura:handler event="c:IssueCreateRecord" action="{!c.handleCreateRecord}" />
+    <aura:handler event="c:IssueRemoveRecord" action="{!c.handleDeleteRecord}" />
+    <aura:attribute name="records" type="sObject[]"/>
+    <aura:attribute name="objectAPIName" type="String" default="Issue__c"/>
+    <aura:attribute name="openIssues" type="Issue__c[]" default="[]"/>
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="interactionID" type="string" /> 
+    <aura:attribute name="childID" type="String" />
+    <aura:attribute name="contactID" type="String" default=""/>
+    <aura:attribute name="openIssuesTypes" type="String[]" default ="[]"/>
+    <aura:attribute name="options" type="List" default="[]" />
+    <aura:attribute name="values" type="List" default="[]" />
+    
+    
+    <div class="c-container" padding="around-small">
+        <lightning:layout multipleRows="true">
+            
+             <lightning:layoutItem  padding="around-small" size="5"> 
+                    <c:Support_AddOpenIssues_Duel  interactionID="{!v.interactionID}"
+                                           childID ="{!v.childID}"
+                                           contactID ="{!v.contactID}"/>
+                    
+                  
+            </lightning:layoutItem>
+         
+            <lightning:layoutItem padding="around-small" size="4">
+                <c:Support_AddIssuesAddNew recordId ="{!v.interactionID}" 
+                                           interactionID="{!v.interactionID}"
+                                           childID ="{!v.childID}"
+                                           contactID ="{!v.contactID}"/>
+            </lightning:layoutItem>
+            
+            <lightning:layoutItem padding="around-large" size="3">
+                <lightning:card>
+                    <div class="slds-p-left_small slds-p-right_xx-small slds-box">
+                        <c:Support_IssuesAdd_RelatedIssuesList   recordId ="{!v.interactionID}" /> 
+                    </div>
+                </lightning:card>
+            </lightning:layoutItem>
+            
+           </lightning:layout>
+    </div>
+</aura:component>

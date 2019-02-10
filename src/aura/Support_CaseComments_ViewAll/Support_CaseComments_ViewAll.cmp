@@ -1,0 +1,59 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId" access="global"
+                controller="Support_CaseDisplay">
+    <aura:attribute name="kidId" type="Id" />
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="caseComment" type="caseComment" />
+    <aura:attribute name="caseComments" type="caseComment[]" />
+    <aura:attribute name="record" type="Case" />
+    <aura:attribute name="cases" type="Case[]" />
+    <aura:attribute name="recordError" type="String" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> 
+    <force:recordData aura:id="service" 
+                      recordId="{!v.recordId}" 
+                      targetFields="{!v.record}" 
+                      fields="['Id', 'Family__Child__c' ]"
+                      targetError="{!v.recordError}"
+                      recordUpdated="{!c.recordUpdated}"/>
+    
+    <aura:handler event="ltng:selectSObject" action="{!c.recordChangeHandler}"/>
+    
+   <!-- <lightning:card iconName="utility:file" title="All Comments">-->
+        <div class="c-container">
+            <lightning:card  iconName="standard:case_comment" title="All Comments">
+            <aura:iteration items="{!v.caseComments}" var="item" indexVar="i">
+                <lightning:layout >
+                    <lightning:layoutItem padding="around-small">
+                        <div class="header-column" iconName="utility:file" >
+                            
+                            <p class="field-title"  title="From Interaction:">Interaction:  </p>
+                            <a data-record="{!item.ParentId}" onclick="{!c.navigateToRecord}">
+                                <h6 class="slds-text-heading--small"> {!item.ParentId}</h6>
+                            </a>
+                            
+                            <h6 class="slds-text-heading--small">Created By: {!item.CreatedBy.Name}</h6>
+                            <lightning:formattedDateTime value="{!item.CreatedDate}" year="numeric" day="2-digit" month="long" hour="2-digit" minute="2-digit" />
+                            
+                        </div>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small">
+                        <div class="header-column">
+                            <p class="field-title" title="Comment">Comment: 
+                                  </p>
+                            <p>{!item.CommentBody}</p>
+                        </div>
+                    </lightning:layoutItem>
+                    
+                </lightning:layout>
+       
+            </aura:iteration>
+                        </lightning:card> 
+        </div>
+ <!--   </lightning:card> -->
+   
+        
+        <aura:if isTrue="{!not(empty(v.recordError))}">
+            <div class="recordError">
+                {!v.recordError}</div>
+        </aura:if>
+    </aura:component>

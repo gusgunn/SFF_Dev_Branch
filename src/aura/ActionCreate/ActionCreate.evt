@@ -1,0 +1,5 @@
+<aura:event type="APPLICATION" description="IssuesActions" >
+   <!-- <aura:attribute name="interaction" type="Object"/> -->
+    <aura:attribute name="rt" type="String"/>
+    <aura:attribute name="issue" type="Object"/>
+</aura:event>

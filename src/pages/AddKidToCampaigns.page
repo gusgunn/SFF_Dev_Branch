@@ -1,0 +1,367 @@
+<apex:page standardController="Campaign"  extensions="addtocampaignKidAttendee" 
+       tabstyle="Contact"   standardStylesheets="false" sidebar="false">
+   
+    <apex:slds />
+    <style type="text/css">
+        .col1 {width:50px; text-align:center;}
+        
+    </style>
+    <style>
+        .ct{
+        text-align:center;
+        }
+    </style>
+    <style> 
+        
+        .header {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+        z-index: 1;
+        }
+        
+        .stage-left {
+        width: 4rem; 
+        transition: width .2s ease-in-out .05s;
+        
+        
+        // Show Text on Open
+        .stage-left__text {
+        opacity: 1;
+        width: 90%;
+        transition-delay: .2s;
+        }
+        }
+        }
+        
+        li + li {
+        margin-top: 0.5rem;
+        }
+        
+        a:not(.button) {
+        display: block;
+        text-decoration: none;
+        white-space: nowrap;
+        border-radius: 0.25rem;
+        background: transparent;
+        padding: 0.25rem;
+        transition: background .05s linear;
+        
+        {
+        background: #061c3f;
+        }
+        
+        active {
+        box-shadow: inset 0px 3px 3px 0px rgba(0,0,0,.16), 0 0 3px #0070D2;
+        }
+        }
+        
+        // Setup Nav Item text to disappear on stage left toggle
+        .stage-left__text {
+        opacity: 0;
+        width: 0;
+        transition: all .05s linear;
+        }
+        
+        // Since we're not using svg sprites, need to override img property
+        .slds-icon {
+        max-width: initial;
+        }
+        }
+        
+        .stage-container {
+        max-height: 100%;
+        overflow: hidden;
+        }
+        
+        // App specific
+        .slds-grid--frame {
+        min-width: 90%;
+        overflow-y: auto;
+        }
+    </style>  
+    
+    <!-- jQuery plug in for table sort my multiple columns -->
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"/>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+    <apex:includeScript value="{!URLFOR($Resource.jQuery_TableSort, 'jquery-latest.js')}"  />
+    <apex:includeScript value="{!URLFOR($Resource.jQuery_TableSort, 'jquery.tablesorter.min.js')}"  />
+    <apex:stylesheet value="{!URLFOR($Resource.jQuery_TableSort   , '/themes/blue/style.css')}"  />
+    
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $('#search').keyup(function(){
+            searchTable($(this).val());
+        });
+    });
+    /*@gusgunn
+                Param 1:searchText
+                Description: this method takes an argument and
+                search records in the assigned table Id.
+            */
+    function searchTable(searchText)
+    {
+        /*get Table using its Id */
+        var table = $('table[id$=tblData]');
+        table.find('tr').each(function(index, row){
+            var allCells = $(row).find('td');
+            if(allCells.length > 0)
+            {
+                var found = false;
+                allCells.each(function(index, td)
+                              {
+                                  var regExp = new RegExp(searchText, 'i');
+                                  if(regExp.test($(td).text()))
+                                  {
+                                      found = true;
+                                      return false;
+                                  }
+                              });
+                if(found == true)$(row).show();else $(row).hide();
+            }
+        });
+    }            
+    /*
+                Set method for every second time interval
+                Parm 1(Clock) :Call custom Method to Run current Time.
+                Param 2 :1000 millisecond to run watch second by second
+            
+    var int = self.setInterval("clock()",1000);
+    /*Clock method
+    function clock(){
+        var d=new Date();
+        var t=d.toLocaleTimeString();
+        document.getElementById("clock").innerHTML = "<B>" + t + "</B>";
+    } */
+    document.getElementById("statusSelect").style.cursor = "pointer";
+    </script>
+    
+    <apex:outputPanel > <!--</apex:outputPanel>rendered="{! !lightningDesktop}"> -->
+        <link class="user" href="/sCSS/38.0/sprites/1245343872000/Theme4d/default/elements.css" rel="stylesheet" type="text/css" />
+        <link  href="/sCSS/38.0/sprites/1251310209000/Theme4d/dStandard.css" rel="stylesheet" type="text/css" /> 
+        <apex:slds />
+        <div class="slds-scope">
+            
+            <div class="slds-grid slds-grid--frame slds-grid--vertical">
+                
+                
+                <apex:pageMessages /> 
+                <apex:form >  
+                    <!-- Stage Container -->
+                    <div class="stage-container slds-grid slds-nowrap slds-size--1-of-1">
+                        <!-- Stage -->
+                        <section class="stage slds-grid slds-grid--vertical slds-nowrap">
+                            
+                            <div class="slds-shrink-none">
+                                
+                                <div class= "slds-page-header slds-font-weight-bold"> Campaign Member&nbsp;&nbsp;&nbsp;&nbsp;<apex:outputtext id="ContactFirstName" value="{! '     Add '   + ParticipantContact.FirstName + '  ' + ParticipantContact.LastName + ' To Campaigns.       '  }"  />&nbsp;&nbsp;&nbsp;&nbsp; <apex:outputtext id="ContactLanguage" value="{! '       Primary Language listed as '  + ParticipantContact.Family__Primary_language__c}"/></div>
+                            </div>
+                            
+                            <!-- Stage Main -->
+                            <div class="stage-main slds-grid slds-wrap slds-grow slds-scrollable--y" role="main">
+                                
+                                
+                                
+                            </div>
+                            <apex:pageblock >
+                                <apex:panelGrid columns="3" columnClasses="col1" >
+                                    <apex:pageBlock >
+                                        
+                                        <!--   <div class="slds-grid slds-grid--vertical-align-left slds-m-vertical--small"></div> -->
+                                        
+                                        <div class="slds-p-horizontal--small slds-large-size--1-of-2">
+                                            
+                                            <apex:outputLabel value="Select Campaign Status " for="statusSelect" styleClass="slds-form-element__label"  style="col1"/>
+                                            <div class="slds-select_container ">
+                                                <div> <apex:selectList size="1" styleClass="slds-select" id="statusSelect" onchange="setStatus(this.value);"
+                                                                       value="{!Status}" >
+                                                    <apex:selectOptions value="{!items}"/>
+                                                    </apex:selectlist></div>
+                                                
+                                            </div>
+                                        </div>
+                                    </apex:pageBlock>
+                                    <apex:pageblock >
+                                        <!--   <div class="slds-grid slds-grid--vertical-align-left slds-m-vertical--small"></div> -->
+                                        <div class="slds-size--1-of-2 ">
+                                            
+                                            <apex:outputLabel value="Interprter Language Requested" for="SelectLanguage" styleClass="slds-form-element__label" />
+                                            <div class="slds-select_container">
+                                                <div> <apex:selectList size="1" styleClass="slds-select" id="SelectLanguage" onchange="setLanguage(this.value);"
+                                                                       value="{!Language}">
+                                                    <apex:selectOptions value="{!LangItems}"/>
+                                                    </apex:selectlist></div>
+                                            </div>
+                                        </div>
+                                    </apex:pageblock>
+                                    
+                                    
+                                    <apex:pageblock >
+                                        
+                                        <div class="slds-p-horizontal--small slds-large-size--1-of-2">
+                                            <apex:outputLabel value="Special Accomodations Note" styleClass="slds-form-element__label" />
+                                            <div>  <apex:inputText styleClass="slds-select" id="SelectSpecAcc" onchange="setSpec(this.value);" value="{!Spec}" title="Special Accomodations?"/></div>   
+                                        </div>
+                                    </apex:pageblock>
+                                    
+                                </apex:panelGrid>
+                            </apex:pageblock>
+                            <apex:actionFunction action="{!doQuery}" name="apexDoQuery" reRender="myData"/>
+                            <apex:panelGrid columns="1" cellpadding="80"  cellspacing="80" >
+                                
+                                
+                                <apex:pageBlock >
+                                    <!--  <div class="slds-size--1-of-3 slds-p-around--large" role="complementary">-->
+                                    <div class= "slds-theme--shade slds-text-align--left slds-size--1-of-1 slds-p-around--large" role="complementary" >   <i>                                        
+                                        Filter by Campaign Name&nbsp; </i>  <input type="text" id="search"   styleClass="slds-form-element__label"/> &nbsp;&nbsp;&nbsp;<apex:commandButton id="Submit" action="{!Submit}" value="Submit" 
+                                                                                                                                                                                           disabled="{!SubmitDisabled}" styleClass="slds-button slds-button--neutral"/> <apex:commandButton id="Back" action="{!GoToParticipant}" value="Back To Contact Record" styleClass="slds-button slds-button--neutral" />  </div>  
+                                    
+                                    
+                                    <!--  <div style="text-align:left;">-->
+                                    
+                                  <!-- <apex:commandButton id="SelectAll" action="{!SelectAll}" value="Select All" 
+                                                        disabled="{!SubmitDisabled}" styleClass="slds-button slds-button--neutral"/>  
+                                    
+                                   <apex:commandLink id="FilterSetting" action="{!FilterSetting}" target="_blank" 
+                                                      value="Filter Settings" styleClass="slds-button slds-button--neutral" /> -->
+                                    
+                                    
+                                    
+                                    <!--    Total List size={!Campaign_List.size} -->
+                                    <!-- used without jQuery plug in enabled; disabled with rendered="false" -->
+                                    
+                                    
+                                    <apex:pageBlockSection title="Lead" 
+                                                           columns="2" showHeader="true" collapsible="false" 
+                                                           rendered="{!if(ParticipantLead.Id==null,false,true)}">
+                                        <apex:outputField id="LeadFirstName" value="{!ParticipantLead.FirstName}" />
+                                        <apex:outputField id="LeadCompany" value="{!ParticipantLead.Company}"  />
+                                        <apex:outputField id="LeadLastName" value="{!ParticipantLead.LastName}" />
+                                        <apex:outputField id="LeadEmail" value="{!ParticipantLead.Email}"  />
+                                    </apex:pageBlockSection>
+                                    <apex:pageBlockTable value="{!Campaign_List}" cellPadding="4" 
+                                                         border="1" var="Camp" rendered="false"> 
+                                        <apex:column >
+                                            <apex:facet name="header" >AddtoCampaignsSetting</apex:facet>
+                                            <apex:inputCheckbox id="Selected" value="{!Camp.checked}" disabled="{!Camp.disabled}"/>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:facet name="header" ></apex:facet>
+                                            <apex:outputField id="Name" value="{!Camp.Camp.Name}"/>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:facet name="header" >AddtoCampaignsSetting__c</apex:facet>
+                                            <apex:outputField id="StartDate" value="{!Camp.Camp.StartDate}"/>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:facet name="header" >EndDate_Header__c</apex:facet>
+                                            <apex:outputField id="EndDate" value="{!Camp.Camp.EndDate}"/>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:facet name="header" >column_Type_Header</apex:facet>
+                                            <apex:outputField id="Type" value="{!Camp.Camp.Type}"/>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:facet name="header" >{AddtoCampaigns}</apex:facet>
+                                            <apex:outputField id="Status" value="{!Camp.Camp.Status}"/>
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                    
+                                    
+                                </apex:pageBlock>    
+                                
+                                <!--<apex:sectionHeader title="Campaigns" subtitle="{!$Setup.AddtoCampaignsSetting__c.Header_Subtitle__c}"/>-->
+                                
+                            </apex:panelGrid>
+                            
+                            <apex:pageblock id="results">
+                                <apex:pageBlockTable value="{!Campaign_List}" cellPadding="4" 
+                                                     border="1" var="Camp" id="tblData" > 
+                                    
+                                    <table class="slds-table slds-table--bordered slds-table--cell-buffer"> 
+                                        <thead>
+                                            <tr class="slds-text-title--caps">
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Select">Select</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Name">Name</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Start Date">Start Date / Time</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Type">Type</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Status">Status</div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                            <apex:column >
+                                                <apex:facet name="header" >Select</apex:facet> 
+                                                <apex:inputCheckbox id="Selected"  value="{!Camp.checked}" disabled="{!Camp.disabled}"  rendered="{!IF(contains(Camp.Camp.Status,"Cancelled"),false,true)}"/> <!--  -->
+                                                
+                                            </apex:column>
+                                            <apex:column >
+                                                <apex:facet name="header" >Child Spots Left</apex:facet> 
+                                                <apex:outputtext style="color:{!IF(Camp.Camp.Number_of_child_spots_remaining__c<1, "#D98880", "#538A61")}" id="ChildSpots" value="{!Camp.Camp.Number_of_child_spots_remaining__c}"/>
+                                            </apex:column>
+                                            
+                                            
+                                            
+                                                <apex:column headerValue="Name"  headerClass="ct">
+                                                <div class="slds-truncate" title="{!Camp.Camp.Name }"> 
+                                                    <a href="/{!Camp.Camp.ID}"  onclick="window.open(this.href, 'mywin', 'height=400,width=1100'); return false;" > <apex:outputField id="Name" value="{!Camp.Camp.Name}"/></a></div> 
+                                            </apex:column>
+                                             <apex:column >
+                                                <apex:facet name="header" >Start Date / Time&nbsp;&nbsp;</apex:facet>
+                                                <apex:outputField id="StartDate" value="{!Camp.Camp.Start_Date_Time__c}"/>
+                                            </apex:column>
+                                            <apex:column >
+                                            
+                                                <apex:facet name="header" >Target Audience</apex:facet>
+                                                <apex:outputField id="target" value="{!Camp.Camp.Target_Audience__c}"/>
+                                            </apex:column>
+                                            
+                                           
+                                           
+                                             <apex:column >
+                                                <apex:facet name="header" >Type</apex:facet>
+                                                <apex:outputField id="Type" value="{!Camp.Camp.Type}"/>
+                                            </apex:column>
+                                             <apex:column >
+                                                <apex:facet name="header" >Adult Spots Left</apex:facet> 
+                                                <apex:outputtext style="color:{!IF(Camp.Camp.Number_of_adult_spots_remaining__c<1, "#D98880", "#538A61")}" id="AdultSpots" value="{!Camp.Camp.Number_of_adult_spots_remaining__c}"/>
+                                            </apex:column>
+                                             <apex:column headerValue="Status"  headerClass="ct">
+                                                <!--  <apex:facet name="header" >Status</apex:facet> -->
+                                                <apex:outputField id="Status" value="{!Camp.Camp.Status}"/>
+                                            </apex:column>
+                                            
+                                            <apex:column >
+                                                <apex:facet name="header" >Presentation Language</apex:facet>
+                                                <apex:outputField id="Language" value="{!Camp.Camp.Presentation_Language__c}"/>
+                                            </apex:column>
+                                            <apex:column >
+                                                <apex:facet name="header" >Interpreter Provided</apex:facet>
+                                                <apex:outputField id="IntProvided" value="{!Camp.Camp.Language_Interpreter_Services__c}"/>
+                                            </apex:column>
+                                            
+                                            
+                                           
+                                        </tbody>
+                                    </table>
+                                </apex:pageBlockTable>
+                            </apex:pageblock>
+                            
+                        </section>
+                    </div>
+                    
+                </apex:form>
+            </div>
+            
+        </div>
+    </apex:outputPanel>
+</apex:page>

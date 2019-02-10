@@ -1,0 +1,170 @@
+<apex:page readOnly="true" controller="CPIRcG" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        <apex:panelGroup >
+            <apex:pageBlock title="CPIR Caregivers">
+                
+                <apex:pageMessages id="messages" ></apex:pageMessages>
+                <apex:pageBlockSection title="Enter Fiscal Year: " columns="3" collapsible="True"  >
+                    <apex:panelGrid columns="5" cellpadding="15"  cellspacing="5" style="text-align:center; font-weight: bold" >
+                        <apex:outputLabel value="Date From " />
+                        <apex:input value="{!dateFrom}" type="auto" /> 
+                        <apex:outputLabel value="Date To"  />
+                        <apex:input value="{!dateTo}" type="auto" />
+                        <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                    </apex:panelGrid>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:panelGroup>
+        
+ <apex:pageblock title="Unduplicated Caregivers: Language " >
+            
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="4" cellpadding="80" border="3"  cellspacing="80" >
+                    
+                    <apex:pageBlockTable value="{!GenerateParentLanguageEduCamp}" var="ex"  style="text-align:center; font-weight: bold" border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue=" Language" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers At Educational Campaigns" />
+                    </apex:pageBlockTable>
+                    
+                      <apex:pageBlockTable value="{!GenerateIntTotals}" var="ex"  style="text-align:center; font-weight: bold"  border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue="Language" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers In Interactions" />
+                    </apex:pageBlockTable>  
+                    
+                      
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                           <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL caregivers From All Educational events during the reporting period selected.  (No Support groups Or Family events)
+                               </p> </div>
+                        </div>
+                        </apex:pageBlock>
+                    
+                    
+                      
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+            </apex:pageblock>
+
+
+
+        <apex:pageblock title="Unduplicated Caregivers: Ethnicity " >
+
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="6" cellpadding="80" border="3"  cellspacing="80" >
+                     <apex:pageBlockTable value="{!GenerateEthEduCampTotals}" var="ex"  style="text-align:center; font-weight: bold" border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue=" Ethnicity" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers at Educational Events" />
+                    </apex:pageBlockTable>
+                 
+                    
+                    <apex:pageBlockTable value="{!GenerateEthIntTotals}" var="ex"  style="text-align:center; font-weight: bold"  border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue="Ethnicity" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers in Interactions" />
+                    </apex:pageBlockTable>  
+                    
+                       
+                  
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageblock>
+                    
+        <apex:pageblock title="Unduplicated Caregivers: Race " >
+  <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="6" cellpadding="80" border="3"  cellspacing="80" >
+                    
+                      <apex:pageBlockTable value="{!GenerateCampRace}" var="ex"  style="text-align:center; font-weight: bold" border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue=" Race" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable>
+                    
+                    <apex:pageBlockTable value="{!GenerateIntRace}" var="ex"  style="text-align:center; font-weight: bold"  border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue="Race" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable>    
+
+
+                 
+                    
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageblock>
+       
+ <apex:pageblock title="Total Unduplicated Caregivers: Educational Events & Interactions Combined " >
+  <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="1" cellpadding="80" border="3"  cellspacing="80" >                  
+                                        <apex:pageBlockTable value="{!GenerateIntEduCampTotals}" var="ex"  style="text-align:center; font-weight: bold" border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue=" Ethnicity" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable>
+                       <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL caregivers from Family and PMP Professional interactions, and from All Educational events during the reporting period selected. 
+                                The total is ALL Unduplicated Caregivers and their Primary Language.</p> </div>
+                    </apex:pageBlock>
+                    </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageblock>
+        <apex:panelGrid columns="2" cellpadding="20" border="3"  cellspacing="80" >
+            <apex:pageBlock >
+                <apex:pageBlockSection >
+                    <apex:pageBlockSectionItem >
+                        
+                     
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL caregivers from Family and PMP Professional interactions </p></div>
+                    </apex:pageBlock>  
+                         
+                        <div>
+                            <p>
+                             
+                                   Campaign Query Paramters 
+                            </p>
+                        
+                      
+                           <p>
+                               
+                          
+                            AND contact.name !='Neale'
+                            AND contact.name !='test'
+                            AND No_Show__c = false
+                            AND  Status = 'Family Attendee'
+                            
+                            AND (campaign.Type = 'Clinic' 
+                            OR campaign.Type = 'Conference'
+                               /***************OR campaign.Type = 'Family Event'// not included in edu
+                            OR campaign.Type = 'IRC Conference'
+                            OR campaign.Type = 'IRC Workshop'
+                            OR campaign.Type = 'Mini-Tech Lab'
+                               /***************OR campaign.Type = 'Outreach' // not included in edu
+                            OR campaign.Type = 'Parent Panel'
+                            OR campaign.Type = 'Parent Team'
+                            OR campaign.Type = 'PMP Training'
+                            OR campaign.Type = 'PPW'
+                            OR campaign.Type = 'Workshop'
+                            OR campaign.Type LIKE '%Playgroup%')
+                            AND (NOT campaign.Name Like '%Childcare%')
+                            AND (NOT campaign.Name Like '%Cancelled%')
+                            AND (NOT campaign.Name Like '%No Show%')
+                            AND (NOT campaign.Name Like '%Postponed%')
+                            ];
+                                 </p> 
+                        </div>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:panelGrid>
+    
+         
+    </apex:form>
+</apex:page>

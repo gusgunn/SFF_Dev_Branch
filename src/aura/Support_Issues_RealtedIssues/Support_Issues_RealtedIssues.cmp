@@ -1,0 +1,34 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId" access="global"
+                controller="IssueMultiSelectLookupCtr">
+    
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="iss" type="Related_Issue__c" />
+    <aura:attribute name="relatedIssues" type="Related_Issue__c[]" />
+    <aura:attribute name="searchCriteria" type="String" default="Name" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> 
+    <force:recordData aura:id="service" 
+                      recordId="{!v.recordId}" 
+                      targetFields="{!v.iss}" 
+                      fields="['Id', 'Name', 'Issue__c', 'Issue_Contact__c', Date__c' ]"
+                      recordUpdated="{!c.recordUpdated}"/>
+    
+    <aura:handler event="ltng:selectSObject" action="{!c.recordChangeHandler}"/>
+    
+    <lightning:card iconName="utility:crossfilter" title="Related Issues">
+        <div class="slds-p-left--medium slds-p-right--medium">
+            <ul class="slds-list--vertical">
+                <aura:iteration items="{!v.relatedIssues}" var="item" indexVar="i">
+                    <lightning:layout class=" slds-wrap custom-layout">
+                        <lightning:layoutItem size="4" padding="around-small">
+                            <a data-record="{!item.Id}" onclick="{!c.navigateToRecord}">
+                                <h3 class="slds-text-heading--small">{!item.Name}</h3>
+                            </a>
+                            <span class="slds-text-color--weak slds-m-right--small">Issue:</span> {!item.Issue__r.Name}  
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </aura:iteration>
+            </ul>
+        </div>
+    </lightning:card>
+    
+</aura:component>

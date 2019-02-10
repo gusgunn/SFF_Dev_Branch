@@ -1,0 +1,34 @@
+<aura:component access="global" controller="service_Picklist_RecordTypeSelector">
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <aura:attribute access="private" type="String" name="objectName" default="Account"/>
+    <aura:attribute access="private" type="Map" name="entries"/>
+    <aura:attribute name="mapOfRecordTypes" type="Map" />
+    <aura:attribute name="lstOfRecordTypes" type="String[]" />
+    <aura:attribute access="private" type="Map" name="selectedEntry"/>
+    <aura:attribute access="private" type="String" name="entriesAsJson"/>
+    <aura:attribute name="optionsList" type="List"/>
+    <aura:handler name="change" value="{!v.selectedEntry}" action="{!c.checkOptionValue}"/> 
+    <lightning:card title="Sample Picklist">
+        <div class="slds-p-horizontal_medium">
+            <lightning:layout pullToBoundary="small">
+                <lightning:layoutItem size="6" flexibility="auto" padding="around-small">
+                    <lightning:input name="objectName" required="true" value="{!v.objectName}" label="Object Name"/>
+                </lightning:layoutItem>
+                
+            </lightning:layout>
+            <div class="slds-align_absolute-center slds-m-top_small">
+                <lightning:button variant="brand" label="Load picklist entries" onclick="{!c.loadEntries}" disabled="{!empty(v.objectName)}"/>
+            </div>
+            <lightning:select name="selectItem" label="RecordType"  value="{!v.selectedEntry}" >
+                <aura:iteration items="{!v.optionsList}" var="option">
+                    <option value="{!option.value}" text="{!option.label}" 
+                            selected="{!option.selected}">
+                    </option>
+                </aura:iteration>
+            </lightning:select>
+            
+        </div>
+    </lightning:card>
+    
+    
+</aura:component>

@@ -1,0 +1,109 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" >
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <aura:attribute name="sObjectName" type="String" default="Contact" />
+    <aura:attribute name="relatedId" type="String"  />
+    <aura:attribute name="recordTypeId" type="String" />
+    <aura:attribute name="fields" type="String[]" default="['Id','npo02__Household__c']" />
+    <aura:attribute name="household" type="String" />
+    <aura:attribute name="householdname" type="String" />
+    <aura:attribute name="recordTypelabel" type="String" />
+    <aura:attribute name="disabled" type="Boolean" default ="false" />
+    <aura:attribute name="error" type="String"  />           
+    <aura:attribute name="record"  type="Object" />
+    <aura:attribute name="isOpen" type="Boolean" default ="true" />
+    <aura:attribute name="simpleRecord" type="Object"/>
+    <aura:attribute name="recordError" type="String"/>
+    <lightning:overlayLibrary aura:id="popuplib"/>
+    
+    <aura:handler name="change" value="{!v.household}" action="{!c.handleRecordIdChange}"/>
+    <aura:if isTrue="{!not(empty(v.relatedId))}">
+        <force:recordData aura:id="recordHandler"
+                          recordId="{!v.relatedId}"
+                          layoutType="FULL"
+                          targetRecord="{!v.record}"
+                          targetFields="{!v.simpleRecord}"
+                          targetError="{!v.recordError}"
+                          recordUpdated="{!c.handleRecordUpdated}"/>
+    </aura:if>
+    <aura:if isTrue="{!v.isOpen}">
+        <div class="slds-p-left_small slds-p-right_small">	
+            <lightning:card title="{!'Create New ' + v.recordTypelabel + ' member of the ' + v.householdname }">  
+                <lightning:recordEditForm aura:id="recordEditForm" 
+                                          objectApiName="Contact"
+                                          recordTypeId ="{!v.recordTypeId}"
+                                          onload ="{!c.prefillForm}"
+                                          onsubmit ="{!c.onSubmit}"
+                                          onsuccess="{!c.showToast}"
+                                          onerror="{!v.error}" >   
+                    <lightning:messages />
+                    
+                    <aura:if isTrue="{!v.recordTypelabel =='Child/Person with Disability' }"> 
+                        <lightning:layout multipleRows="true" horizontalAlign="spread">  
+                            <lightning:layoutItem padding="around-small" size="6">
+                                <lightning:inputField fieldName= "npo02__Household__c"  aura:id ="household" /> 
+                                <lightning:inputField fieldName= "Name" aura:id ="contactname"  />   
+                                <lightning:inputField fieldName= "School_Type__c"  aura:id ="schooltype" />
+                            </lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small" size="6" >
+                                <lightning:inputField fieldName= "Birthdate"  aura:id ="birthdate" />
+                                <lightning:inputField fieldName= "Family_Role__c"  aura:id ="familyrole" />
+                                
+                                <lightning:inputField fieldName= "Specify_School__c"  aura:id ="specifyschool" />
+                                
+                                
+                            </lightning:layoutItem>
+                        </lightning:layout> 
+                        
+                        <aura:set attribute="else">
+                            <aura:if isTrue="{!v.recordTypelabel == 'Adult' }"> 
+                                <lightning:layout multipleRows="true" horizontalAlign="spread">  
+                                    <lightning:layoutItem padding="around-small" size="6">
+                                        <lightning:inputField fieldName= "npo02__Household__c"  aura:id ="household" />
+                                        <lightning:inputField fieldName= "Name"  aura:id ="contactname" />
+                                        <lightning:inputField fieldName= "Email"  aura:id ="email" />
+                                        <lightning:inputField fieldName= "HomePhone"  aura:id ="homephone" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="6" >
+                                        <lightning:inputField fieldName= "Birthdate"  aura:id ="birthdate" />
+                                        <lightning:inputField fieldName= "Family_Role__c"  aura:id ="familyrole" />
+                                        <lightning:inputField fieldName= "MobilePhone"  aura:id ="mobilephone" />
+                                        <lightning:inputField fieldName= "npe01__PreferredPhone__c"  aura:id ="preferredphone" />
+                                        
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                                <aura:set attribute="else">
+                                    
+                                    <lightning:layout  horizontalAlign="spread">  
+                                        <lightning:layoutItem padding="around-small" size="6">  
+                                            <lightning:inputField fieldName= "npo02__Household__c"  aura:id ="household" />
+                                            <lightning:inputField fieldName= "Name"  aura:id ="contactname" />
+                                            <lightning:inputField fieldName= "Email"  aura:id ="email" />
+                                            <lightning:inputField fieldName= "HomePhone"  aura:id ="homephone" />
+                                            <lightning:inputField fieldName= "MobilePhone"  aura:id ="mobilephone" />
+                                            <lightning:inputField fieldName= "Family_Role__c"  aura:id ="familyrole"/>
+                                            
+                                        </lightning:layoutItem>
+                                    </lightning:layout>
+                                </aura:set>
+                            </aura:if>
+                        </aura:set>
+                    </aura:if> 
+                    <lightning:workspaceAPI aura:id="workspace"/>
+                    <lightning:layout >
+                        <lightning:button class="slds-align_left" variant="brand" label="Cancel" onclick="{!c.closeFocusedTab}"/>
+                        <lightning:button class="slds-align_right" disabled="{!v.disabled}" variant="brand" type="submit" name="save" label="Next" onclick="{!c.onSubmit}" />
+                        
+                        <aura:if isTrue="{!not(empty(v.error))}">
+                            <div class="recordError">
+                                <ui:message title="Error" severity="error" closable="true">
+                                    here is the error   {!v.error}
+                                </ui:message>
+                            </div>
+                        </aura:if>
+                    </lightning:layout>
+                </lightning:recordEditForm>
+            </lightning:card>
+        </div>
+    </aura:if>
+</aura:component>

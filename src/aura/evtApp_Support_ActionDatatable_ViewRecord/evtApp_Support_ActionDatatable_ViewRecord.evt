@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="evtApp_Support_ActionDatatable_ViewRecord" >
+    <aura:attribute Name = "rowId" type = "String" /> 
+    <aura:attribute Name = "recordTypeId" type = "String" /> 
+</aura:event>

@@ -1,0 +1,276 @@
+<apex:page readOnly="true" controller="ReferralTrackReportsCtr" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    
+    
+    <style type="text/css">        /* Color for the title bar */
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .filterDiv{ padding: 10px; }
+        label{ padding: 4px; }
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"/>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+    <apex:includeScript value="{!URLFOR($Resource.tablesorter, 'jquery.tablesorter.min.js')}"/>
+    
+    <!--Sort on load -->
+    <script type="text/javascript">
+    $j = jQuery.noConflict();    
+    $j(document).ready(function () {
+        $j('a').attr("target","_blank");
+        $j("[id$=sortIt]").tablesorter();
+    });    
+    </script>
+    
+    <apex:messages />
+    
+    <!--   
+<apex:panelGrid columns="3" id="theGrid">
+
+<apex:chart id="theC1" height="175" width="225" data="{!GenerateES1}">
+<apex:pieSeries dataField="CampsC" labelField="ES" colorSet="#D90C32,#02588C,#F2C22F,#BFB3A4, #730101"/>
+<apex:legend position="bottom"/>
+</apex:chart>
+
+
+
+<apex:chart id="theC2" height="175" width="225" data="{!GenerateES2}">
+<apex:pieSeries dataField="CampsC" labelField="ES" colorSet="#D90C32,#02588C,#F2C22F,#BFB3A4, #730101"/>
+<apex:legend position="bottom"/>
+</apex:chart>
+
+</apex:panelGrid>
+-->
+    
+    <apex:form >
+        
+        <apex:pageBlock title=" My Referral and Contact Tracking">
+            
+            <apex:pageMessages id="messages" ></apex:pageMessages>
+            <apex:pageBlockSection title="Enter Dates" columns="1" collapsible="false">
+                <apex:panelGroup >
+                    <apex:outputLabel value="Date From" />
+                    <apex:input label="Date From" value="{!dateFrom}" type="auto" /> 
+                    <apex:outputLabel value="Date To" />
+                    <apex:input label="Date To" value="{!dateTo}" type="auto" />
+                    <apex:outputLabel value="" />
+                    <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                     
+                    
+                    
+                </apex:panelGroup>          
+            </apex:pageBlockSection>  
+            <apex:pageBlockSection > 
+                <apex:panelGroup >          
+                    
+                    <apex:outputLink value="https://na23.salesforce.com/" id="ref">Referrals</apex:outputLink> 
+                </apex:panelGroup>          
+            </apex:pageBlockSection> 
+            
+            <apex:pageblock title="Click ▲▼ to sort" >
+                <apex:pageBlockSection collapsible="True" title="Referrals Assigned To Me">
+                    <apex:panelGrid columns="1"  cellspacing="20" border="1"   >
+                        
+                        <apex:pageBlockTable value="{!GenerateFRCs}" var="ex" id="sortIt" styleClass="tablesorter" headerClass="TableTitle" style="text-align:center; font-weight: bold " > 
+                            
+                            <apex:column value="{!ex.Child_Referred__c}" headervalue=" Child Referred ▲▼" style="Center" /> 
+                            <apex:column value="{!ex.Assigned_To__c}" headervalue="Assigned To ▲▼" style="Center" /> 
+                            <apex:column headervalue="Referral Record ▲▼" style="Center"  >
+                                <apex:outputLink value="https://na23.salesforce.com/{!ex.id}" > Record </apex:outputLink>
+                            </apex:column>
+                            <apex:column value="{!ex.InteractionReference__c}" headervalue="Initial Interaction Link ▲▼" style="Center" />  
+                            
+                            <!-- <apex:column value="{!ex.Date_Referral_Received__c }" headervalue=" Date Recieved ▲▼" style="Center"  /> 
+
+<apex:column headervalue="Date Recieved ▲▼"  style="Center" >
+<apex:outputtext style="background-color:{!IF(ex.date_TYSent__c - ex.Date_Referral_Received__c >2, "#D98880", "#538A61")}" value="{!ex.Date_Referral_Received__c}" />
+</apex:column> -->
+                            
+                            
+                            <apex:column value="{!ex.cbx_Referral_Received__c}" headervalue=" Logged ▲▼" style="Center" />
+                            <apex:column value="{!ex.ActionReference__c   }" headervalue="Initial ActionLink ▲▼" style="Center" />  
+                            
+                            
+                            
+                            <apex:column value="{!ex.Date_Referral_Received__c }" headervalue=" Date Recieved ▲▼" style="Center"  /> 
+                            <apex:column value="{!ex.cbxReferral_Confirmed__c}" headervalue="TY▲▼"  style="Center"/>
+                            <apex:column value="{!ex.date_TYSent__c}" headervalue="Date TY Sent ▲▼" style="Center" /> 
+                            <!--   <apex:column headervalue="TYSent ▲▼"  style="Center" >
+<apex:outputtext style="background-color:{!IF(ex.date_TYSent__c - ex.Date_Referral_Received__c >2, "#D98880", "#538A61")}" value="{!ex.Date_Referral_Received__c}" />
+</apex:column>-->
+                            <apex:column value="{!ex.cbxContact_Confirmation_Sent__c}" headervalue="Contact Confirmation ▲▼"  style="Center"/>
+                            <apex:column value="{!ex.date_Contact_Confirmation_Sent__c}" headervalue="Date Confirmation Sent ▲▼" style="Center" />  
+                            <apex:column value="{!ex.cbxReferral_Update__c}" headervalue="Update ▲▼" style="Center" /> 
+                            <apex:column value="{!ex.date_Update__c}" headervalue="Date Update Sent ▲▼" style="Center" /> 
+                            <apex:column value="{!ex.UTC_Professional_Notify__c  }" headervalue="UTC Prof ▲▼" style="Center"  /> 
+                            <apex:column value="{!ex.date_UTC_to_Prof__c}" headervalue="Date UTC Sent ▲▼" style="Center" /> 
+                            
+                            <apex:column value="{!ex.Referral_Received_From__c}" headervalue=" Professional ▲▼" style="Center" /> 
+                            <apex:column value="{!ex.Household_Referred__c}" headervalue=" Household ▲▼" style="Center" /> 
+                            <apex:column value="{!ex.Permission_Received__c}" headervalue=" Permission Recieved ▲▼" style="Center" /> 
+                            <apex:column value="{!ex.Permission_Date__c}" headervalue=" Permission Date ▲▼" style="Center" /> 
+                            <apex:column value="{!ex.Referral_Received_From__r.AccountID}" headervalue=" Referral Org ▲▼" style="Center" /> 
+                        </apex:pageBlockTable>
+                    </apex:panelGrid>
+                </apex:pageBlockSection>
+                <!-- Section 2  
+-->
+                
+                <apex:pageBlockSection collapsible="True" title="My Child Contacts With Open Issues">
+                    <apex:panelGrid columns="1"  cellspacing="20" border="1"   >
+                        
+                        <apex:pageBlockTable value="{!ContactsOpenIssues}" var="ex" id="sortIt" styleClass="tablesorter" headerClass="TableTitle" style="text-align:center; font-weight: bold " > 
+                           <!-- <apex:column value="{!ex.Id}" headervalue=" Child ▲▼" style="Center" /> -->
+                              <apex:column headervalue="Contact ▲▼" style="Center"  >
+                                <apex:outputLink value="{!ex.id}" > {!ex.Name}  </apex:outputLink>
+                            </apex:column>
+                            <apex:column value="{!ex.npo02__Household__c}" headervalue=" Household ▲▼" style="Center" /> 
+                         
+                            
+                            <apex:column value="{!ex.Last_Interaction_Date__c}" headervalue=" Most Recent Child Int ▲▼" style="Center" />
+                            
+                            <apex:column value="{!ex.npo02__Household__r.Most_Recent_Household_Interaction__c}" headervalue=" Most Recent HH Int ▲▼" style="Center" />
+                             
+                             
+			  
+                            
+                              <apex:column headervalue="Contact? ▲▼" style="Center"  >
+                               <apex:outputtext style="color:{!IF((ISBLANK(ex.Last_Interaction_Date__c)) || ( Today() - ex.Last_Interaction_Date__c > 14) || (ISBLANK(ex.npo02__Household__r.Most_Recent_Household_Interaction__c)) || ( Today() - ex.npo02__Household__r.Most_Recent_Household_Interaction__c > 14) , "#990000", "#009933")}" value="Contact" />
+                            </apex:column>
+                            
+                               <!--     <apex:column headervalue="Contact? ▲▼" style="Center"  >
+                               <apex:outputtext style="color:{!CASE (((ex.Last_Interaction_Date__c == NULL) || ( Today() - ex.Last_Interaction_Date__c > 14)), '#67AC34', 
+                                                       ((ex.npo02__Household__r.Most_Recent_Household_Interaction__c==NULL) || ( Today() - ex.npo02__Household__r.Most_Recent_Household_Interaction__c > 14)) , '#990000')}" value="Contact" />
+                            </apex:column>
+                            
+                                   <apex:column headervalue="Contact? ▲▼" style="Center"  > 
+                               <div style="color:{!CASE (( Today() - ex.Last_Interaction_Date__c), > 14, '#67AC34', 
+                                          ( Today() - ex.npo02__Household__r.Most_Recent_Household_Interaction__c), > 14 , '#990000')}" >
+                            <apex:outputText value="Contact" />
+                        </div>
+                            -->
+                            
+                            <apex:column headervalue=" Intake?▲▼" style="Center"  >
+                               <apex:outputtext style="color:{!IF((ISBLANK(ex.npo02__Household__r.Last_Intake__c)) || ( Today() - ex.npo02__Household__r.Last_Intake__c > 0) , "#990000", "#009933")}" value="Intake?" />
+                            </apex:column>
+                            
+                               
+                              
+                            
+                            
+                            <apex:column value="{!ex.npo02__Household__r.Last_Intake__c}" headervalue=" Most Recent HH Intake ▲▼" style="Center" />
+                           <apex:column value="{!ex.recordType.name}" headervalue=" RecordType ▲▼" style="Center" /> -->
+                           
+                          <apex:column headervalue="OwnerChild ▲▼" style="Center"  >
+                                <apex:outputLink value="{!ex.Owner.Alias}" > {!ex.Owner.Alias} </apex:outputLink>
+                            </apex:column>
+                            
+                               <apex:column headervalue="OwnerHousehold ▲▼" style="Center"  >
+                                <apex:outputLink value="{!ex.npo02__Household__r.Owner.Alias}" > {!ex.npo02__Household__r.Owner.Alias} </apex:outputLink>
+                            </apex:column> 
+
+                            
+                            <!--    <apex:column value="{!ex.Owner.alias}" headervalue=" OwnerContact ▲▼" style="Center" />
+                               
+                       
+                            
+                          
+                              <apex:column value="{!ex.npo02__Household__r.Owner.Alias}" headervalue=" Household Owner ▲▼" style="Center" />
+
+<apex:column value="{!ex.}" headervalue="  ▲▼"  /> 
+<apex:commandButton value="Delete Contact" action="{!CloneOboInt}" rerender="contactList">
+<apex:param name="contactIdent" value="{!case.id}" assignTo="{!setidOfRec}"/>
+</apex:commandButton>
+<apex:column headervalue="ReferralRecord" style="Center"  >
+<apex:outputLink value="{!ex.id}" > Referral Record </apex:outputLink>
+</apex:column>
+
+<div class="slds-form-element__group slds-m-around_medium">
+<label class="slds-form-element__label" for="setidOfRec">Initial Interaction </label>
+<div class="slds-form-element__control">
+<apex:outputField id="setidOfRec" onchange="setidOfRec(this.value);" value="{!ex.InteractionReference__c}" /> 
+</div> 
+</div>
+
+action="{!CloneOboInt}"  <apex:commandButton value="Clone" action="{!CloneOboInt}"  />
+Id, Key__c, Referral_Received_From__c, Child_Referred__c,  Assigned_To__c, Household_Referred__c,
+Referral_Action__c, ActionUpdateReference__c,
+CbxReferral_Confirmed__c, CbxContact_Confirmation_Sent__c, CbxReferral_Update__c, 
+UTC_Professional_Notify__c, InteractionReference__c, Initial_Interaction_Date__c,
+Date_Referral_Received__c,  Date_Contact_Confirmation_Sent__c, Date_TYSent__c,
+Date_UTC_to_Prof__c
+
+<!-- <apex:column style="background-color:{!IF(ex. ==" ", "#F4F6F6", "#dbdbdb ")}" value="{!ex.ES}" headervalue="FS_FRS" />
+
+<apex:column value="{!ex.ConTactD1}" headervalue="Duplicated Contacts"  /> 
+<apex:column style="background-color:{!IF(ex.TargetD =0, "#D98880", "#dbdbdb ")}" value="{!ex.TargetD}" headervalue="Target"  />
+<apex:column headervalue="T v A" >
+<apex:outputtext style="color:{!IF(ex.TargetD >ex.Key__c, "#D98880", "#538A61")}" value="{!(ex.ConTactD1 - ex.TargetD)}" />
+</apex:column>
+
+<apex:column style="background-color:{!IF(ex.TargetU = 0, "#5C5C5C", "#5C5C5C")}"  headervalue="" >
+
+</apex:column> 
+
+<apex:column headervalue="New This Quarter"> 
+<apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#0073e5")}" value="{!ex.cString}" />
+</apex:column>
+
+<apex:column style="background-color:{!IF(ex.TargetU = 0, "#5C5C5C", "#5C5C5C")}"  headervalue="" >
+
+</apex:column> 
+
+<apex:column headervalue="Unduplicated Contacts " > 
+<apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#0073e5")}" value="{!ex.ConTactDistinctU1}" />
+</apex:column>
+<apex:column style="background-color:{!IF(ex.TargetU = 0, "#D98880", "#dbdbdb ")}"  headervalue="Target" >
+<apex:outputtext style="color:{!IF(ex.cString = "N/A", "#dbdbdb ", "#303030")}" value="{!ex.TargetU}" />
+</apex:column> 
+
+<apex:column headervalue="T v A" >
+<apex:outputtext style="color:{!IF(ex.cString = "N/A", "#FFFFFF", "#538A61")}" value="{!(ex.ConTactDistinctU1 - ex.TargetU)}" />
+</apex:column>
+
+<apex:column style="background-color:{!IF(ex.TargetU = 0, "#5C5C5C", "#5C5C5C")}"  headervalue="" >
+
+</apex:column> 
+
+
+<apex:column value="{!ex.CampsC}" headervalue="Total Minutes" />
+
+<apex:column style="background-color:{!IF(ex.TargetU = 0, "#5C5C5C", "#5C5C5C")}"  headervalue="" >
+
+</apex:column> 
+
+<apex:column headervalue="" >
+
+</apex:column>
+</apex:pageBlockTable>
+
+
+<apex:outputLink value="https://na23.salesforce.com/00O16000007l9WQ" id="FS_Int">FS FRS Interactions FYTD</apex:outputLink>
+
+<apex:outputLink value="https://na23.salesforce.com/00O16000007l9WG" id="FS_Int2Prior">FS FRS FY -2 Quarters Ago </apex:outputLink>
+
+<apex:outputLink value="https://na23.salesforce.com/00O16000007l9VS" id="FS_IntPrior">FS FRS Prior Q </apex:outputLink>
+
+<apex:outputLink value="https://na23.salesforce.com/00O16000007l9VN" id="FS_IntCurrent">FS FRS Current Q </apex:outputLink>  -->
+                            
+                            
+                            
+                            
+                        </apex:pageBlockTable>
+                        
+                        
+                    </apex:panelGrid>
+                </apex:pageBlockSection>
+            </apex:pageblock>
+            
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

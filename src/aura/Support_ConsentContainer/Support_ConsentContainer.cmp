@@ -1,0 +1,61 @@
+<aura:component controller="Support_Consent" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    <aura:import library="lightning:notificationsLibrary" property="notifications"/>
+    
+    <aura:attribute name="filterId" type="String" default = "" />
+    <aura:attribute name="sortedBy" type="String" />
+    <aura:attribute name="sortedDirection" type="String"/>
+    <aura:attribute name="objectName" type="Object" default ="Consent__c"/>
+    
+    <aura:attribute name="mydata" type="Object"/>
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="errors" type="string" default=""/>
+    <aura:attribute name="pageErrors" type="String[]" default="[]"/>
+    <aura:attribute name="draftValues" type="Object" default="[]"/>
+    <aura:attribute name="saveLocalStorage" type="Boolean" default="true"/>
+    <aura:attribute name="atomicChanges" type="Object" default="[]"/>
+    <aura:attribute name="atomicLookups" type="Object" default="[]"/>
+    <aura:attribute name="lookupChanges" type="Object" default="[]"/>
+    <aura:attribute name="changeIndex" type="Integer" default="0"/>
+    <aura:attribute name="selectedRow" type="Id" />
+    <aura:attribute name="selectedLookupRow" type="Id" />
+    
+    <aura:attribute name="autoSaveEnabled" type="Boolean" default="false"/>
+    <aura:attribute name="typeTest" type="String" default="text" />
+    <aura:attribute name="targetFields" type="Object" />
+    <aura:attribute name="activeFilter" type="string" default="all" access="PRIVATE" />
+    
+    <aura:handler event="c:evt_dataTableUpdate" action="{!c.onLookupId}"/>
+    <aura:handler event="c:evt_dataTableReturnedLookup" action="{!c.onLookupReturn}"/>
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+    <lightning:overlayLibrary aura:id="popuplib"/>
+    
+    <c:service_callApex aura:id ="service"  />
+    <c:base_datatable_RecordLoader aura:id ="recordLoad" />   
+    
+    <force:recordData aura:id="recHandler"
+                      targetFields="{!v.targetFields}"
+                      layoutType="FULL"
+                      mode="EDIT"/>
+    
+    <lightning:card iconName="standard:user" title="Consents For This Household">   
+        <lightning:datatable
+                             aura:id="table"
+                             errors="{! v.errors }"
+                             draftValues="{! v.draftValues }"
+                             data="{! v.mydata }" 
+                             columns="{! v.mycolumns }" 
+                             keyField="Id"
+                             onsave="{! c.handleSave }"
+                             oncellchange="{! c.handleEditCell }"
+                             oncancel="{! c.handleCancel }"
+                             onrowaction="{! c.handleRowActionForLookup }"
+                             onheaderaction="{! c.handleHeaderAction }"
+                             onsort="{!c.undateColumnSorting}"
+                             sortedBy="{!v.sortedBy}"  
+                             sortedDirection="{!v.sortedDirection}"
+                             hideCheckboxColumn="true"
+                             class="data-table" />
+    </lightning:card> 
+    
+    
+</aura:component>

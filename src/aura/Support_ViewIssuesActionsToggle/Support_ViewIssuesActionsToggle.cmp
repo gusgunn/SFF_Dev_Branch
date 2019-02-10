@@ -1,0 +1,37 @@
+<aura:component implements="lightning:appHomeTemplate" description="A right column that shows and hides">
+    <!--<aura:attribute name="main" type="Aura.Component[]" />
+    <aura:attribute name="rt_col" type="Aura.Component[]" />-->
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <aura:attribute name="viewIssue" type="Boolean" default = "false" />
+    <aura:attribute name="issueId"  type="String" /> 
+    <aura:attribute name="viewAction" type="Boolean" default = "false" />
+    <aura:attribute name="actionId"  type="String"  />
+    <aura:attribute name="recordTypeId"  type="String"  />
+    <aura:attribute name="interactionContact" type="String" /> 
+    <aura:attribute name="interactionContactAgency" type="String" /> 
+    <aura:attribute name="issueName" type="String" default=""/> 
+    <aura:attribute name="interactionID" type="String" default=""/> 
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="c:evtApp_Support_ActionDatatable_ViewIssueRecord" action="{!c.onToggleIssueColumn}" /> 
+    <aura:handler  event="c:evtApp_Support_ActionDatatable_ViewRecord" action="{!c.onToggleIssueColumn}"/> 
+    <lightning:layout>
+        <lightning:layoutItem aura:id="mainCol" size="12">
+            
+            <c:Support_IssuesViewContainer interactionID="{!v.interactionID}"
+                                           interactionContact ="{!v.interactionContact}"
+                                           interactionContactAgency ="{!v.interactionContactAgency}" />
+            
+        </lightning:layoutItem>
+        <aura:if isTrue="{!v.viewIssue}" >
+            <lightning:layoutItem aura:id="rtCol" size="4" class="slds-box" >
+                <c:Support_IssueView recordId ="{!v.issueId}"  /> 
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.viewAction}" >
+            
+            <lightning:layoutItem aura:id="rtCol" size="4" class="slds-box" >
+                <c:Support_ActionsView recordId ="{!v.actionId}"  recordTypeId ="{!v.recordTypeId}" />
+            </lightning:layoutItem>
+        </aura:if>
+    </lightning:layout>
+</aura:component>

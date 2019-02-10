@@ -1,0 +1,119 @@
+<apex:page readOnly="true" controller="AnnualReportStatsCtr" 
+           docType="html-5.0" sidebar="false" >
+    
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        
+        <apex:pageBlock title="Annual Report Dashboard">
+            <apex:pageMessages id="messages" ></apex:pageMessages>
+            <apex:pageBlockSection title="Enter Month" columns="1" >
+                <apex:panelGroup >
+                    <apex:outputLabel value="Date From" />
+                    <apex:input label="Date From" value="{!dateFrom}" type="auto" />
+                    <apex:outputLabel value="Date To" />
+                    <apex:input label="Date To" value="{!dateTo}" type="auto" />
+                    <apex:outputLabel value="" />
+                    <apex:commandButton value="Generate" action="{!startGenerateEISDashboard}" />
+                </apex:panelGroup>    		
+            </apex:pageBlockSection>    
+            
+            <apex:pageblock title="Ethnicity" >
+                <apex:pageBlockSection columns="6">
+                    <apex:pageBlockTable value="{!generateEthnicityP}" var="exP"> 
+                        <apex:column value="{!exP.EthnicitiesP}" headervalue="YTPrior Month Ethnicities" />
+                        <apex:column value="{!exP.ConTactDistinctP}" headervalue="YTPrior Month Unduplicated" />  
+                    </apex:pageBlockTable>   
+                    
+                    <apex:pageBlockTable value="{!generateEthnicity}" var="ex"> 
+                        <apex:column value="{!ex.Ethnicities}" headervalue="Current Month Ethnicities" />
+                        <apex:column value="{!ex.ConTactDistinct}" headervalue="Current Month Unduplicated" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!generateEthnicityYtd}" var="exY"> 
+                        <apex:column value="{!exY.EthnicitiesYtd}" headervalue="YTD Ethnicities" />
+                        <apex:column value="{!exY.ConTactDistinctYtd}" headervalue="YTD Unduplicated" />  
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection> 
+            </apex:pageblock>
+            
+            <apex:pageblock title="Zip - Girlz" >
+                <apex:pageBlockSection columns="6">
+                    <apex:pageBlockTable value="{!generateZipFP}" var="zPF"> 
+                        <apex:column value="{!zPF.ZipPF}" headervalue="YTPrior Month Zip - Female" />
+                        <apex:column value="{!zPF.ConTactDistinctZPF}" headervalue="YTPrior Unduplicated" />
+                    </apex:pageBlockTable> 
+                    
+                    <apex:pageBlockTable value="{!generateZipF}" var="zPF"> 
+                        <apex:column value="{!zPF.ZipF}" headervalue="Current Month Zip - Female" />
+                        <apex:column value="{!zPF.ConTactDistinctZF}" headervalue="Current Month Unduplicated" />
+                    </apex:pageBlockTable> 
+                    
+                    <apex:pageBlockTable value="{!GenerateZipFYTD}" var="zPF"> 
+                        <apex:column value="{!zPF.ZipYTDF}" headervalue="YTD Zip - Female" />
+                        <apex:column value="{!zPF.ConTactDistinctZYTDF}" headervalue="YTD Unduplicated" />
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection>  
+            </apex:pageblock>
+            
+            <apex:pageblock title="Zip - Boyz" >
+                <apex:pageBlockSection columns="6">
+                    <apex:pageBlockTable value="{!generateZipMP}" var="zP"> 
+                        <apex:column value="{!zP.ZipP}" headervalue="Prior Month Zip - Male" />
+                        <apex:column value="{!zP.ConTactDistinctzP}" headervalue="YTPrior Unduplicated" />     
+                    </apex:pageBlockTable> 
+                    
+                    <apex:pageBlockTable value="{!generateZipM}" var="zP"> 
+                        <apex:column value="{!zP.Zip}" headervalue="Current Month Zip - Male" />
+                        <apex:column value="{!zP.ConTactDistinctZ}" headervalue="YTPrior Unduplicated" />     
+                    </apex:pageBlockTable> 
+                    
+                    <apex:pageBlockTable value="{!GenerateZipMYTD}" var="zP"> 
+                        <apex:column value="{!zP.ZipYTD}" headervalue="YTD Zip - Male" />
+                        <apex:column value="{!zP.ConTactDistinctZYtd}" headervalue="YTPrior Unduplicated" />     
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection> 
+            </apex:pageblock>
+
+             <apex:pageblock title="Zip - Unknown" >
+                <apex:pageBlockSection columns="6">
+                    <apex:pageBlockTable value="{!generateZipUP}" var="zP"> 
+                        <apex:column value="{!zP.ZipPUP}" headervalue="Prior Month Zip - Unknown" />
+                        <apex:column value="{!zP.ConTactDistinctzPUP}" headervalue="YTPrior Unduplicated" />     
+                    </apex:pageBlockTable> 
+                    
+                    <apex:pageBlockTable value="{!generateZipU}" var="zP"> 
+                        <apex:column value="{!zP.ZipU}" headervalue="Current Month Zip - Unknown" />
+                        <apex:column value="{!zP.ConTactDistinctZU}" headervalue="YTPrior Unduplicated" />     
+                    </apex:pageBlockTable> 
+                    
+                    <apex:pageBlockTable value="{!GenerateZipUYTD}" var="zP"> 
+                        <apex:column value="{!zP.ZipUYTD}" headervalue="YTD Zip - Unknown" />
+                        <apex:column value="{!zP.ConTactDistinctZUYtd}" headervalue="YTPrior Unduplicated" />     
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection> 
+            </apex:pageblock>
+            
+            <apex:pageblock title="Parent Language" >
+                <apex:pageBlockSection columns="6">
+                    <apex:pageBlockTable value="{!GenerateParentLanguageP}" var="ex"> 
+                        <apex:column value="{!ex.lP}" headervalue=" Prior Month Parent Language" />
+                        <apex:column value="{!ex.hhP}" headervalue="Prior Month Unduplicated" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateParentLanguage}" var="la"> 
+                        <apex:column value="{!la.lC}" headervalue="Current Month Parent Language" />
+                        <apex:column value="{!la.hhC}" headervalue="Current Month Unduplicated" />  
+                    </apex:pageBlockTable>  
+                    <apex:pageBlockTable value="{!GenerateParentLanguageYTD}" var="exY"> 
+                        <apex:column value="{!exY.lYtd}" headervalue="YTD Parent Language" />
+                        <apex:column value="{!exY.hhYtd}" headervalue="YTD Unduplicated" />  
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection> 
+            </apex:pageblock>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

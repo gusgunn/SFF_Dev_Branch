@@ -1,0 +1,104 @@
+<aura:component controller="IssueMultiSelectLookupCtr" access="global">
+    
+    <aura:attribute name="lstSelectedRecords" type="sObject[]" default="[]" description="Use,for store SELECTED sObject Records"/>
+    <aura:attribute name="selectedLookUpRecordIDs" type="string[]" default=""/>
+    <aura:attribute name="listOfSearchRecords" type="List" default="[]" description="Use,for store the list of search records which returns from apex class"/>
+    <aura:attribute name="SearchKeyWord" type="string"/>
+    <aura:attribute name="objectAPIName" type="string" default="Issue__c"/>
+    <aura:attribute name="IconName" type="string" default=""/>
+    <aura:attribute name="label" type="string" default=""/>
+    <aura:attribute name="childID" type="string" default=""/>
+    <aura:attribute name="contactID" type="string" default=""/>
+    <aura:attribute name="interactionID" type="string" default=""/>
+    <aura:attribute name="excludedIssues" type="Issue__c[]" default="[]"/>
+    <aura:registerEvent name="evt_IssuesAdded" type="c:evt_IssuesAdded" />
+    <aura:registerEvent name="listOpenIssues" type="c:cOpenIssues"/> 
+    <aura:registerEvent name="appEvent" type="c:cOpenIssues" /> 
+    <aura:handler name="oSelectedRecordEvent" event="c:IssueSelectedsRecordsEvent" action="{!c.handleComponentEvent}"/>
+    <aura:handler name="oSelectedChildEvent" event="c:IssueMultiSelectChildEvent" action="{!c.handleChildIDEvent}" />
+    <aura:attribute name="Message" type="String" default=""/>
+    
+    
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-custom-custom5" title="Issues Icon"> 
+                        <lightning:icon iconName="custom:custom5"  variant="inverse"/>
+                        
+                        <span class="slds-assistive-text">Add Issues</span>
+                    </span> 
+                    
+                </div>
+                <div class="slds-media__body">
+                    <h2>
+                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="[object Object]"> 
+                            <span class="slds-text-heading_small" >Add Open Issues</span>
+                        </a> 
+                    </h2>
+                </div>
+            </header>
+            <div class="slds-no-flex">
+                <button class="slds-button slds-button_neutral" onclick="{!c.handleTodaysOpenIssues}">Add </button>
+            </div>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            
+            <div onmouseleave="{!c.onblur}" aura:id="searchRes" class="slds-form-element slds-lookup slds-is-close">
+                <label class="slds-form-element__label"> </label> 
+                
+                <!--This part is for display search bar for lookup  {!v.label} -->  
+                <div class="slds-form-element__control">
+                    <div class="slds-input-has-icon slds-input-has-icon--right slds-p-bottom_medium">
+                        <!-- This markup is for when an record is selected -->
+                        <div aura:id="lookup-pill" > <!-- class="slds-pill-container" -->
+                            <div aura:id="lookupField" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"  style="width: 100%;">
+                                
+                                <ui:inputText click="{!c.onfocus}"
+                                              updateOn="keyup"
+                                              keyup="{!c.keyPressController}"
+                                              class="slds-lookup__search-input slds-input inputSize"
+                                              value="{!v.SearchKeyWord}"
+                                              placeholder="Add Open Issues.."/>
+                                
+                                <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right slds-p-bottom_medium ">
+                                    <lightning:icon iconName="utility:search" size="x-small" alternativeText="icon"/>
+                                </span> 
+                            </div> 
+                            <!--   <label class="slds-form-element__label"></label>-->
+                            <!--Selected Records Pills Section-->
+                            
+                            <div id="{! globalId + '_selection' }" role="listbox" aria-orientation="horizontal">
+                                <ul class=" slds-p-top_xxx-small bottom_xxx_small" role="group" aria-label="Selected Options:"> 
+                                    <aura:iteration items="{!v.lstSelectedRecords}" var="sr">
+                                        <li role="presentation" class="slds-listbox__item"> 
+                                            <lightning:pill class="slds-m-around_xxx-small" label="{!sr.Name}" name="{!sr.Id}" onremove="{! c.clear }">
+                                                <aura:set attribute="media">
+                                                    <lightning:icon iconName="{!v.IconName}" size="xxx-small"  variant="inverse" alternativeText=" Issues icon"/>
+                                                </aura:set>
+                                            </lightning:pill>
+                                        </li> 
+                                    </aura:iteration>
+                                </ul> 
+                            </div>
+                        </div>
+                    </div>
+                </div>            
+                <div>
+                    
+                    <ul style="min-height:10px;margin-top:0px !important" class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-lookup__menu slds" role="listbox">
+                        <lightning:spinner class="slds-hide" variant="brand" size="small" aura:id="mySpinner"/>
+                        <center> {!v.Message}</center>
+                        <aura:iteration items="{!v.listOfSearchRecords}" var="singleRec">
+                            <c:Support_AddOpenIssuesLookupResult oRecord="{!singleRec}" IconName="{!v.IconName}"/>
+                        </aura:iteration>
+                    </ul>
+                    
+                </div> 
+            </div>
+        </div>
+        <!--  <footer class="slds-card__footer">Card Footer</footer> -->
+    </article>
+</aura:component>
+
+<!-- https://www.lightningdesignsystem.com/components/lookups/ -->

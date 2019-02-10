@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="This Event Will Remove the added related record a Record">
+    <aura:attribute name="arrayIndex" type="Integer" />
+</aura:event>

@@ -1,0 +1,161 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    <aura:import library="lightning:notificationsLibrary" property="notifications"/>
+    <aura:attribute name="recordId" type="string"  />
+    <aura:attribute name="pathStep" type="string" default="1"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    
+    <aura:attribute name="main" type="Aura.Component[]" />
+    <aura:attribute name="rt_col" type="Aura.Component[]" />    
+    <aura:attribute name="record" type="Object" />
+    <lightning:card>
+        <div  class="slds-m-around_medium">
+            <lightning:progressIndicator type="path"  currentStep="{!v.pathStep}" >
+                <lightning:progressStep label="Overview" value="1" onclick="{!c.selectPathStep1}"/>
+                <lightning:progressStep label="Intakes" value="2" onclick="{!c.selectPathStep2}"/> 
+                <lightning:progressStep label="Diagnosis" value="3" onclick="{!c.selectPathStep3}"/>
+                <lightning:progressStep label="Demographics" value="4" onclick="{!c.selectPathStep4}"/>
+                <lightning:progressStep label="Federal" value="5" onclick="{!c.selectPathStep5}"/>
+                <lightning:progressStep label="Medical" value="6" onclick="{!c.selectPathStep6}"/>
+                <lightning:progressStep label="School" value="7" onclick="{!c.selectPathStep7}"/> 
+                <lightning:progressStep label="Childcare" value="8" onclick="{!c.selectPathStep8}"/>    
+            </lightning:progressIndicator> 
+        </div>
+    </lightning:card>
+    <lightning:card>
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '1'}">
+                <lightning:layoutItem aura:id="mainCol1" size="6" >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}"  fieldsArray =
+                                                    "['Name', 'Birthdate',
+                                                     'npo02__Household__c' ]"
+                                                    />
+                </lightning:layoutItem>
+                <lightning:layoutItem aura:id="rtCol1" size="6" >
+                    
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" fieldsArray =
+                                                    "['Family__Contact_Record_Type__c', 'Current_Caregiver_Setting__c', 'Family_Role__c' ]"/>
+                   
+                </lightning:layoutItem>
+            </aura:if>
+         </lightning:layout>
+        
+        <lightning:layout>
+             <aura:if isTrue="{!v.pathStep == '2'}">
+                <lightning:layoutItem aura:id="mainCol2" size="12" >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Intakes / Interactions" mode="readOnly" numberOfColumns = "2" fieldsArray =
+                                                 "[ 'Most_Recent_Intake__c' ,'First_Intake__c', 'Last_Interaction_Date__c', 'First_Interaction__c' 
+                                                ]" />
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+        
+        <lightning:layout>
+             <aura:if isTrue="{!v.pathStep == '3'}">
+                <lightning:layoutItem aura:id="mainCol3" size="3" >
+                   <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Diagnosis Group 1"  fieldsArray =
+                                                    "['Family__Diagnosis_1_Group__c',  'Family__Diagnosis_1__c',
+                                                     'Family__Primary_Diagnostic_Category__c' ]"
+                                                    />
+                </lightning:layoutItem>
+                <lightning:layoutItem aura:id="rtCol3a" size="3" > 
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Diagnosis Group 2" fieldsArray =
+                                                    "['Family__Diagnosis_2_Group__c', 'Family__Diagnosis_2__c', 'Family__Secondary_Diagnostic_Category__c'
+                                                     ]"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem aura:id="rtCol3b" size="3" >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Diagnosis Group 3" fieldsArray =
+                                                    "['Family__Diagnosis_3_Group__c', 'Family__Diagnosis_3__c', 
+                                                     'Family__Third_Diagnostic_Category__c'  ]"/>
+                    
+                </lightning:layoutItem>
+                                <lightning:layoutItem aura:id="rtCol3b" size="3" >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Diagnosis Group 3" fieldsArray =
+                                                    "['Family__Diagnosis_3_Group__c', 'Family__Diagnosis_3__c', 
+                                                     'Family__Third_Diagnostic_Category__c'  ]"/>
+                                    </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+       <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '4'}">
+                <lightning:layoutItem aura:id="mainCol4" size="4" >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Race / Ethnicity"  fieldsArray =
+                                 "['Family__Race__c',  'Race_Other__c']"
+                                 />
+                </lightning:layoutItem>
+                <lightning:layoutItem aura:id="rtCol4" size="4" >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Language / Gender " fieldsArray =
+                                 "['Family__Ethnicity__c', 'Hispanic_Latino_please_specify__c', 'Ethnicity_Hispanic_Latino_Other__c']"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem aura:id="rtCol4" size="4" >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Language / Gender " fieldsArray =
+                                 "['English_Fluency__c','Family__Primary_Language__c', 'Other_Primary_Language__c', 
+                                  'Family__Gender__c', 'Sexual_Orientation__c']"/>
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+        
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '5'}">
+                <lightning:layoutItem aura:id="mainCol5" size="12" >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Checkbox Heaven" numberOfColumns ="3" fieldsArray = "['Referred_by__c',  'Safe_Stable_Housing__c', 'Transition_Project__c',
+                                                     'Child_Welfare_ID__c',  'Incarcerated_Youth__c',  'Low_Income__c',
+                                                     'CalWORKS_Recipient__c',   'Underserved__c' ,'ASQ__c',  
+                                                     'Eligibility_for_free_or_reduced_price_lu__c',  'Foster_Care__c', 'Result_of_developmental_screening__c' ]" />
+                    </lightning:layoutItem> 
+            </aura:if>
+        </lightning:layout>
+        
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '6'}">
+                <lightning:layoutItem aura:id="mainCol6" size="4" class="slds-p-left_small">
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Health"  fieldsArray =
+                                                    "['Primary_Care_Clinic__c', 'Primary_Physician__c']"
+                                                    />
+                </lightning:layoutItem>
+                <lightning:layoutItem aura:id="rtCol6" size="4" class="slds-p-left_small">  
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Primary Insurance" fieldsArray =
+                                                    "['Primary_Insurance_Type__c', 'Primary_Insurance_Other__c']"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem aura:id="rtCol6" size="4" class="slds-p-left_small">  
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Secondary Insurance" fieldsArray =
+                                                    "['Secondary_Insurance_Type__c', 'Secondary_Insurance_Other__c']"/>
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+        
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '7'}">
+                <lightning:layoutItem aura:id="mainCol7" size="4" class="slds-p-left_xx-small">
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Current School"  fieldsArray =
+                                                    "['School_Enrollment__c', 'School_Type__c', 'Specify_School__c', 
+                                                     'Other_School__c',  'School_St_Address__c', ]"
+                                                    />
+                </lightning:layoutItem>
+                <lightning:layoutItem aura:id="rtCol7b" size="3" class="slds-p-left_xx-small"> 
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Current Grade / Special Ed" fieldsArray =
+                                                    "['Current_Grade__c', 'Current_or_Highest_Grade_Completed__c', 
+                                                    'Date_of_high_school_graduation_or_GED__c', 'Special_education_or_learning_disability__c',
+                                                    'Special_Ed_Training_Completion_Date__c']"/>
+                </lightning:layoutItem>
+               <lightning:layoutItem aura:id="rtCol7a" size="4" class="slds-p-left_xx-small"> 
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Former Schools" fieldsArray =
+                                                    "[ 'Former_Schools__c']"/>
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+        
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '8'}">
+                <lightning:layoutItem aura:id="mainCol8" size="12"   class="slds-p-left_small">
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Childcare" numberOfColumns ="3"  fieldsArray =
+                                                    "['Child_requires_1_on_1_care__c', 'Child_has_a_seizure_disorder__c', 'Describe_type_s_of_seizure_disorder__c', 
+                                                     'Childcare_best_way_to_soothe__c', 'Childcare_Favorites__c', 'Childcare_Special_Considerations__c',
+                                                     'Food_Allergies__c', 'Food_Allergy_Typical_Reactions__c',  'Food_Allergies_Description__c']"
+                                                    />
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+     </lightning:card>
+    
+</aura:component>

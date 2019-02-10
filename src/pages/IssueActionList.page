@@ -1,0 +1,37 @@
+<apex:page standardController="Case" recordSetVar="acts" sidebar="false">
+<apex:form >
+	<apex:pageBlock >
+		<apex:pageBlockSection columns="4">
+			<apex:pageBlock title="List Of Interations">
+				<apex:pageBlockTable value="{!acts}" var="a">
+					<apex:column >
+						<apex:commandLink value="{!a.CaseNumber}" reRender="refreshDetail">
+							<apex:param name="CaseNumber" value="{!a.CaseNumber}"/>
+							<apex:param name="accountId"  value="{!a.id}"/>
+						</apex:commandLink>
+					</apex:column>
+				
+           
+                <apex:column value="{!a.Status}"/>
+                <apex:column value="{!a.Owner}"/>
+                
+                <apex:column value="{!a.Start_Time__c}"/>
+               <!--  apex:column value ="{!a.Comments}"/> -->
+                   
+                 
+                
+			</apex:pageBlockTable>
+  
+		</apex:pageBlock>
+      </apex:pageBlockSection>
+       
+        <apex:pageBlock >
+			<apex:pageBlockSection >
+           	    <apex:pageBlock title="{!$CurrentPage.parameters.accountName}" id="refreshDetail">
+                        <apex:detail subject="{!$CurrentPage.parameters.accountID}"/>
+                </apex:pageBlock>
+            </apex:pageBlockSection>
+		</apex:pageBlock>
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

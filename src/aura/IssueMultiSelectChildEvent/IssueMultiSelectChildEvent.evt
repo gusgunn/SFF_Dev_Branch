@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="Pass ChildID from Interaction" >
+    <aura:attribute name="childID" type="String" />
+</aura:event>

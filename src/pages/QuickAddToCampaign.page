@@ -1,0 +1,84 @@
+<apex:page standardController="CampaignMember" sidebar="False" >
+    <apex:includescript value="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" />
+    <apex:includescript value="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.1/jquery.validate.min.js" />
+    <apex:slds />
+    <script type="text/javascript"> 
+    <script> 
+        
+        
+        
+        $(document).ready(function() {
+        
+        $('[id$=AddToCampaignform]').validate();  
+        
+        
+        $('[id$=StatusID]').rules("add",{
+            required: true,
+            
+        });     
+        
+        /* My error messages */
+        jQuery.validator.messages.required = "Required"; 
+        
+    });
+    
+    </script>   
+    
+    
+    
+    
+    
+    <apex:form Id="AddToCampaignform">
+        
+        <apex:pageMessages />
+        
+        <apex:pageBlock >
+            
+        </apex:pageBlock>
+        <apex:outputPanel >
+            <apex:pageBlock mode="edit" id="pblock">
+               <!--style="overflow:scroll;width:350px;" layout="block"-->
+                
+                <apex:pageBlockSection title="Add To Campaign" columns="1" id="pbsection">
+                    <apex:inputfield value="{!Campaignmember.campaignid}" label="Campaign Name" id="cName"/>
+                    <apex:outputfield value="{!Campaignmember.id}"  id="cm"/>
+                    <apex:inputfield value="{!Campaignmember.status}"  id="StatusID" required="True"/>
+                    
+                    <apex:inputfield value="{!CampaignMember.Special_Accommodations_Information__c}"/>
+                    <apex:inputfield value="{!CampaignMember.Interpreter_Service_Language__c}" Label="Interpreter Required? (For IRC: Spanish, Cantonese or ASL Only" id="langID"/>   
+                    <apex:inputfield value="{!CampaignMember.Child_requires_1_1_support__c}"/>  
+                    <apex:inputfield value="{!CampaignMember.Parent_Caregiver__c}"/>
+                     
+                </apex:pageBlockSection>
+                 <apex:pageBlockButtons >
+                     <apex:commandButton value="Save & Veiw" action="{!save}" />
+                    
+                   <apex:actionFunction name="quickSaveJavascript" action="{!quicksave}" oncomplete="window.top.close();"/>
+                    <apex:commandButton value="Save" onclick="quickSaveJavascript();"/>
+                     <apex:commandButton value="Cancel" action="{!cancel}" immediate="true" />
+                    
+                </apex:pageBlockButtons>
+            </apex:pageBlock> 
+            
+        </apex:outputPanel>
+        
+        <apex:pageBlock id="blockHide">
+            <apex:pageBlockSection title="System Use Only" columns="1" id="sectionHide"> 
+                <apex:pageBlockSectionItem >
+                    <apex:inputField id="CampaignMemberContactId" value="{!campaignmember.Contactid}" label="Contact"/>
+                    <script>
+                    document.getElementById('{!$Component.CampaignMemberContactId}' + '_lkid').value = '{!$CurrentPage.parameters.ContactId}';
+                    document.getElementById('{!$Component.CampaignMemberContactId}' + '_lkold').value = '{!$CurrentPage.parameters.ContactName}';
+                    document.getElementById('{!$Component.CampaignMemberContactId}' + '_mod').value = 1;
+                    document.getElementById('{!$Component.CampaignMemberContactId}').value = '{!$CurrentPage.parameters.ContactName}';
+                    </script>
+                </apex:pageBlockSectionItem>   
+            </apex:pageBlockSection>
+            
+            <script> twistSection(document.getElementById('{!$Component.blockHide.sectionHide}').getElementsByTagName('img')[0])
+            </script>
+            
+        </apex:pageBlock>
+    </apex:form> 
+    
+</apex:page>

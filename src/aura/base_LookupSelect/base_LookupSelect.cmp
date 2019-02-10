@@ -1,0 +1,36 @@
+<aura:component controller ="ResourceGuide" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:lightningQuickAction" access="global" >
+    <aura:attribute name="issueTypes" type="List[]" />
+    <aura:attribute name="showNewButton" type="Boolean" />
+    <aura:attribute name="selectedValue" type="String" />
+    <aura:attribute name="label" type="String" />
+    <aura:attribute name="field" type="String" default="" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:registerEvent name="passIssueType" type="c:evt_passString"/>
+    <aura:handler event="c:evt_refresh" action="{!c.onReset}"/>
+    <aura:handler event="c:evt_resetForm" action="{!c.onReset}"/>
+    
+    <!-- size="12" smallDeviceSize="6" mediumDeviceSize="4" largeDeviceSize="4" padding="around-small"-->
+    <aura:method name="reset" action="{!c.onReset}">
+         <aura:attribute name="reset" type="String" />
+    </aura:method>
+    <lightning:layout  >
+        <lightning:layoutItem  size ="6">
+            <lightning:select class="slds-padding-bottom-large" aura:id="issuePicked" name="issueTypeSelector" 
+                              label="{!v.label}"
+                              value=""
+                              onchange = "{!c.onSelected}" >
+                <!--<option value="" text = "Select"  />-->
+                <aura:iteration items="{!v.issueTypes}" var="option" >
+                    <option value ="{!option.value}" label ="{!option.label}"  />                                 
+                </aura:iteration> 
+            </lightning:select>
+        </lightning:layoutItem>
+        
+        <lightning:layoutItem  alignmentBump="top"  size ="6" >
+            <lightning:button class="slds-m-left_large slds-m-right_large"  variant ="brand" label="Reset"  onclick = "{!c.onReset}" />
+        </lightning:layoutItem>
+        
+    </lightning:layout>
+    
+    
+</aura:component>

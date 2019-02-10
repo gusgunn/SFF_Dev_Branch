@@ -1,0 +1,173 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId" access="global" >
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <aura:attribute name="sObjectName" type="String" default="Action__c" />
+    <aura:attribute name="recordType" type="String"  access ="global"/>
+    <aura:attribute name="recTypeName" type="String"  access ="global"/>
+    <aura:attribute name="recID" type="String" />
+    <aura:attribute name="issue" type="String" />
+    <aura:attribute name="childId" type="String" default="" />
+    <aura:attribute name="issueType" type="String" default=""/>
+    <aura:attribute name="callerId" type="String" default=""/>
+    <aura:attribute name="interactionContact" type="String" /> 
+    <aura:attribute name="interactionContactAgency" type="String" /> 
+    <aura:attribute name="interactionTime" type="DateTime"/>  
+    <aura:attribute name="error" type="String" />
+    <aura:attribute name="interactionLoadError" type="String" />
+    <aura:attribute name="targetFields" type="Object" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <lightning:overlayLibrary aura:id="popuplib"/>
+    <aura:registerEvent name="c:evt_AddNewActionToTable" type="c:evt_AddNewActionToTable"/>
+    
+    <force:recordData aura:id="recHandler"
+                      targetFields="{!v.targetFields}"
+                      fields ="Caller_AgencyName__c, Organization__c , Action_Detail_Type_External_Referral__c, 
+                               Action_Detail_Type_Internal_Referral__c, Action_Detail_Type_Information__c"
+                      layoutType="FULL"
+                      mode="EDIT"/>
+    
+    <lightning:recordEditForm aura:id="recordEditForm" 
+                              objectApiName="{!v.sObjectName}"
+                              recordTypeId ="{!v.recordType}" 
+                              onload ="{!c.prefillForm}"
+                              onsubmit ="{!c.onSubmitForm}"
+                              onsuccess="{!c.showToast}"
+                              onerror ="{!c.errors}">   
+        <lightning:messages />
+        
+        <lightning:layout multipleRows="true" horizontalAlign="spread">  
+            <aura:if isTrue="{!v.recTypeName == 'Internal Referral'}" >
+                <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="6">
+                    <lightning:inputField fieldName= "Caller_Name__c" aura:id ="caller"/>
+                    <lightning:inputField  fieldName= "Caller_Org__c" aura:id ="calleragency"/>
+                    <lightning:inputField fieldName= "Child_Name__c" aura:id ="child"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem class=" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="6">
+                    <lightning:inputField fieldName= "Referral_Date__c"  aura:id ="referralDate"/>
+                    <lightning:inputField fieldName= "Referral_Follow_up_Date__c"  aura:id ="referralFollowUpDate"/>
+                    <lightning:inputField fieldName= "Date_On_Referral_Form__c"  aura:id ="referralFormDate"/> 
+                </lightning:layoutItem>
+                <lightning:layoutItem class=" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="12">
+                    <lightning:inputField fieldName= "Action_Detail_Type_Internal_Referral__c" aura:id ="internal"/>
+                    <lightning:inputField fieldName= "Referral_Organization__c" aura:id ="referalorg"  />
+                    <!--  <lightning:inputField class="slds-hidden" fieldName= "Referral_Organization__c" aura:id ="referalorg" hardcodeSFCD in here />  -->
+                </lightning:layoutItem>
+                <aura:set attribute="else">
+                    <aura:if isTrue="{!v.recTypeName == 'External Referral'}" >
+                        <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="6">
+                            <lightning:inputField fieldName= "Caller_Name__c" aura:id ="caller"/>
+                            <lightning:inputField  fieldName= "Caller_Org__c" aura:id ="calleragency"/>
+                            <lightning:inputField fieldName= "Child_Name__c" aura:id ="child"/>
+                            <lightning:inputField fieldName= "Referral_Organization__c"  aura:id ="referralOrganization"/>
+                            <lightning:inputField fieldName= "Organization__c" aura:id ="organization"  />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="6">
+                            <lightning:inputField fieldName= "Referral_Date__c"  aura:id ="referralDate"/>
+                            <lightning:inputField fieldName= "Action_Status__c" aura:id ="status"   />
+                            <lightning:inputField fieldName= "Action_Status_Specifics__c"  aura:id ="statusDetail"/> 
+                            <lightning:inputField fieldName= "Referral_Contact__c"  aura:id ="referralContact" required ="true"/>
+                            <lightning:inputField fieldName= "Referral_Department__c"  aura:id ="referralDepartment" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="12">
+                            <lightning:inputField fieldName= "Action_Detail_Type_External_Referral__c"  aura:id ="external"  required = "true"/>
+                        </lightning:layoutItem>
+                        
+                        <aura:set attribute="else">  
+                            <aura:if isTrue="{!v.recTypeName == 'Information'}" >
+                                <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="6">
+                                    <lightning:inputField fieldName= "Caller_Name__c" aura:id ="caller"/>
+                                    <lightning:inputField fieldName= "Child_Name__c" aura:id ="child"/>
+                                    <lightning:inputField fieldName= "Organization__c" aura:id ="organization"  />
+                                </lightning:layoutItem>
+                                <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="6">  
+                                    <lightning:inputField fieldName= "Referral_Date__c"  aura:id ="referralDate"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="12">
+                                    <lightning:inputField fieldName= "Action_Detail_Type_Information__c"   aura:id ="information"  /> 
+                                </lightning:layoutItem>
+                                <aura:set attribute="else">  
+                                    <aura:if isTrue="{!v.recTypeName == 'Counseling Session'}" >
+                                        <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="6">
+                                            <lightning:inputField fieldName= "Caller_Name__c" aura:id ="caller"/>
+                                            <lightning:inputField fieldName= "Child_Name__c" aura:id ="child"/>
+                                            <lightning:inputField fieldName= "Length_of_session_minutes__c"   aura:id ="length"  /> 
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="6">
+                                            <lightning:inputField fieldName= "Scheduled_Date__c"   aura:id ="scheduled"  /> 
+                                            <lightning:inputField fieldName= "Completed_Date__c"   aura:id ="completed"  /> 
+                                            <lightning:inputField fieldName= "Referral_Date__c"  aura:id ="referralDate"/>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="12">
+                                            <lightning:inputField fieldName= "Other_Session_Attendees__c"   aura:id ="otherAttendees"  />
+                                            <lightning:inputField fieldName= "Counseling_Session_Notes__c" aura:id ="notes"  />
+                                        </lightning:layoutItem>
+                                        <aura:set attribute="else">  
+                                            <aura:if isTrue="{!v.recTypeName == 'Meeting Attendance'}" >
+                                                <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="6">
+                                                    <lightning:inputField fieldName= "Caller_Name__c" aura:id ="caller" required ="true"/>
+                                                    <lightning:inputField fieldName= "Child_Name__c" aura:id ="child"/>  
+                                                    <lightning:inputField fieldName= "Name_of_Meeting__c" aura:id ="meetingname"  required="true"/>
+                                                    <lightning:inputField fieldName= "Meeting_Start_Date_Time__c" aura:id ="meetingstart"  />
+                                                    
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="6">
+                                                    <lightning:inputField fieldName= "Scheduled_Date__c"   aura:id ="scheduled"  /> 
+                                                    <lightning:inputField fieldName= "Completed_Date__c"   aura:id ="completed"  /> 
+                                                    <lightning:inputField fieldName= "Referral_Date__c"  aura:id ="referralDate"/>
+                                                    <lightning:inputField fieldName= "Meeting_End_Date_Time__c"   aura:id ="meetingend"  /> 
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="12">
+                                                    <lightning:inputField fieldName= "Other_Meeting_Attendees__c"   aura:id ="otherAttendees"  />
+                                                    <lightning:inputField fieldName= "Meeting_Location__c"   aura:id ="meetingend"  /> 
+                                                </lightning:layoutItem>
+                                                <aura:set attribute="else">
+                                                    <aura:if isTrue="{!v.recTypeName == 'Check-In'}" >
+                                                        <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="12">
+                                                            <lightning:inputField fieldName= "Caller_Name__c" aura:id ="caller"/>
+                                                            <lightning:inputField fieldName= "Child_Name__c" aura:id ="child"/>
+                                                            <lightning:inputField fieldName= "Referral_Date__c"  aura:id ="referralDate"/>
+                                                        </lightning:layoutItem>
+                                                        <aura:set attribute="else">
+                                                            
+                                                            <aura:if isTrue="{!v.recTypeName == 'Material Distributed'}" > 
+                                                                <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="6">
+                                                                    <lightning:inputField fieldName= "Caller_Name__c" aura:id ="caller"/>
+                                                                    <lightning:inputField fieldName= "Child_Name__c" aura:id ="child"/>
+                                                                    <lightning:inputField fieldName= "Distribution_Method__c"  aura:id ="distributeMethod"/>
+                                                                    <lightning:inputField fieldName= "Quantity__c"  aura:id ="quantity"/>
+                                                                    
+                                                                </lightning:layoutItem>
+                                                                <lightning:layoutItem class =" slds-p-left_small slds-p-right_small slds-m-bottom_large" size="6">
+                                                                    <lightning:inputField fieldName= "Referral_Date__c"  aura:id ="referralDate"/>
+                                                                    <lightning:inputField fieldName= "Material_Language__c"  aura:id ="language"/>
+                                                                    <lightning:inputField fieldName= "Material_Type__c"  aura:id ="type"/>
+                                                                </lightning:layoutItem>
+                                                            </aura:if>
+                                                        </aura:set>
+                                                    </aura:if>  
+                                                </aura:set>
+                                            </aura:if>
+                                        </aura:set>
+                                    </aura:if>
+                                </aura:set>
+                            </aura:if>
+                        </aura:set>
+                    </aura:if>
+                </aura:set>
+            </aura:if>
+            
+            
+            <div class="slds-modal__footer slds-size--1-of-1">
+                
+                <lightning:button  name="Cancel" label="Cancel" onclick="{!c.close}"/>
+                <lightning:button  variant="brand" type="submit" name="Save" label="Save" />
+                
+            </div>
+            
+            <div class="slds-text-body_xx-small slds-assistive-text">
+                <lightning:inputField class="slds-hidden" fieldName= "Issue_Type__c" aura:id ="issueType"  />
+                <lightning:inputField class="slds-hidden" fieldName= "Issues__c" aura:id ="issue" />  
+            </div>
+            
+        </lightning:layout> 
+    </lightning:recordEditForm>
+</aura:component>

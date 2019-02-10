@@ -1,0 +1,39 @@
+<apex:page standardController="Account" recordSetVar="acts" sidebar="false">
+<apex:form >
+	<apex:pageBlock >
+       
+        <apex:pageBlockSection columns="2">
+		<apex:panelGrid columns="2">
+            
+			<apex:pageBlock title="List Of Accounts">
+				<apex:pageBlockTable value="{!acts}" var="a">
+					<apex:column >
+                        
+						<apex:commandLink value="{!a.name}" reRender="refreshDetail" >
+							<apex:param name="accountName" value="{!a.name}"/>
+							<apex:param name="accountId"  value="{!a.id}"/>
+						</apex:commandLink>
+                            
+					</apex:column>
+				<apex:column value="{!a.phone}"/>
+                
+                <apex:column value="{!a.website}"/>
+                 
+                
+			</apex:pageBlockTable>
+  
+		</apex:pageBlock>
+      </apex:panelGrid>
+      
+       
+			
+           	    <apex:pageBlock title="{!$CurrentPage.parameters.accountName}" id="refreshDetail">
+                        <apex:detail subject="{!$CurrentPage.parameters.accountID}"/>
+                </apex:pageBlock>
+                
+            </apex:pageBlockSection>
+		</apex:pageBlock>
+           
+    
+    </apex:form>
+</apex:page>

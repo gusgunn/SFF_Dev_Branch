@@ -1,0 +1,62 @@
+<!-- base_dataTableWithEdit Component file-->
+<aura:component controller="IssuesActionsCtr" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId"
+                access="global">
+    <!-- fix toast -->
+<aura:import library="lightning:notificationsLibrary" property="notifications"/>
+    
+    <aura:attribute name="sortedBy" type="String" />
+    <aura:attribute name="sortedDirection" type="String"/>
+    <aura:attribute name="objectName" type="Object" default ="Contact"/>
+    <aura:attribute name="interactionID" type="String" default="" />
+    <aura:attribute name="dataIn" type="Object" />
+    <aura:attribute name="mydata" type="Object"/>
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="errors" type="Object" default="[]"/>
+    <aura:attribute name="draftValues" type="Object" default="[]"/>
+    <aura:attribute name="saveLocalStorage" type="Boolean" default="true"/>
+    <aura:attribute name="atomicChanges" type="Object" default="[]"/>
+    <aura:attribute name="lookupChanges" type="Object" default="[]"/>
+    <aura:attribute name="changeIndex" type="Integer" default="0"/>
+    <aura:attribute name="selectedRow" type="Id" />
+    <aura:attribute name="selectedLookupRow" type="Id" />
+
+    <aura:attribute name="autoSaveEnabled" type="Boolean" default="false"/>
+    <aura:attribute name="targetFields" type="Object" />
+    <aura:attribute name="activeFilter" type="string" default="all" access="PRIVATE" />
+    
+    <aura:registerEvent name="evtApp_Support_ActionDatatable_ViewRecord" type="c:evtApp_Support_ActionDatatable_ViewRecord"/>
+
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+    <lightning:overlayLibrary aura:id="popuplib"/>
+    
+    <c:service_callApex aura:id ="service"  />
+   
+    
+    <force:recordData aura:id="recHandler"
+                      targetFields="{!v.targetFields}"
+                      layoutType="FULL"
+                      mode="EDIT"/>
+    
+       <ui:scrollerWrapper class="scrollerSize">
+        <lightning:datatable class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal" 
+                             aura:id="table"
+                             errors="{! v.errors }"
+                             draftValues="{! v.draftValues }"
+                             data="{! v.mydata }" 
+                             columns="{! v.mycolumns }" 
+                             keyField="Id"
+                             onsave="{! c.handleSave }"
+                             oncellchange="{! c.handleEditCell }"
+                             oncancel="{! c.handleCancel }"
+                             onrowaction="{! c.handleRowActionForLookup }"
+                             onheaderaction="{! c.handleHeaderAction }"
+                             onsort="{!c.undateColumnSorting}"
+                             sortedBy="{!v.sortedBy}"  
+                             sortedDirection="{!v.sortedDirection}"/>
+     
+    </ui:scrollerWrapper>
+    <aura:if isTrue="{!not(empty(v.errors))}">
+        <div class="recordError">
+            {!v.errors}</div>
+    </aura:if>
+</aura:component>

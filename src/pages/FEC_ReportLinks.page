@@ -1,0 +1,130 @@
+<apex:page Title="FEC Report Links">
+     
+        
+               
+              <apex:pageBlock >
+                  <div><p>
+                  </p>
+                     <p><b>Note: you may need to adjust the dates of the reporting period.</b></p> 
+                     <p>
+                     </p>
+                  </div>
+                 
+                                           
+      
+                      
+                          <apex:pageBlockSection title="IRC Evaluation Links">
+                            <apex:panelGrid > 
+              <apex:pageBlock title="Resources Or Services">
+                                    <div style="word-wrap:break-word; width:600px;" >
+                            
+                      <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehTu" id="ParentKno">IRC: Parents/Caregivers - Increased Knowledge Of Resources And Services</apex:outputLink> 
+                                               </div>
+                       
+                        <div style="word-wrap:break-word; width:600px;" >
+                            <p>
+                           <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehbU" id="ProfKno">IRC: Professionals - Increased Knowledge Of Resources And Services</apex:outputLink> 
+                                            </p>   </div>
+                                            </apex:pageBlock>
+                                             <apex:pageBlock title="Strategies">
+
+                    <div style="word-wrap:break-word; width:600px;" >
+                            
+                    <p>  <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehTu" id="ParentStrt">IRC: Parents/Caregivers - Increased Strategies</apex:outputLink> 
+                                           </p>    </div>
+                       
+                        <div style="word-wrap:break-word; width:600px;" >
+                           
+                          <p> <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehTz" id="ProfStrat">IRC: Professionals  - Increased Strategies</apex:outputLink> 
+                                       </p>        </div>
+                    </apex:pageBlock>
+                                           
+                    
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+            
+               
+                          <apex:pageBlockSection title="Trainings, Workshops, Clinics Evaluation Links">
+                            <apex:panelGrid > 
+              <apex:pageBlock title="Special Needs" >
+                                    <div style="word-wrap:break-word; width:600px;" >
+                            
+                      <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehZO" id="ParentKnoSp">Trainings Parents/Caregivers - Increased Knowledge Of Special Needs</apex:outputLink> 
+                                               </div>
+                       
+                        <div style="word-wrap:break-word; width:600px;" >
+                            <p>
+                           <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehZs" id="ProfKnoSp">Trainings: Professionals - Increased Knowledge Of Special Needs</apex:outputLink> 
+                                            </p>   </div>
+                                            <p> </p>
+                                             </apex:pageBlock>
+                                             <apex:pageBlock title="Strategies">
+
+                    <div style="word-wrap:break-word; width:600px;" >
+                            
+                    <p>  <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehaH" id="ParentStrtTr">Trainings: Parents/Caregivers - Increased Strategies</apex:outputLink> 
+                                           </p>    </div>
+                       
+                        <div style="word-wrap:break-word; width:600px;" >
+                           
+                          <p> <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehaR" id="ProfStratTR">Trainings: Professionals  - Increased Strategies</apex:outputLink> 
+                                       </p>        </div>
+                                        <p> </p>
+                    </apex:pageBlock>
+                                           
+                                           <apex:pageBlock title="Resources Or Services" >
+                                    <div style="word-wrap:break-word; width:600px;" >
+                            
+                      <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehbA" id="ParentKnoR">Trainings Parents/Caregivers - Increased Knowledge Of Resources Or Services</apex:outputLink> 
+                                               </div>
+                       
+                        <div style="word-wrap:break-word; width:600px;" >
+                            <p>
+                           <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehbF" id="ProfKnoR">Trainings: Professionals - Increased Knowledge Of Resources Or Services</apex:outputLink> 
+                                            </p>   </div>
+                                            <p> </p>
+                                             </apex:pageBlock>
+                                             <apex:pageBlock title="Communicate" >
+
+                    <div style="word-wrap:break-word; width:600px;" >
+                            
+                    <p>  <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehab" id="ParentCommTr">Trainings: Parents/Caregivers - Increased Ability To Communicate</apex:outputLink> 
+                                           </p>    </div>
+                       
+                        <div style="word-wrap:break-word; width:600px;" >
+                           
+                          <p> <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehaq" id="ProfCommTR">Trainings: Professionals  - Increased Ability To Communicate</apex:outputLink> 
+                                       </p>        </div>
+                                        <p> </p>
+                    </apex:pageBlock>
+                     <apex:pageBlock title="Support" >
+                    
+                      <div style="word-wrap:break-word; width:600px;" >
+                           
+                          <p> <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehav" id="ParentSuppTR">Trainings: Caregivers- Increased Feelings Of Support</apex:outputLink> 
+                                       </p>        </div>
+                                        <p> </p>
+                    </apex:pageBlock>
+                    
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+          
+           <apex:pageBlockSection title="IEP Report Links">
+               <apex:panelGrid >
+              <apex:pageBlock title="IEP">
+                  
+                    <div style="word-wrap:break-word; width:400px;" >
+                        
+                    <p>  <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehTa" id="IEPPac">IEP And Transition Packets</apex:outputLink> 
+                                            </p>   </div>
+                       
+                        <div style="word-wrap:break-word; width:400px;" >
+                           
+                         <p>  <apex:outputLink value="https://sfcd.my.salesforce.com/00O16000007NOuL" id="IEPClin">IEP Clinics</apex:outputLink> </p>
+                           <p> Note: You have IEP Clinics number Joe- I need to fix this when you get back </p>
+                                               </div>
+                    </apex:pageBlock>
+                   </apex:panelGrid>
+            </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:page>

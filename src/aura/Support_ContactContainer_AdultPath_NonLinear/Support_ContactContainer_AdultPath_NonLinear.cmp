@@ -1,0 +1,176 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    <lightning:notificationsLibrary aura:id="notifLib" />
+    <aura:attribute name="recordId" type="String"  />
+    <aura:attribute name="household" type="String" />
+    <aura:attribute name="intakeStatus" type="Boolean"  default ="true"/>
+    <aura:attribute name="InteractionStatus" type="Boolean"  default ="false"/>
+    <aura:attribute name="surveyStatus" type="Boolean"  default ="false"/>'
+    <aura:attribute name="SwAssessmentStatus" type="Boolean"  default ="false"/>
+    
+    <aura:attribute name="formattedHomePhone" type="String" default = "0000000000" />
+    <aura:attribute name="pathStep" type="String" default="1"/>
+    <lightning:overlayLibrary aura:id="popuplib"/>
+    
+    <aura:handler name="change" value="{!v.pathStep}" action="{!c.handlePathStepChange}"/>
+    
+    <aura:attribute name="record" type="Object" />
+    <aura:attribute name="simpleRecord" type="Object" />
+    <aura:attribute name="error" type="String" />
+    
+    <force:recordData aura:id="recordLoader"
+                      layoutType="FULL"
+                      recordId="{!v.recordId}"
+                      targetRecord="{!v.record}"
+                      targetFields="{!v.simpleRecord}"
+                      targetError="{!v.error}"
+                      recordUpdated="{!c.handleRecordUpdated}" />
+    
+    <lightning:card>
+        
+        
+        
+        <div class="slds-grid slds-p-left_medium slds-p-right_medium">
+            <div class="slds-tabs--path" role="application" aura:id="path" >
+                <ul class="slds-tabs--path__nav" role="tablist">
+                    <!-- class="{!'slds-tabs_path__item '+item.state}" -->
+                    <li aura:id="1" class="slds-tabs--path__item slds-is-current" role="presentation" >
+                        <a class="slds-tabs--path__link" id="tabs-path-2326" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" onclick="{!c.selectPathStep1}"  aria-live="assertive">
+                            <span class="slds-tabs--path__stage">
+                                <lightning:icon iconName="utility:check" size="x-small" alternativeText="Indicates approval"/>
+                            </span>
+                            <span class="slds-tabs--path__title" ><div class="slds-text-heading_xx-small">Overview</div></span>
+                        </a>
+                    </li>
+                    <li aura:id="2" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                        <a class="slds-tabs--path__link" id="tabs-path-2327" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);"  onclick="{!c.selectPathStep2}" aria-live="assertive">
+                            <span class="slds-tabs--path__stage">
+                                <lightning:icon iconName="utility:check" size="x-small" alternativeText="Indicates approval"/>
+                            </span>
+                               <span class="slds-tabs--path__title" ><div class="slds-text-heading_xx-small">Demographics</div></span>
+                        </a>
+                    </li>
+                    <li aura:id="3" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                        <a class="slds-tabs--path__link" id="tabs-path-2328" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" onclick="{!c.selectPathStep3}" aria-live="assertive">
+                            <span class="slds-tabs--path__stage">
+                                <lightning:icon iconName="utility:check" size="x-small" alternativeText="Indicates approval"/>
+                            </span>
+                            <span class="slds-tabs--path__title"><div class="slds-text-heading_xx-small">Federal</div></span>
+                        </a>
+                    </li>
+                    <li aura:id="4" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                        <a class="slds-tabs--path__link" id="tabs-path-2328" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" onclick="{!c.selectPathStep4}" aria-live="assertive">
+                            <span class="slds-tabs--path__stage">
+                                <lightning:icon iconName="utility:check" size="x-small" alternativeText="Indicates approval"/>
+                            </span>
+                            <span class="slds-tabs--path__title" ><div class="slds-text-heading_xx-small">Preferences</div></span>
+                        </a>
+                    </li>
+                    
+                    <li aura:id="5" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                        <a class="slds-tabs--path__link" id="tabs-path-2328" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" onclick="{!c.selectPathStep5}" aria-live="assertive">
+                            <span class="slds-tabs--path__stage">
+                                <lightning:icon iconName="utility:check" size="x-small" alternativeText="Indicates approval"/>
+                            </span>
+                        
+                             <span class="slds-tabs--path__title" ><div class="slds-text-heading_xx-small">Intakes/Assessments</div></span>
+                        </a>
+                    </li>
+                    
+                   
+                  
+                </ul>
+            </div>
+        </div>
+    </lightning:card>
+    
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '1'}">
+                <lightning:layoutItem aura:id="mainCol1" size="12"  >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" numberOfColumns ="2" fieldsArray =
+                                                    "['Name', 'MailingAddress', 
+                                                     'npo02__Household__c', 'HomePhone', 
+                                                     'AccountId','MobilePhone', 
+                                                     'Birthdate', 'Email',    
+                                                     'Family_Role__c']" />
+                </lightning:layoutItem>
+            </aura:if> 
+        </lightning:layout>
+        
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '5'}">
+                <lightning:layoutItem aura:id="mainCol2" size="12" >
+                    <lightning:card iconName="standard:survey"  class="slds-p-around_small">
+                        <aura:set attribute="actions">
+                         <!--   <lightning:button label="New Intake" variant="{!v.intakeStatus ? 'destructive' : 'neutral'}" onclick="{!c.onNewIntake}" disabled="{!empty(v.recordId)}" /> -->
+                            <lightning:button label="New Survey" variant="{!v.surveyStatus ? 'destructive' : 'neutral'}" onclick="{!c.onNewSurvey }" disabled="{!empty(v.recordId)}" />
+                            <lightning:button label="New SW Assessment" variant="{!v.SwAssessmentStatus? 'destructive' : 'neutral'}" onclick="{!c.onNewSwAssessment }" disabled="{!empty(v.recordId)}" /> 
+                        </aura:set>
+                        
+                        <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="" mode="readOnly" numberOfColumns = "2" fieldsArray =
+                                                        "[ 'Most_Recent_Intake__c' ,'First_Intake__c', 
+                                                         'Most_Recent_Intake_Survey__c', 'First_Intake_Survey__c', 
+                                                         'Last_Interaction_Date__c', 'First_Interaction__c',
+                                                         'Most_Recent_SW_Family_Assessment__c', 'First_SW_Family_Assessment__c' ]" />
+                    </lightning:card>
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+         <lightning:layout> 
+            <aura:if isTrue="{!v.pathStep == '2'}">
+                <lightning:layoutItem aura:id="mainCol3"  size="12" >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" numberOfColumns ="4" title="Ethnicity, Race / Gender, Language"  fieldsArray =
+                                                    "['English_Fluency__c', 'Family__Ethnicity__c', 'Family__Race__c',  'Family__Gender__c',
+                                                     'Family__Primary_Language__c', 'Hispanic_Latino_please_specify__c','Race_Other__c' ,  'Sexual_Orientation__c',
+                                                     'Other_Primary_Language__c' , 'Ethnicity_Hispanic_Latino_Other__c' 
+                                                     ]" />
+                    
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '4'}">
+                <lightning:layoutItem aura:id="mainCol4" size="12"  >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}"  numberOfColumns ="3" title="Contact Preferences"  fieldsArray =
+                                                    "['No_Email__c',  'Fundraising__c', 'InfoDigest__c', 
+                                                      'HasOptedOutOfFax',  'EducationPrograms__c', 'Volunteer_Enews__c',	
+                                                      'Do_Not_Contact__c',   'Do_Not_Contact_Reason__c', 'ENewsletter__c', 
+                                                      'Communication_Notes__c' ]" />
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+       
+        
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '3'}">
+                <lightning:layoutItem aura:id="mainCol5" size="12" >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}"  numberOfColumns ="3" fieldsArray =
+                                                    "[ 'Housing_Status__c', 'LEP__c', 'Are_you_or_your_spouse_partner_pregnant__c', 
+                                                     'Other_Housing_Status__c',  'Income__c', 'Do_you_know_your_expected_due_date__c',
+                                                     'Safe_Stable_Housing__c','Low_Income__c', 'Expected_Due_Date__c' ]" />
+                    
+                    
+                </lightning:layoutItem> 
+            </aura:if>
+        </lightning:layout>
+        
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '6'}">
+                <lightning:layoutItem aura:id="mainCol6"   size="12" >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Primary Care" numberOfColumns ="3" fieldsArray =
+                                                    "['Primary_Care_Clinic__c', 'Primary_Insurance_Type__c', 'Secondary_Insurance_Type__c',
+                                                     'Primary_Physician__c', 'Primary_Insurance_Other__c','Secondary_Insurance_Other__c'
+                                                     ]"/>                             
+                </lightning:layoutItem> 
+            </aura:if>
+        </lightning:layout>  
+
+</aura:component>
+<!-- <lightning:layoutItem aura:id="rtCol3b" size="3" >
+                <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Email Addresses" fieldsArray =
+                                                "['Email', 'npe01__AlternateEmail__c', 'Work_Email__c'	'Email_Text__c' ]"/>
+                
+            </lightning:layoutItem>
+                            <lightning:layoutItem aura:id="rtCol3b" size="3" >
+                <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Phone numbers?" fieldsArray =
+                                                "[ ]"/>
+                                </lightning:layoutItem> -->

@@ -1,0 +1,127 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    <aura:import library="lightning:notificationsLibrary" property="notifications"/>
+    <aura:attribute name="recordId" type="string"  />
+    <aura:attribute name="household" type="String" />
+    <aura:attribute name="intakeStatus" type="Boolean"  default ="true"/>
+    <aura:attribute name="InteractionStatus" type="Boolean"  default ="false"/>
+    <aura:attribute name="surveyStatus" type="Boolean"  default ="false"/>'
+    <aura:attribute name="SwAssessmentStatus" type="Boolean"  default ="false"/>
+    
+    <aura:attribute name="formattedHomePhone" type="String" default = "0000000000" />
+    <aura:attribute name="pathStep" type="string" default="1"/>
+    <lightning:overlayLibrary aura:id="popuplib"/>
+    <aura:attribute name="main" type="Aura.Component[]" />
+    <aura:attribute name="rt_col" type="Aura.Component[]" />    
+    
+    <aura:attribute name="record" type="Object" />
+    <aura:attribute name="simpleRecord" type="Object" />
+    <aura:attribute name="error" type="String" />
+    
+    <force:recordData aura:id="recordLoader"
+                      layoutType="FULL"
+                      recordId="{!v.recordId}"
+                      targetRecord="{!v.record}"
+                      targetFields="{!v.simpleRecord}"
+                      targetError="{!v.error}"
+                      recordUpdated="{!c.handleRecordUpdated}" />
+    
+    
+    <lightning:card >
+        <div  class="slds-m-around_medium">
+            <lightning:progressIndicator type="path"  currentStep="{!v.pathStep}" >
+                <lightning:progressStep label="Overview" value="1" onclick="{!c.selectPathStep1}"/>
+                <lightning:progressStep label="Intake/Assess" value="2" onclick="{!c.selectPathStep2}"/> 
+                <lightning:progressStep label="Preferences" value="3" onclick="{!c.selectPathStep3}"/>
+                <lightning:progressStep label="Demographics" value="4" onclick="{!c.selectPathStep4}"/>
+                <lightning:progressStep label="Federal" value="5" onclick="{!c.selectPathStep5}"/>
+                <lightning:progressStep label="Medical" value="6" onclick="{!c.selectPathStep6}"/>
+                <!--  <lightning:progressStep label="E-News" value="7" onclick="{!c.selectPathStep7}"/> 
+            <lightning:progressStep label="Work Info" value="8" onclick="{!c.selectPathStep8}"/> -->
+                
+            </lightning:progressIndicator> 
+        </div>
+    </lightning:card>
+    <lightning:card title="">
+        <lightning:layout>
+            
+            <aura:if isTrue="{!v.pathStep == '1'}">
+                <lightning:layoutItem aura:id="mainCol1" size="12" class="slds-p-around_small" >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" numberOfColumns ="2" fieldsArray =
+                                                    "['Name', 'MailingAddress', 
+                                                     'npo02__Household__c', 'HomePhone', 
+                                                     'AccountId','MobilePhone', 
+                                                     'Birthdate', 'Email',    
+                                                     'Family_Role__c']" />
+                </lightning:layoutItem>
+            </aura:if> 
+        </lightning:layout>
+        
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '2'}">
+                <lightning:layoutItem aura:id="mainCol2" size="12" >
+                    <lightning:card iconName="standard:survey"  class="slds-p-around_small">
+                        <aura:set attribute="actions">
+                            <lightning:button label="New Intake" variant="{!v.intakeStatus ? 'destructive' : 'neutral'}" onclick="{!c.onNewIntake}" disabled="{!empty(v.recordId)}" />
+                            <lightning:button label="New Survey" variant="{!v.surveyStatus ? 'destructive' : 'neutral'}" onclick="{!c.onNewSurvey }" disabled="{!empty(v.recordId)}" />
+                            <lightning:button label="New SW Assessment" variant="{!v.SwAssessmentStatus? 'destructive' : 'neutral'}" onclick="{!c.onNewSwAssessment }" disabled="{!empty(v.recordId)}" /> 
+                        </aura:set>
+                   
+                        <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="" mode="readOnly" numberOfColumns = "2" fieldsArray =
+                                                         "[ 'Most_Recent_Intake__c' ,'First_Intake__c', 
+                                                         'Most_Recent_Intake_Survey__c', 'First_Intake_Survey__c', 
+                                                         'Last_Interaction_Date__c', 'First_Interaction__c',
+                                                         'Most_Recent_SW_Family_Assessment__c', 'First_SW_Family_Assessment__c' ]" />
+                    </lightning:card>
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+        
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '3'}">
+                <lightning:layoutItem aura:id="mainCol3" size="12" class="padding " >
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}"  numberOfColumns ="3" title="Contact Preferences"  fieldsArray =
+                                                    "['Do_Not_Contact__c', 'Fundraising__c', 'Events__c', 
+                                                     'Do_Not_Contact_Reason__c',  'EducationPrograms__c', 'Community_Outreach__c',
+                                                     'No_Email__c',	'ENewsletter__c','Volunteer_Enews__c'	
+                                                     'Communication_Notes__c' ]" />
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+        <lightning:layout> 
+            <aura:if isTrue="{!v.pathStep == '4'}">
+                <lightning:layoutItem aura:id="mainCol4" class="padding "   size="12" >
+                <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" numberOfColumns ="4" title="Ethnicity, Race / Gender, Language"  fieldsArray =
+                                                "['English_Fluency__c', 'Family__Ethnicity__c', 'Family__Race__c',  'Family__Gender__c',
+                                                 'Family__Primary_Language__c', 'Hispanic_Latino_please_specify__c','Race_Other__c' ,  'Sexual_Orientation__c',
+                                                'Other_Primary_Language__c' , 'Ethnicity_Hispanic_Latino_Other__c' 
+                                                 ]" />
+       
+            </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+        
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '5'}">
+                <lightning:layoutItem aura:id="mainCol5" size="12" class="padding ">
+                    <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Checkbox Heaven" numberOfColumns ="3" fieldsArray =
+                                                    "[ 'Housing_Status__c', 'LEP__c ', 'Are_you_or_your_spouse_partner_pregnant__c', 
+                                                     'Other_Housing_Status__c',  'Income__c', 'Do_you_know_your_expected_due_date__c',
+                                                     'Safe_Stable_Housing__c ','Low_Income__c', 'Expected_Due_Date__c' ]" />
+                    
+                    
+                </lightning:layoutItem> 
+            </aura:if>
+        </lightning:layout>
+        
+        <lightning:layout>
+            <aura:if isTrue="{!v.pathStep == '6'}">
+                 <lightning:layoutItem aura:id="mainCol6" class="padding "  size="12" >
+                <c:service_RecordForm_CreateCmp recordId="{!v.recordId}" title="Primary Care" numberOfColumns ="3" fieldsArray =
+                                                "['Primary_Care_Clinic__c', 'Primary_Insurance_Type__c', 'Secondary_Insurance_Type__c',
+                                                 'Primary_Physician__c', 'Primary_Insurance_Other__c','Secondary_Insurance_Other__c'
+                                                 ]"/>                             
+            </lightning:layoutItem> 
+            </aura:if>
+        </lightning:layout>  
+    </lightning:card>
+</aura:component>

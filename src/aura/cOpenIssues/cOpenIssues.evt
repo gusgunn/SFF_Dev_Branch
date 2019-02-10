@@ -1,0 +1,5 @@
+<aura:event type="APPLICATION" description="Pass List of open Issues" >
+    <aura:attribute name="openIssuesList" type="String[]" />
+   <!--  <aura:attribute name="childsId" type="String[]" />
+     <aura:attribute name="interId" type="String[]" /> -->
+</aura:event>

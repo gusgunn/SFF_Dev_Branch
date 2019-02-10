@@ -1,0 +1,119 @@
+<apex:page readOnly="true" controller="CPIRChildStats" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        <apex:panelGroup >
+            <apex:pageBlock title="CPIR Report: Kids Ethnicity, Race, & Gender">
+                
+                <apex:pageMessages id="messages" ></apex:pageMessages>
+                 <apex:pageBlockSection title="Enter Fiscal Year: " columns="1" collapsible="True"  >
+                   <apex:panelGrid columns="3" cellpadding="15"  cellspacing="5" style="text-align:center; font-weight: bold" >
+                   <apex:outputLabel value="Date From " />
+                    <apex:input value="{!dateFrom}" type="auto" />  
+                    <apex:outputLabel value="Date To"  />
+                    <apex:input value="{!dateTo}" type="auto" />
+                    <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                     </apex:panelGrid>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:panelGroup>
+        
+        <apex:pageblock title="Unduplicated Children - Campaigns" >
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="4" cellpadding="200" cellspacing="200"  border="1"  style="text-align:center; font-weight: bold">
+     
+
+                    
+                    <apex:pageBlockTable value="{!GenerateGenCamp}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Gender" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Children Camp" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateRaceCamp}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Race" />
+                        <apex:column value="{!ex.c1}" headervalue=""/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateFedDisCamp}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Federal Disability" />
+                        <apex:column value="{!ex.c1}" headervalue="Camp"/>
+                    </apex:pageBlockTable>
+                    
+        
+                    
+                  
+                                           
+                    
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageblock>
+        
+        
+          <apex:pageblock title="Unduplicated Children, Interations" >
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="4" cellpadding="200" cellspacing="200"  border="1"  style="text-align:center; font-weight: bold">
+     
+                   
+                    
+                    <apex:pageBlockTable value="{!GenerateGenInt}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Gender" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Children Int" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateRaceInt}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Race" />
+                        <apex:column value="{!ex.c1}" headervalue=""/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateFedDisINt}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Federal Disability Int" />
+                        <apex:column value="{!ex.c1}" headervalue=""/>
+                    </apex:pageBlockTable>
+                    
+        
+                    
+                  
+                                           
+                    
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageblock>
+        
+          <apex:pageblock title="Unduplicated Children, All" >
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="4" cellpadding="200" cellspacing="200"  border="1"  style="text-align:center; font-weight: bold">
+     
+                    <apex:pageBlockTable value="{!GenerateTotalKids}" var="ex"  style="text-align:center; font-weight: bold" > 
+                        <apex:column value="{!ex.a1}" headervalue="Ethnicity" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Children" />
+                    </apex:pageBlockTable>
+                    
+                    <apex:pageBlockTable value="{!GenerateGen}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Gender" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Children" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateRace}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Race" />
+                        <apex:column value="{!ex.c1}" headervalue=""/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateFedDis}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Federal Disability" />
+                        <apex:column value="{!ex.c1}" headervalue=""/>
+                    </apex:pageBlockTable>
+                    
+        
+                    
+                  
+                                           
+                    
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageblock>
+        
+        
+        
+    </apex:form>
+</apex:page>

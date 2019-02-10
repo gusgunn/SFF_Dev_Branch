@@ -1,0 +1,36 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId,force:lightningQuickActionWithoutHeader">
+    <aura:attribute name="sObjectName" type="String" default="Case" />
+    <aura:attribute name="recTypeID" type="String"  access ="global" default ="012G0000000qhDLIAY"/>
+    <aura:attribute name="recTypeName" type="String" default = "OBO Professional Interaction" access ="global"/>
+    <aura:attribute name="relatedId" type="String" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="household" type="String" />
+    <aura:attribute name="contact" type="Object" />
+    <aura:attribute name="simpleContact" type="Object" />
+    <aura:attribute name="contactError" type="String" />
+   <aura:attribute name="disabled" type="Boolean" default="false" />
+      <aura:attribute name="show" type="boolean" default = "true" />
+     <aura:attribute name="isOpen" type="Boolean" default="true" />
+    <aura:attribute name="errors" type="String"  /> 
+    
+    <force:recordData aura:id="contactRecordLoader"
+                      recordId="{!v.recordId}"
+                      fields= "Id, npo02__Household__c" 
+                      targetRecord="{!v.contact}"
+                      targetFields="{!v.simpleContact}"
+                      targetError="{!v.errors}"
+                      recordUpdated="{!c.recordUpdate}"
+                     />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+   <lightning:overlayLibrary aura:id="popuplib"/>
+    
+        <aura:if isTrue="{!not(empty(v.errors))}">
+            <div class="recordError">
+                <ui:message title="Error" severity="error" closable="true">
+                    {!v.errors}
+                </ui:message>
+            </div>
+        </aura:if>
+    
+</aura:component>

@@ -1,0 +1,66 @@
+<apex:page readOnly="true" controller="AnnualReportStatsCG" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+<apex:pageBlock title="CPIR">
+ 
+    <apex:pageMessages id="messages" ></apex:pageMessages>
+    
+        <apex:pageBlockSection collapsible="True" title="  I. DUPLICATED NUMBER OF PARENTS  & PROFESSIONALS SERVED">
+        
+                 <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007pSiG" id="conTrain">Question A: Trainings</apex:outputLink>
+                  
+                    
+             </apex:pageBlockSection> 
+              <apex:pageBlockSection collapsible="True" title="  ">      
+                  
+                
+                   <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007pSiL" id="IndCGAssit">B. Caregivers- Individual Assistance Contacts </apex:outputLink>
+                    
+                   <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007pSiQ" id="IndProffAssit">B. Professionals - Individual Assistance Contacts </apex:outputLink>
+                  
+                           
+    </apex:pageBlockSection> 
+    </apex:pageBlock>
+<!--
+<apex:form >
+        <apex:panelGroup >
+            <apex:pageBlock title="II. UNDUPLICATED NUMBER OF PARENTS SERVED">
+                
+                <apex:pageMessages id="messages" ></apex:pageMessages>
+                <apex:pageBlockSection title="Enter Fiscal Year: " columns="1" collapsible="True"  >
+                    <apex:panelGrid columns="5" cellpadding="15"  cellspacing="5" style="text-align:center; font-weight: bold" >
+                        <apex:outputLabel value="Date From " />
+                        <apex:input value="{!dateFrom}" type="auto" /> 
+                        <apex:outputLabel value="Date To"  />
+                        <apex:input value="{!dateTo}" type="auto" />
+                        <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                    </apex:panelGrid>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:panelGroup>
+        
+ <apex:pageblock title="Unduplicated Caregivers  " >
+            
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="4" cellpadding="80" border="3"  cellspacing="80" >
+                    <apex:pageBlockTable value="{!GenerateEthnicity}" var="ex"  style="text-align:center; font-weight: bold" border="3"> 
+                        <apex:column value="{!ex.a1}" headervalue=" Ethnicity" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> This metric combines ALL caregivers from Family and PMP Professional interactions, and from All Educational events and Family events during the reporting period selected. 
+                                The total is ALL Unduplicated Caregivers and their Ethnicity. NOTE: Ethnicity and ace are 2 sepeate fields. Please subtract the total for Hispanic/Latino from the total Unknown in the Race section</p> </div>
+                    </apex:pageBlock>
+                </apex:panelGrid>
+     </apex:pageBlockSection>
+    </apex:pageblock>
+</apex:form> -->
+</apex:page>

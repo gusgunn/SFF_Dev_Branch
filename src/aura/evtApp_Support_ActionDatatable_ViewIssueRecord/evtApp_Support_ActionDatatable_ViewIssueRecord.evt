@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="evtApp_Support_ActionDatatable_ViewIssueRecord" >
+    <aura:attribute Name = "rowId" type = "String" /> 
+    <aura:attribute Name = "buttonLabel" type = "String" />  
+</aura:event>

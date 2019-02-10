@@ -1,0 +1,63 @@
+<apex:page readOnly="true" controller="AnnualReportStatsProf" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        <apex:panelGroup >
+            <apex:pageBlock title="Annual Report: Professionals">
+                
+                <apex:pageMessages id="messages" ></apex:pageMessages>
+                <apex:pageBlockSection title="Enter Fiscal Year: " columns="1" collapsible="True"  >
+                    <apex:panelGrid columns="5" cellpadding="15"  cellspacing="5" style="text-align:center; font-weight: bold" >
+                        <apex:outputLabel value="Date From " />
+                        <apex:input value="{!dateFrom}" type="auto" /> 
+                        <apex:outputLabel value="Date To"  />
+                        <apex:input value="{!dateTo}" type="auto" />
+                        <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                    </apex:panelGrid>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:panelGroup>
+        
+        <apex:pageblock title="Unduplicated Professionals Served" >
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="3" cellpadding="50" border="1"  cellspacing="50" > 
+                    
+                    
+                    <apex:pageBlockTable value="{!GenerateAllProfessionals}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Language" />
+                        <apex:column value="{!ex.C1}" headervalue="Unduplicated Professionals: All" />
+                    </apex:pageBlockTable>
+                    
+                    
+                    
+                    
+                    <apex:pageBlockTable value="{!GenerateProEduCampTotals}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Language" />
+                        <apex:column value="{!ex.C1}" headervalue="Unuplicated Professionals, Educational Events" />
+                    </apex:pageBlockTable> 
+                    <apex:pageBlockTable value="{!GenerateProEvents}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Campaign Type" />
+                        <apex:column value="{!ex.C1}" headervalue="Duplicated Professionals By Event, Includes Family Events" />
+                    </apex:pageBlockTable>
+                    
+                    <apex:pageBlockTable value="{!GenerateProIntTotals}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Campaign Type" />
+                        <apex:column value="{!ex.C1}" headervalue="Unuplicated Professionals: NON OBO Interactions" />
+                    </apex:pageBlockTable>  
+                    
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageblock>
+        
+        
+        
+        
+    </apex:form>
+</apex:page>

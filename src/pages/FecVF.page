@@ -1,0 +1,166 @@
+<apex:page readOnly="true" controller="FecCtr" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    <style>
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        <apex:panelGroup >
+            <apex:pageBlock title="FEC">
+                
+                <apex:pageMessages id="messages" ></apex:pageMessages>
+                 <apex:pageBlockSection title="Enter Fiscal Year: " columns="1" collapsible="True"  >
+                   <apex:panelGrid columns="5" cellpadding="15"  cellspacing="5" style="text-align:center; font-weight: bold" >
+                   <apex:outputLabel value="Date From " />
+                    <apex:input value="{!dateFrom}" type="auto" />  
+                    <apex:outputLabel value="Date To"  />
+                    <apex:input value="{!dateTo}" type="auto" />
+                    <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                     </apex:panelGrid>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:panelGroup>
+        
+        <apex:pageblock title="Unduplicated Children, 3 through 21 " >
+            <apex:pageBlockSection collapsible="True">
+                <apex:panelGrid columns="8" cellpadding="200" cellspacing="200"  border="1"  style="text-align:center; font-weight: bold">
+     
+                    
+                      <apex:pageBlockTable value="{!GenerateKidLanguage}" var="ex"  style="text-align:center; font-weight: bold" > 
+                        <apex:column value="{!ex.a1}" headervalue="Language" />
+                        <apex:column value="{!ex.c1}" headervalue="UnduplicatedKid" />
+                    </apex:pageBlockTable>
+                    
+                    <apex:pageBlockTable value="{!GenerateGen}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Gender" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Children" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateTotalKids}" var="ex"  style="text-align:center; font-weight: bold" > 
+                        <apex:column value="{!ex.a1}" headervalue="Ethnicity" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Children" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateRace}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Race" />
+                        <apex:column value="{!ex.c1}" headervalue=""/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateFedDis}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Federal Disability" />
+                        <apex:column value="{!ex.c1}" headervalue=""/>
+                    </apex:pageBlockTable>
+                     </apex:panelGrid>
+            </apex:pageBlockSection>
+        <apex:pageBlockSection collapsible="True" Title="Caregivers">
+                <apex:panelGrid columns="12" cellpadding="200" cellspacing="100"  border="1"  style="text-align:center; font-weight: bold">
+     
+                    <apex:pageBlockTable value="{!GenerateParentLanguage}" var="ex"  style="text-align:center; font-weight: bold" > 
+                        <apex:column value="{!ex.a1}" headervalue="Language" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable> 
+                    
+                     <apex:pageBlockTable value="{!GenerateParentEth}" var="ex"  style="text-align:center; font-weight: bold" > 
+                        <apex:column value="{!ex.a1}" headervalue="Ehnicity" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable>
+                        <apex:pageBlockTable value="{!GenerateParentRace}" var="ex"  style="text-align:center; font-weight: bold" > 
+                        <apex:column value="{!ex.a1}" headervalue="Race" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable>
+                    
+                        
+        
+                        
+                    <apex:pageBlockTable value="{!GenerateParentRT}" var="ex"  style="text-align:center; font-weight: bold" > 
+                        <apex:column value="{!ex.a1}" headervalue="RecordType Listed" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Caregivers" />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!GenerateHHTotals}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Intake Needed?" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Households" />
+                    </apex:pageBlockTable>
+                    
+                    <apex:pageBlock >
+                        
+                             <div style="word-wrap:break-word; width:250px;" >
+                            <p> <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007pQPq" id="AllHH">Total Family Households from all Interactions - in age range</apex:outputLink>  </p>
+                              </div>
+                             
+                                                  
+                                                       
+                    </apex:pageBlock>
+                   
+                    
+                     </apex:panelGrid>
+            </apex:pageBlockSection>
+            
+        <apex:pageBlockSection collapsible="True" Title="Total Interactions">
+                <apex:panelGrid columns="6" cellpadding="200" cellspacing="200"  border="1"  style="text-align:center; font-weight: bold">
+                     
+                    <apex:pageBlockTable value="{!GenerateFamiliyIntTotalsTotals}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Family Interaction" />
+                        <apex:column value="{!ex.c1}" headervalue="Total interactions for Famililes" />
+                    </apex:pageBlockTable>
+                     
+                    
+                    <apex:pageBlockTable value="{!GenerateFamiliyIntWithAgeLimitTotals}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Family & PMP Interactions" />
+                        <apex:column value="{!ex.c1}" headervalue="Total Interactions " />
+                    </apex:pageBlockTable>
+                    <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> Family and PMP  Interaction (PMP listed as Professional Case here) This metric shows all families who had family interactions, who have a 3-22 year old.
+                            The PMP Interactions all do list a kiddo, while the Family Interactions metirc does not necesarily list the child.
+                                Click button, below, for report on Fanily And PMP Interactions that DO list the child. Note, you may need to adjust the dates if you need different reporting period.</p>
+                           </div>
+                                                    <div>
+                                                       <p>  <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehS8" id="Parent">Caregivers-Family And PMP Interactions</apex:outputLink> 
+                                              
+                             </p> </div>
+                             
+                                                  
+                                                       
+                    </apex:pageBlock>
+            
+            </apex:panelGrid>
+            </apex:pageBlockSection>
+                   <apex:pageBlockSection collapsible="True" Title="Professionals">
+                <apex:panelGrid columns="8" cellpadding="200" cellspacing="200"  border="1"  style="text-align:center; font-weight: bold">
+     
+                    <apex:pageBlockTable value="{!GenerateProfTotals}" var="ex"  style="text-align:center; font-weight: bold" > 
+                        <apex:column value="{!ex.a1}" headervalue="Language" />
+                        <apex:column value="{!ex.c1}" headervalue="Unduplicated Professionals" />
+                    </apex:pageBlockTable>
+                    
+                    <apex:pageBlockTable value="{!GenerateProfIntTotals}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Professional Interactions " />
+                        <apex:column value="{!ex.c1}" headervalue="Professional Interactions" />
+                    </apex:pageBlockTable> 
+                    
+                    <apex:pageBlockTable value="{!GenerateProfCallTypeTotals}" var="ex" style="text-align:center; font-weight: bold"> 
+                        <apex:column value="{!ex.a1}" headervalue="Professional Interaction Call Types" />
+                        <apex:column value="{!ex.c1}" headervalue="Professional Interactions" />
+                    </apex:pageBlockTable> 
+                      <apex:pageBlock >
+                        <div style="word-wrap:break-word; width:250px;" >
+                            <p> Report on Professional Interactions about Children 3 through 21. Note, you may need to adjust the dates if you need different reporting period.</p>
+                            
+                           <p>  <apex:outputLink value="https://sfcd.my.salesforce.com/00O1L000007ehTV" id="ParentKno">Professional Interactions</apex:outputLink> 
+                                              
+                             
+                                                 </p> </div>
+                       
+                    </apex:pageBlock>
+                                           
+                    
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageblock>
+        
+        
+        
+        
+    </apex:form>
+</apex:page>

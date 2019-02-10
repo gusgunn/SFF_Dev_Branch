@@ -1,0 +1,325 @@
+<apex:page readOnly="true" controller="ReferralTrackingCheckout" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    <style>
+        .tablesorter {
+        counter-reset: rowCounter;
+        }
+        .tablesorter .row {
+        counter-increment: rowCounter;
+        }
+        .tablesorter .row .counter::before {
+        content: counter(rowCounter);
+        }
+        
+        
+    </style>
+    <style type="text/css">       
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .filterDiv{ padding: 10px; }
+        label{ padding: 4px; }
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"/>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+    <apex:includeScript value="{!URLFOR($Resource.jQuery_TableSort, 'jquery-latest.js')}"  />
+    <apex:includeScript value="{!URLFOR($Resource.tablesorter, 'jquery.tablesorter.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.jQuery_TableSort   , '/themes/blue/style.css')}"  />
+    <apex:includeScript value="{!$Resource.Jquery}"/>   
+    
+    <!--Sort on load -->
+    <script type="text/javascript">
+    $j = jQuery.noConflict();    
+    $j(document).ready(function () {
+        $j('select[id*="Default"]').val('All');
+        $j('a').attr("target","_blank");
+        $j("[id$=sortIt]").tablesorter();   
+    });    
+    </script>
+    
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $('#search').keyup(function(){
+            searchTable($(this).val());
+            searchIssue($(this).val());
+        });
+    });
+    /*@gusgunn
+Param 1:searchText
+Description: this method takes an argument and
+searches records in the assigned table Id.
+*/
+    function searchTable(searchText)
+    {
+        /*get Table using its Id */
+        var table = $('table[id$=tblData]');
+        table.find('tr').each(function(index, row){
+            var allCells = $(row).find('td');
+            if(allCells.length > 0)
+            {
+                var found = false;
+                allCells.each(function(index, td)
+                              {
+                                  var regExp = new RegExp(searchText, 'i');
+                                  if(regExp.test($(td).text()))
+                                  {
+                                      found = true;
+                                      return false;
+                                  }
+                              });
+                if(found == true)$(row).show();else $(row).hide();
+            }
+        });
+    }
+    
+    document.getElementById("lkpParent").style.cursor = "pointer";
+    </script>
+    
+    
+    
+    <apex:messages />
+    
+    
+    <apex:form >
+        
+        <apex:pageBlock title=" My Referral and Contact Tracking">
+            
+            <apex:pageMessages id="messages" ></apex:pageMessages>
+            <apex:pageBlockSection title="Enter Dates"  collapsible="true">
+                <apex:panelGrid columns="9" cellpadding="30"   cellspacing="30" >
+                    
+                    <apex:panelGrid columns="1">
+                        <apex:outputLabel value="Date From" />
+                        <apex:input label="Date From" value="{!dateFrom}" type="auto" /> 
+                    </apex:panelGrid>
+                    
+                    
+                    
+                    <apex:panelGrid columns="1" cellpadding="30"  >
+                        <apex:outputLabel value="Date To" />
+                        <apex:input label="Date To" value="{!dateTo}" type="auto" />
+                    </apex:panelGrid>
+                    
+                     <apex:panelGrid columns="1">
+                    <apex:outputLabel value="Select FRS / SW" for="userSelect" />
+                    <div class="slds-select_container slds-m-right_medium">
+                        <div> <apex:selectList size="1" styleClass="slds-select" id="userSelect" onchange="setUser(this.value);"
+                                               value="{!usr}" >
+                            <apex:selectOptions value="{!pickU}"/>
+                            </apex:selectlist></div>
+                         </div>
+                       </apex:panelGrid>   
+                             <div>
+                                 
+                    </div>        
+                    <apex:panelGrid columns="2" cellpadding="60"  >
+                        <label class="slds-form-element slds-m-left_medium slds-m-top_medium"/>
+                        <div>
+                             <apex:outputLabel value="" />
+                        </div>
+                   <apex:commandButton value="Generate" action="{!startGenerateBoard}"  />
+                    
+                    </apex:panelGrid>
+                    
+                    
+                </apex:panelGrid>
+                <!-- JQUERY SEARCHBOX -->
+                <apex:panelGrid columns="1" cellpadding="30"  >
+                    <apex:actionFunction action="{!doQuery}" name="apexDoQuery" reRender="myData"/>
+                    
+                    
+                    <div class= "slds-theme--shade slds-text-align--left slds-size--1-of-1 slds-p-around--medium"  > 
+                        <label class="slds-form-element__label">  <b><i>                                        
+                            Filter Referrals  </i></b> </label>  <input type="text" id="search"   />
+                    </div>
+                </apex:panelGrid>
+                
+                
+                
+            </apex:pageBlockSection>  
+            <apex:pageBlockSection > 
+                         
+            </apex:pageBlockSection> 
+        </apex:pageBlock>
+        <apex:pageblock title="Referral Tracking " >
+            <apex:pageBlockSection collapsible="True" title="Tracking Professional Referrals Of My Households ">
+                <apex:panelGrid columns="1"  cellspacing="20" border="1"   >
+                    <apex:pageBlock >
+                        <apex:pageBlockTable value="{!GenerateFRCs}" var="ex" id="tblData" styleClass="tablesorter"  rowClasses="row" headerClass="TableTitle" style="text-align:center; font-weight: bold " > 
+                            <apex:column headervalue="#">
+                                <span class="counter"></span>
+                            </apex:column>
+                            <apex:column value="{!ex.Completed_Prof_Notification__c}" headervalue="Prof Complete!" style="Center" />
+                            
+                            
+                            <apex:column value="{!ex.Child_Referred__c}" headervalue=" Child Referred " style="Center" /> 
+                            
+                            <apex:column headervalue="Referral Record" style="Center"  >
+                                <apex:outputLink value="https://sfcd.my.salesforce.com/{!ex.id}" > View Record </apex:outputLink>
+                            </apex:column>
+                            <apex:column value="{!ex.Household_Referred__c}" headervalue=" Household" style="Center" /> 
+                            <apex:column value="{!ex.ActionReference__c   }" headervalue="Initial ActionLink" style="Center" />  
+                            <apex:column value="{!ex.Referral_Received_From__r.AccountID}" headervalue=" Referral Org" style="Center" /> 
+                             <apex:column value="{!ex.Referral_Received_From__c}" headervalue=" Referring Professional" style="Center" /> 
+                            <apex:column value="{!ex.Household_Referred__r.OwnerId}" headervalue=" HouseholdOwner" style="Center" /> 
+                            
+                            
+                            <apex:column value="{!ex.Date_Referral_Received__c }" headervalue=" Date Recieved" style="Center"  /> 
+                            
+                            <!--<apex:column headervalue="Date Recieved ▲▼"  style="Center"/ >
+<apex:outputtext style="background-color:{!IF(ex.date_TYSent__c - ex.Date_Referral_Received__c >2, "#D98880", "#538A61")}" value="{!ex.Date_Referral_Received__c}" />
+</apex:column> -->
+                            
+                            <apex:column value="{!ex.date_TYSent__c}" headervalue="Date TY Sent" style="Center" /> 
+                            <!--    <apex:column headervalue="TYSent ▲▼"  style="Center" >
+<apex:outputtext style="background-color:{!IF(ex.date_TYSent__c - ex.Date_Referral_Received__c >2, "#D98880", "#538A61")}" value="{!ex.Date_Referral_Received__c}" />
+</apex:column> -->
+                            
+                            <apex:column value="{!ex.date_Contact_Conf_Sent__c}" headervalue="Date Confirmation Sent" style="Center" />  
+                            
+                            <apex:column value="{!ex.date_Update_Sent__c}" headervalue="Date Update Sent" style="Center" /> 
+                            
+                            <apex:column value="{!ex.date_UTC_to_Prof__c}" headervalue="Date UTC Sent" style="Center" /> 
+                            <apex:column value="{!ex.InteractionReference__c}" headervalue="Initial Interaction Link" style="Center" /> 
+                            
+                            <apex:column value="{!ex.Household_Referred__r.Owner.Name }" headervalue="Household Owner" style="Center" /> 
+                            
+                            <!--   <apex:column value="{!ex.Permission_Received__c}" headervalue=" Permission Recieved" style="Center" /> 
+<apex:column value="{!ex.Permission_Date__c}" headervalue=" Permission Date ▲▼" style="Center" /> -->
+                            
+                            
+                        </apex:pageBlockTable>
+                    </apex:pageBlock>
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageblock>
+        
+        
+        
+        
+        
+        <apex:pageBlock title=" Referral Tracking">
+            <apex:pageBlockSection collapsible="True" title="Tracking Family Contact of Referred Children ">
+                <apex:panelGrid >
+                    <apex:pageBlock >
+                        <apex:pageBlockTable value="{!GenerateFRCs}" var="ex" id="tblData" styleClass="tablesorter"  rowClasses="row" headerClass="TableTitle" style="text-align:center; font-weight: bold " > 
+                            <apex:column headervalue="#">
+                                <span class="counter"></span>
+                            </apex:column>
+                            <apex:column value="{!ex.CompletedCGSucess__c}" headervalue=" Caregiver Contact Done!" style="Center" />   
+                            <apex:column value="{!ex.Child_Referred__c}" headervalue=" Child Referred" style="Center" /> 
+                            <apex:column value="{!ex.Household_Referred__c}" headervalue=" Household" style="Center" /> 
+                            <apex:column value="{!ex.Referral_Organization__c}" headervalue=" Referring Organization" style="Center" /> 
+                            <apex:column value="{!ex.Date_Referral_Received__c }" headervalue=" Date Recieved" style="Center"  /> 
+                            
+                            <apex:column headervalue="Last Intake" style="Center"  >
+                                <apex:outputField style="color:{!IF(ISNULL(ex.Household_Referred__r.Last_Intake__c )
+                                                         || (Today() - ex.Household_Referred__r.Last_Intake__c > 365), "#990000", "#000000")}" value="{!ex.Household_Referred__r.Last_Intake__c}" /> 
+                            </apex:column>
+                            
+                            <apex:column value="{!ex.date_One_Week_Followup__c}" headervalue=" 1 Wk FollowUp" style="Center" />   
+                            <apex:column value="{!ex.date_One_Month_Followup__c}" headervalue=" Monthly FollowUp" style="Center" /> 
+                            <apex:column value="{!ex.x1lastInteractionDate__c}" headervalue="Recent CallType1" style="Center" />   
+                            <apex:column value="{!ex.x2lastInteractionDate__c}" headervalue="Recent CallType2" style="Center" /> 
+                            <apex:column value="{!ex.x3lastInteractionDate__c}" headervalue="Recent CallType3" style="Center" />
+                            <apex:column value="{!ex.date_Left_Message_1__c}" headervalue=" Contact Attempt 1" style="Center" /> 
+                            <apex:column value="{!ex.LM1_IntID__c}" headervalue="Attempt 1 Info" style="Center" />  
+                            <apex:column value="{!ex.date_Left_Message_2__c}" headervalue=" Contact Attempt 2" style="Center" />  
+                            <apex:column value="{!ex.LM2_IntID__c}" headervalue="Attempt 2 Info" style="Center" />   
+                            <apex:column value="{!ex.date_Sent_UTC__c}" headervalue=" UTC" style="Center" />  
+                            <apex:column headervalue="Referral Record" style="Center"  >
+                                <apex:outputLink value="https://sfcd.my.salesforce.com/{!ex.id}" > View Record </apex:outputLink>
+                            </apex:column> 
+                        </apex:pageBlockTable>
+                    </apex:pageBlock>
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+        <!-- Section 2 -->
+        <apex:pageBlock title="Contacts With Open Issues by Household Owner / SW" >
+            <apex:pageBlockSection collapsible="True" title="My Contacts With Open Issues ">
+                <apex:panelGrid columns="1"  cellspacing="20" border="1"   >
+                    
+                    <apex:pageBlockTable value="{!ContactsOpenIssues}" var="ex" id="tblData" styleClass="tablesorter"  rowClasses="row" headerClass="TableTitle" style="text-align:center; font-weight: bold " > 
+                        <apex:column headervalue="#">
+                            <span class="counter"></span>
+                        </apex:column>
+                        <apex:column value="{!ex.npo02__Household__c}" headervalue=" Household" style="Center" /> 
+                        <apex:column headervalue="Contact" style="Center"  >
+                            <apex:outputLink value="/{!ex.id}"> {!ex.Name}  </apex:outputLink>
+                        </apex:column>
+                        <apex:column value="{!ex.recordType.name}" headervalue="Contact Type" style="Center" /> 
+                        <!--    <apex:column value="{!ex.Last_Interaction_Date__c}" headervalue=" Most Recent Child Interation" style="Center" /> -->
+                        <apex:column value="{!ex.npo02__Household__r.Most_Recent_Household_Interaction__c}" headervalue=" Most Recent FRS HH Interaction" style="Center" />
+                        
+                        
+                        <apex:column headervalue="Needs FRS Contact?" style="Center"  >
+                            <apex:outputtext style="color:{!IF(ISNULL(ex.Last_Interaction_Date__c)
+                                                    || ISNULL(ex.npo02__Household__r.Most_Recent_Household_Interaction__c )
+                                                    
+                                                    || (Today() - ex.npo02__Household__r.Most_Recent_Household_Interaction__c > 30), 
+                                                    "#990000", "#ffffff")}" value="FRS Contact Needed" /> 
+                        </apex:column>
+                        <!-- MOST RECENT SW INT DATE -->
+                        <!--Needs SW CONTACT -->
+                        <apex:column value="{!ex.npo02__Household__r.Most_Recent_SW_HH_Interaction__c}" headervalue=" Most Recent SW Interaction" style="Center" /> 
+                        <apex:column headervalue="Needs SW Contact?" style="Center"  >
+                            <apex:outputtext style="color:{!IF((ex.npo02__Household__r.Household_SW__r.ID != Null) && (ISNULL(ex.npo02__Household__r.Most_Recent_SW_HH_Interaction__c )
+                                                    || (Today() - ex.npo02__Household__r.Most_Recent_SW_HH_Interaction__c> 7)), 
+                                                    "#990000", "#ffffff")}" value="SW Contact Needed" />  
+                        </apex:column>
+                        
+                        <!--   <apex:column value="{!ex.npo02__Household__r.Most_Recent_HH_Interaction_Call_Type__c}" headervalue=" Most Recent Call Type" style="Center" /> -->
+                        <!-- <apex:column value="{!ex.npo02__Household__r.Last_Intake__c}" headervalue=" Most Recent Intake" style="Center" /> -->
+                        <apex:column value="{!ex.npo02__Household__r.First_Intake__c}" headervalue=" Inital Intake" style="Center" /> 
+                        
+                        
+                        <apex:column headervalue="Most Recent Intake" style="Center"  >
+                            <apex:outputField style="color:{!IF(ISNULL(ex.npo02__Household__r.Last_Intake__c )
+                                                     || (Today() - ex.npo02__Household__r.Last_Intake__c > 365), "#990000", "#000000")}" value="{!ex.npo02__Household__r.Last_Intake__c}" /> 
+                        </apex:column>
+                        
+                        
+                        <apex:column value="{!ex.npo02__Household__r.Most_Recent_Intake_Survey__c}" headervalue="Most Recent Intake Survey" style="Center" /> 
+                        
+                        <apex:column headervalue="Intake Survey Status" style="Center"  >
+                            <apex:outputField style="color:{!IF(ex.npo02__Household__r.NeedIntake_Survey__c == 'Need New', '#990000', '#000000')}" value="{!ex.npo02__Household__r.NeedIntake_Survey__c }" /> 
+                        </apex:column>
+                        <!--   <apex:column value="{!ex.npo02__Household__r.NeedIntake_Survey__c}" headervalue="Intake Survey" style="Center" /> -->
+                        
+                        
+                        <!-- <apex:column value="{!ex.npo02__Household__r.First_Family_Assessment__c}" headervalue="First Family Assessment" style="Center" /> -->
+                        <apex:column value="{!ex.npo02__Household__r.Most_Recent_Family_Assessment__c}" headervalue="Most Recent Family Assessment" style="Center" />
+                        
+                        <apex:column headervalue="Needs Family Assessment?" style="Center"  >
+                            <apex:outputtext style="color:{!IF((ex.npo02__Household__r.Household_SW__r.ID != Null) && (ISNULL(ex.npo02__Household__r.Most_Recent_Family_Assessment__c)
+                                                    || (Today() - ex.npo02__Household__r.Most_Recent_Family_Assessment__c> 90)), 
+                                                    "#990000", "#ffffff")}" value="SW Assessment Needed" />  
+                        </apex:column>
+                        
+                        
+                        
+                        
+                        <apex:column headervalue="SW HH Owner" style="Center"  >
+                            <apex:outputLink value="/{!ex.npo02__Household__r.Household_SW__r.ID}" > {!ex.npo02__Household__r.Household_SW__r.Name} </apex:outputLink>
+                        </apex:column> 
+                        
+                        <apex:column headervalue="FRS HH Owner" style="Center"  >
+                            <apex:outputLink value="/{!ex.npo02__Household__r.OwnerId}" > {!ex.npo02__Household__r.owner.Name} </apex:outputLink>
+                        </apex:column> 
+                        <!--  <apex:column headervalue="SFIN HH Owner" style="Center"  >
+<apex:outputLink value="/{!ex.npo02__Household__r.Household_SFIN_Coach__r.Id}" > {!ex.npo02__Household__r.Household_SFIN_Coach__r.Name} </apex:outputLink>
+</apex:column> -->
+                        
+                    </apex:pageBlockTable>  
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

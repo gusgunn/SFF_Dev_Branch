@@ -1,0 +1,3 @@
+<aura:component >
+    <lightning:input />
+</aura:component>

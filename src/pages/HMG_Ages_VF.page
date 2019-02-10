@@ -1,0 +1,238 @@
+<apex:page readOnly="true" controller="HMG_Age_Yearly" 
+           docType="html-5.0" sidebar="false" >
+    <apex:slds />
+    <style>
+    .slds [hidden], .slds template {
+    display: block;
+}
+        .centerHeader { text-align:center;}
+    </style>
+    <style>
+        .centerHeaderBold { text-align:center; font-weight:bold; }
+    </style>
+    
+    <apex:form >
+        
+        <apex:pageBlock title="HMG Age Dashboard">
+            <apex:pageMessages id="messages" ></apex:pageMessages>
+            <apex:pageBlockSection title="Date Rage" columns="1" collapsible="false" >
+                <apex:panelGroup >
+                    <apex:outputLabel value="Date From " />
+                    <apex:input label="Date From " value="{!dateFrom}" type="auto" /> 
+                    <apex:outputLabel value="Date To " />
+                    <apex:input label="Date To " value="{!dateTo}" type="auto" />
+                    <apex:outputLabel value=" " />
+                    <apex:commandButton value="Generate" action="{!startGenerateEISDashboard}" />
+                </apex:panelGroup>          
+            </apex:pageBlockSection>    
+             <apex:pageBlock >
+                <apex:pageBlockSection title="Intake Totals" collapsible="true">
+                    <apex:panelGroup > 
+                        <apex:outputPanel id="detail">
+                            <apex:panelGrid columns="3" cellpadding="20"   cellspacing="20" >
+                                
+                                <apex:panelGrid columns="2" title="">
+                                   
+                                    <apex:outputLabel value="Total Children: 0 to <12 Months" />
+                                        <apex:outputText value="{!to11}"  /> 
+                                    
+                                        <apex:outputLabel value="Total Children: 12 to <24 Months" />
+                                        <apex:outputText value="{!to23}"  /> 
+                                   
+                                      <apex:outputLabel value="Total Children: 24 to <36 Months" />
+                                    <apex:outputText value="{!to35}"  /> 
+                                    
+                                        <apex:outputLabel value="Total Children: 36 to <48 Months" />
+                                        <apex:outputText value="{!to47}"  /> 
+                                   
+                                        <apex:outputLabel value="Total Children: 48 to <60 Months" />
+                                        <apex:outputText value="{!to59}"  /> 
+                                    
+                                   
+                                        <apex:outputLabel value=" Total Children: 60 to <72 Months" />
+                                        <apex:outputText value="{!to71}"  /> 
+                                    
+                                    
+                                        <apex:outputLabel value=" Total Intake" />
+                                        <apex:outputText style="font-weight:600" value="{!TotalIntake}"  /> 
+                                </apex:panelGrid>
+                                
+         
+            
+                            </apex:panelGrid>
+                        </apex:outputPanel>
+                    </apex:panelGroup>
+                 </apex:pageBlockSection>
+            </apex:pageBlock>
+            
+              <apex:pageBlockSection title="Interactions" collapsible="true">
+                    <apex:panelGroup > 
+                        <apex:outputPanel id="detail">
+                            <apex:panelGrid columns="3" cellpadding="20"   cellspacing="20" >
+                                
+                                <apex:panelGrid columns="2" title="">
+                          
+                                   
+                                    <apex:outputLabel value="Total Children: 0 to <12 Months" />
+                                        <apex:outputText value="{!Intto11}"  /> 
+                                    
+                                        <apex:outputLabel value="Total Children: 12 to <24 Months" />
+                                        <apex:outputText value="{!Intto23}"  /> 
+                                   
+                                      <apex:outputLabel value="Total Children: 24 to <36 Months" />
+                                    <apex:outputText value="{!Intto35}"  /> 
+                                    
+                                        <apex:outputLabel value="Total Children: 36 to <48 Months" />
+                                        <apex:outputText value="{!Intto47}"  /> 
+                                   
+                                        <apex:outputLabel value="Total Children: 48 to <60 Months" />
+                                        <apex:outputText value="{!Intto59}"  /> 
+                                    
+                                   
+                                        <apex:outputLabel value=" Total Children: 60 to <72 Months" />
+                                        <apex:outputText value="{!Intto71}"  /> 
+                                    
+                                    
+                                        <apex:outputLabel value=" Total Interactions" />
+                                        <apex:outputText style="font-weight:600" value="{!TotalInt}"  /> 
+                                </apex:panelGrid>
+            
+                            </apex:panelGrid>
+                        </apex:outputPanel>
+                    </apex:panelGroup>
+                 </apex:pageBlockSection>
+            </apex:pageBlock>
+        <apex:pageBlock >
+             <apex:pageBlockSection title="Interactions As Well As Events Totals" collapsible="true">
+                    <apex:panelGroup > 
+                        <apex:outputPanel id="detail">
+                            <apex:panelGrid columns="3" cellpadding="20"   cellspacing="20" >
+                                
+                                <apex:panelGrid columns="2" title="">
+                          
+                                   
+                                    <apex:outputLabel value="Total Children: 0 to <12 Months" />
+                                        <apex:outputText value="{!Allto11}"  /> 
+                                    
+                                        <apex:outputLabel value="Total Children: 12 to <24 Months" />
+                                        <apex:outputText value="{!Allto23}"  /> 
+                                   
+                                      <apex:outputLabel value="Total Children: 24 to <36 Months" />
+                                    <apex:outputText value="{!Allto35}"  /> 
+                                    
+                                        <apex:outputLabel value="Total Children: 36 to <48 Months" />
+                                        <apex:outputText value="{!Allto47}"  /> 
+                                   
+                                        <apex:outputLabel value="Total Children: 48 to <60 Months" />
+                                        <apex:outputText value="{!Allto59}"  /> 
+                                    
+                                   
+                                        <apex:outputLabel value=" Total Children: 60 to <72 Months" />
+                                        <apex:outputText value="{!Allto71}"  /> 
+                                    
+                                    
+                                        <apex:outputLabel value=" Total Interactions And Events" />
+                                        <apex:outputText style="font-weight:600" value="{!TotalAll}"  /> 
+                                </apex:panelGrid>
+            
+                            </apex:panelGrid>
+                        </apex:outputPanel>
+                    </apex:panelGroup>
+                 </apex:pageBlockSection>
+   </apex:pageBlock>
+       
+    
+       <!--   <apex:pageblock title="Age Ranges - Interactions, Unduplicated" >
+              <apex:pageBlockSection columns="3">
+                 
+                 <apex:pageBlockTable value="{!GenerateAge1}" var="a">  
+                    
+                    <apex:column value="{!a.num1}" headervalue=" Total Children: 0 to <12 Months"/>
+                     </apex:pageBlockTable>
+                   
+                  <apex:pageBlockTable value="{!GenerateAge2}" var="a">  
+                   
+                      <apex:column value="{!a.num1}" headervalue=" Total Children: 12 to < 24 Months"/>
+                      </apex:pageBlockTable>
+                  
+                    <apex:pageBlockTable value="{!GenerateAge3}" var="a">  
+                   
+                        <apex:column value="{!a.num1}" headervalue="Total Children:  24 to < 36 Months"/>
+                     </apex:pageBlockTable>
+                  
+                   
+                    <apex:pageBlockTable value="{!GenerateAge4}" var="a">  
+                    
+                        <apex:column value="{!a.num1}" headervalue="Total Children:  36 to < 48 Months"/>
+                     </apex:pageBlockTable>
+                  
+                        <apex:pageBlockTable value="{!GenerateAge5}" var="a">  
+                       
+                            <apex:column value="{!a.num1}" headervalue="Total Children: 48 to < 60 Months"/>
+                     </apex:pageBlockTable>
+                  
+                            <apex:pageBlockTable value="{!GenerateAge6}" var="a">  
+                             
+                                <apex:column value="{!a.num1}" headervalue="Total Children: 60 to < 72 Months"/> -
+                    </apex:pageBlockTable>
+                  
+             
+               </apex:pageBlockSection>  
+    
+            
+            
+            </apex:pageblock> -->
+            
+        <!--<apex:pageblock title="List Current" >
+                <apex:pageBlockSection columns="3" collapsible="true">
+                    
+                       <apex:pageBlockTable value="{!Age1}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                       <apex:pageBlockTable value="{!Age2}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                       <apex:pageBlockTable value="{!Age3}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                       <apex:pageBlockTable value="{!Age4}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                       <apex:pageBlockTable value="{!AGe5}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                     <apex:pageBlockTable value="{!AGe6}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable>
+                    
+                    </apex:pageBlockSection>
+            </apex:pageblock> -->
+        <apex:pageBlock >
+            <apex:pageBlockSection >
+                 <apex:pageBlockTable value="{!Int}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                <apex:pageBlockTable value="{!Intake}" var="exP"> 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                    <apex:pageBlockTable value="{!AllEventInt}" var="exP" > 
+                        <apex:column value="{!exP.ag1}" headervalue="ID" /> 
+                        <apex:column value="{!exP.num1}" headervalue="Age" />  
+                    </apex:pageBlockTable> 
+                  </apex:pageBlockSection>
+            </apex:pageblock>
+                   
+     
+                 
+
+        
+    </apex:form>
+</apex:page>
