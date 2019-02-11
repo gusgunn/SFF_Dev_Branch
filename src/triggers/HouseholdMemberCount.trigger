@@ -1,6 +1,6 @@
 trigger HouseholdMemberCount on Contact (after insert, after update, after delete) {
     //Lightworks
-    //diSABLE FOR ACTON
+    /*diSABLE FOR ACTON
     Set <ID> fAcc = new Set <ID>();
     Set <ID> fAccDeleted = new Set <ID>();
     if (trigger.isAfter && trigger.isInsert) {
@@ -39,5 +39,5 @@ trigger HouseholdMemberCount on Contact (after insert, after update, after delet
         
     }
     HouseHoldMethods.countContactsDeleted(fAccDeleted); */
-    }
+    
 }

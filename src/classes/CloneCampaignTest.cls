@@ -33,40 +33,40 @@ public class CloneCampaignTest {
             Repeats__c =52,
             Maximum_Capacity_Adults__c =100,
             Maximum_Capacity_children__c =100
-           );
+        );
         
         insert c;
         
         Test.startTest();
         
-		
+        
         ApexPages.StandardController sc = new ApexPages.StandardController(c);
         ApexPages.currentPage().getParameters().put('pid', c.id);
-		campaignClone pcp = new campaignClone(sc);
+        campaignClone pcp = new campaignClone(sc);
         PageReference tpageRef = Page.campaignClone;
-     
-         Campaign myCAmpaign = (campaign)sc.getRecord();
         
-       
-         pcp.CloneTemplate();
+        Campaign myCAmpaign = (campaign)sc.getRecord();
+        
+        
+        pcp.CloneTemplate();
         pcp.CloneTemplateToCreateForm();
-      
-      pcp.doClone();
-       
+        
+        pcp.doClone();
+        
         test.stopTest();
-      
- Integer testresults = [Select count() from Campaign  ];
-System.AssertEquals(53,testresults);
+        
+        Integer testresults = [Select count() from Campaign  ];
+        System.AssertEquals(53,testresults);
         system.debug(testresults + ' testresults');
         
         List<Campaign> testresultsSize = [Select id from Campaign  ];
-System.AssertEquals(53,testresultsSize.size());
+        System.AssertEquals(53,testresultsSize.size());
         system.debug('testresultsSize' +testresultsSize.size());
-
-
+        
+        
     }
     
-      
+    
     @isTest static void testMethod2() {
         Campaign c = new Campaign (
             Name='Test Tour Registration',
@@ -79,36 +79,30 @@ System.AssertEquals(53,testresultsSize.size());
             Repeats__c =52,
             Maximum_Capacity_Adults__c =100,
             Maximum_Capacity_children__c =100
-           );
+        );
         
         insert c;
         
         Test.startTest();
         
-		
+        
         ApexPages.StandardController sc = new ApexPages.StandardController(c);
         ApexPages.currentPage().getParameters().put('pid', c.id);
-		campaignClone pcp = new campaignClone(sc);
+        campaignClone pcp = new campaignClone(sc);
         PageReference tpageRef = Page.campaignCloneChildcare;
-     
-         Campaign myCAmpaign = (campaign)sc.getRecord();
         
-       
-         pcp.cloneChildcareTemplate();
+        Campaign myCAmpaign = (campaign)sc.getRecord();
+        
+        
+        pcp.cloneChildcareTemplate();
         pcp.CloneTemplateToCreateForm();
-      
-      pcp.doClone();
-       
-        test.stopTest();
-      
- Integer testresults = [Select count() from Campaign  ];
-System.AssertEquals(53,testresults);
-        system.debug(testresults + ' testresults');
         
-        List<Campaign> testresultsSize = [Select id from Campaign  ];
-System.AssertEquals(53,testresultsSize.size());
-        system.debug('testresultsSize' +testresultsSize.size());
-
-
+        pcp.doClone();
+        
+        test.stopTest();
+        
+        Integer testresults = [Select count() from Campaign  ];
+        System.AssertEquals(2, testresults,  ' testresults should = 2');
+      
     }
 }
