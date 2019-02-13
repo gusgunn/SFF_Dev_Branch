@@ -1,0 +1,42 @@
+Delete
+HouseholdBatchRollup
+CaseMethods???
+CaseDispatcher??
+AddManyToOne??
+AddManyToOne Wrapper?
+CheckRecursion(for case) & CheckRecursionContact (replace with set on class if nec)
+CMUpdateHMG
+CMUpdateTrigger (has logig!)
+Undo FRSDashboard spaghetti
+CMS & Others- Dynamic reports
+service_Case_RecordTypeSelector etc
+
+EmailToCaseComments trigger contacins Logic!!(testing at 100% tho)
+
+
+Not mine but no coverage
+ActionResult
+CreateCampaignMemberBatchable
+CreateCampaignMemsExecute
+CreateHolderAcc
+ManagessuesController
+RemoveSoapBoxCampaignMenmber
+CamaignMemberStatusTrigger
+ScheduleCreateCampaignMember
+ScheduleCreateHolderContacts
+UpdateTicketHoldersBatch
+campaignMemberStatuses
+IssuesUtility
+SetOutcomeFields
+
+InDevGit
+Commented out for deletion - not deployed
+HouseholdMethods / HouseholdMethodsTest
+HouseholdMemberCount
+
+
+CommentedOUt and Deployed:
+IntakeTriggerTure
+IRC
+PivotTable
+Acton-All

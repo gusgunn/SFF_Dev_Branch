@@ -21,7 +21,7 @@ public class AddManyToOneCampaign_Test {
             Maximum_Capacity_Adults__c =100,
             End_Date_Time__c=date.today().addDays(17));
         
-           Database.insert(myCampaign, dml);
+        Database.insert(myCampaign, dml);
         
         CampaignMember cmb = new CampaignMember();
         cmb.campaignID=myCampaign.id;
@@ -30,17 +30,17 @@ public class AddManyToOneCampaign_Test {
         cmb.status = 'Family Attendee';
         Database.insert( cmb, dml);
         
-         Campaign myFullCampaign = new Campaign (
+        Campaign myFullCampaign = new Campaign (
             RecordTypeID = rtProgram.id, Name='myFullCampaign',
             Status='In Progress',
             Start_Date_Time__c=date.today().addDays(17),
             IsActive=true,
             Maximum_Capacity_Adults__c =0,
-             Maximum_Capacity_Children__c=0,
-             
+            Maximum_Capacity_Children__c=0,
+            
             End_Date_Time__c=date.today().addDays(17));
         
-       Database.insert(myFullCampaign, dml);
+        Database.insert(myFullCampaign, dml);
         
         
         
@@ -133,11 +133,11 @@ public class AddManyToOneCampaign_Test {
         Test.setCurrentPage(pageRef);
         AddManyAlphaTemplate controller = new AddManyAlphaTemplate(new ApexPages.StandardController(myContactList[2]));
         controller.getItems();
-                controller.getCampaignDetails(); //2
-                controller.getCurrentCMS(); //3
-                controller.AlphaFilter = 'ALL';
-                controller.BuildQuery();
-
+        controller.getCampaignDetails(); //2
+        controller.getCurrentCMS(); //3
+        controller.AlphaFilter = 'ALL';
+        controller.BuildQuery();
+        
         controller.getItems();
         
         controller.getCurrentContactList();
@@ -172,7 +172,7 @@ public class AddManyToOneCampaign_Test {
         Test.setCurrentPage(pageRef);
         AddManyAlphaTemplate controller = new AddManyAlphaTemplate(new ApexPages.StandardController(myContactList[2]));
         
-
+        
         controller.getCampaignDetails(); //2
         controller.getCurrentCMS(); //3
         controller.BuildQuery(); //
@@ -192,9 +192,7 @@ public class AddManyToOneCampaign_Test {
             if (Camp.disabled==false){
                 
                 camp.aCheckBox=true;
-                //camp.aContact.Family__Primary_Language__c ='English';
-                //camp.aInterp=true;
-               // camp.aSpecial='yes';
+                
                 camp.status='Child Attendee';
                 
             }
@@ -203,7 +201,7 @@ public class AddManyToOneCampaign_Test {
         Test.stopTest();
         
     }
-     @isTest static void testMethodFullCampaign() {
+    @isTest static void testMethodFullCampaign() {
         List<Contact> myContactList = [SELECT ID, Name, recordTypeID, Family__Primary_language__c
                                        FROM Contact
                                        LIMIT 5];
@@ -217,7 +215,7 @@ public class AddManyToOneCampaign_Test {
         Test.setCurrentPage(pageRef);
         AddManyAlphaTemplate controller = new AddManyAlphaTemplate(new ApexPages.StandardController(myContactList[2]));
         
-
+        
         controller.getCampaignDetails(); //2
         controller.getCurrentCMS(); //3
         controller.BuildQuery(); //
@@ -256,7 +254,7 @@ public class AddManyToOneCampaign_Test {
         Test.setCurrentPage(pageRef);
         AddManyAlphaTemplate controller = new AddManyAlphaTemplate(new ApexPages.StandardController(myContactList[2]));
         // AddManyAlphaTemplate StSetcontroller = new AddManyAlphaTemplate(new ApexPages.StandardSetController(myContactList));
-    
+        
         controller.getCampaignDetails(); //2
         controller.getCurrentCMS(); //3
         controller.BuildQuery(); //
@@ -273,7 +271,7 @@ public class AddManyToOneCampaign_Test {
             if (Camp.disabled==false){
                 
                 camp.aCheckBox=true;
-               camp.aContact.Family__Primary_Language__c ='English';
+                camp.aContact.Family__Primary_Language__c ='English';
                 camp.aInterp=true;
                 camp.aSpecial='yes';
                 camp.status='Family Attendee';

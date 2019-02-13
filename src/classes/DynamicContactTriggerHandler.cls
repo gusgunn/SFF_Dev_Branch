@@ -1,4 +1,4 @@
-public with sharing class DynamiccContactTriggerHandler implements ITriggerExtension {
+public with sharing class DynamicContactTriggerHandler implements ITriggerExtension {
 
     public void HandleTrigger(TriggerOperation operationType,
                         List<SObject> newList, List<SObject> oldList,

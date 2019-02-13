@@ -3,12 +3,43 @@
 public class HouseholdContactCounter_Test {
     
     
-    @istest
-    public static void TestInsertSingleHousehold() {
-        Test.startTest();
-        InsertContacts(1);
-        Test.stopTest();
+    
+    @testSetup static void InsertContacts(){
+        List<SObject> aList = Test.loadData(npo02__Household__c.sObjectType,'Households');
+        
+        List<npo02__Household__c> householdList= [SELECT Id, Name, Number_In_Household__c FROM npo02__Household__c  WHERE Name='OneHouse'];
+        system.assertEquals(20, householdList[0].Number_In_Household__c);   
+        
+        List<SObject> cList = Test.loadData(Contact.sObjectType,'Contacts');
+        system.assertEquals(4, aList.size());
+        system.assertEquals(4, cList.size());
+     
+        
     }
+    
+    @isTest
+    public static void householdCountAfterOneContactInserted() {
+        Test.startTest();    
+        List<npo02__Household__c> updatedHouseholdList= [SELECT Id, Name, Number_In_Household__c FROM npo02__Household__c  WHERE Name='OneHouse'];
+        system.assertEquals(1, updatedHouseholdList[0].Number_In_Household__c); 
+        Test.stopTest();
+     
+    }  
+    
+    public static void InsertContacts(Integer count){
+        List<npo02__Household__c> householdList= [SELECT Id, Name, Number_In_Household__c FROM npo02__Household__c  WHERE Name='OneHouse'];
+        system.assertEquals(1, householdList[0].Number_In_Household__c); 
+        String contactHousehold = householdList[0].Id;
+        List<Contact> contactsToInsert = new List<Contact>();
+        for(Integer x = 0; x<count; x++) {
+            String xs = string.valueOf(x);
+            contactsToInsert.add(new Contact(FirstName =  xs + 'f' + xs, LastName = xs+ 'l' + xs,
+                                             npo02__Household__c=contactHousehold
+                                            ));
+        }
+        insert contactsToInsert;
+    }
+
     
     @istest static void TestInsertBulkContact(){
         Long startTime = DateTime.now().getTime();
@@ -18,103 +49,9 @@ public class HouseholdContactCounter_Test {
         Test.stopTest();
         system.debug('Elapsed: ' + (Datetime.Now().getTime()- startTime));
         system.debug('Elapsed CPU: ' + (Limits.getCpuTime() - startCPU));
+        
+        List<Contact> contacts= [SELECT Id, npo02__Household__c,npo02__Household__r.Name FROM Contact WHERE npo02__Household__r.Name='OneHouse' ];
+        system.assertEquals(101, contacts.Size());  
     }
     
-    
-    public static void InsertContacts(Integer count){
-        List<Contact> contactsToInsert = new List<Contact>();
-        for(Integer x = 0; x<count; x++) {
-            String xs = string.valueOf(x);
-            contactsToInsert.add(new Contact(FirstName =  xs + 'f' + xs, LastName = xs+ 'l' + xs,
-                                             email = xs + 'e' + xs + '@gmail.com'
-                                            ));
-        }
-        insert contactsToInsert;
-       
-    }
-    
-    public static void UpdateHouseholdCount() {
-       
-        List<npo02__Household__c>  households = [SELECT Id, Number_In_Household__c 
-                                                 FROM npo02__Household__c
-                                                 LIMIT 1
-                                                ];
-        
-        Id bigHousehold = households[0].Id;
-        List<Contact> addContactToHousehold = new List<Contact>();
-          Test.startTest();
-        addContactToHousehold.add(new Contact(FirstName = 'New Household', LastName ='Member',
-                                              npo02__Household__c =bigHousehold
-                                             ));
-        insert addContactToHousehold;
-        
-        List<npo02__Household__c>  householdCount = [SELECT Id, Number_In_Household__c 
-                                                 FROM npo02__Household__c
-                                                 WHERE Id =:bigHousehold
-                                                ];
-        Test.stopTest();
-        System.assertEquals(1, householdCount.size());
-        System.assertEquals(2, householdCount[0].Number_In_Household__c);
-       
-
-        
-        
-    }   
-    
-} 
-
-
-/*
-public static TestMethod void test() {
-
-List<Contact> contacts =new List<Contact>();
-
-Contact cont1 = New Contact();
-cont1.FirstName ='Bobby';
-cont1.LastName ='Master';
-
-contacts.add(cont1);
-
-Contact cont = New Contact();
-cont.FirstName ='qweBob';
-cont.LastName ='yayiuiiyuMasters';
-contacts.add(cont);
-insert contacts;
-
-List<npo02__Household__c>  households = [select Id from npo02__Household__c ];
-System.assertEquals(2, households.size());
-Set<Id> householdIds = new Set<Id>();
-for(npo02__Household__c h: households){
-householdIds.add(h.Id);
 }
-HouseHoldMethods.countContacts(householdIds);
-
-Contact cont3 = New Contact();
-cont3.FirstName ='nmbhjBobbet';
-cont3.LastName ='iu;oiaouiMastersson';
-cont3.npo02__Household__c = households[0].Id;
-Insert cont3;
-List<npo02__Household__c>  NewHouseholds = [select Id from npo02__Household__c ];
-Set<Id> updatedhouseholdIds = new Set<Id>();
-for(npo02__Household__c h: NewHouseholds){
-updatedhouseholdIds.add(h.Id);
-}
-HouseHoldMethods.countContacts(householdIds);
-
-List<npo02__Household__c> hh = [select Number_In_Household__c from npo02__Household__c where id = :households[0].Id ];
-System.assertEquals(2, hh[0].Number_In_Household__c);
-System.assertEquals(2, hh.size());
-Test.startTest();
-
-Delete cont3;
-
-HouseHoldMethods.countContacts(householdIds);
-Test.stopTest();
-List<npo02__Household__c> ACC = [select Id, Number_In_Household__c from npo02__Household__c where id = :households[0].Id ];
-System.assertEquals(1, ACC[0].Number_In_Household__c);
-
-}
-
-
-
-}*/

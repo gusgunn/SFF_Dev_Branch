@@ -2,11 +2,12 @@ public class ContactsInHouseholdCount {
     
     public static void handleTrigger(TriggerOperation operationType, List<Contact> newList, list<Contact> oldList, HouseholdUpdater updater){
         Set<ID> householdIds = new Set<ID>();
-        System.debug('in ContactsInHousehold');
+        System.debug('in ContactsInHousehold: ' + householdIds);
         if( operationType == TriggerOperation.AFTER_UPDATE || 
            operationType == TriggerOperation.AFTER_INSERT){
                for(Contact c: newList){
                    if(c.npo02__Household__c!=null && c.npo02__Household__c.getSObjectType()==Schema.npo02__Household__c.SObjectType) 
+
                        householdIds.add(c.npo02__Household__c);
                }
            }
