@@ -6,7 +6,7 @@ public with sharing class TriggerExtensionSupport {
             where Object_Type__c = :objectType
             Order By Priority__c Asc];
         List<ITriggerExtension> results = new List<ITriggerExtension>();
-		System.debug('triggerSettings' + triggerSettings);
+		//System.debug('triggerSettings' + triggerSettings);
         for(Dynamic_Trigger__mdt setting: triggerSettings)
         {
             System.Type thetype = Type.forName(setting.Class_Name__c);

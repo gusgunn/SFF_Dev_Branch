@@ -1,0 +1,25 @@
+<apex:page controller="Dynamic_Report">
+    <apex:form >
+      <apex:pageBlock title="Accounts">
+          <apex:pageBlockButtons location="top">
+              <apex:selectlist size="1" value="{!selected}">
+                  <apex:actionSupport event="onchange" action="{!dynamicQuery}" rerender="pb"/>
+              <apex:selectOption itemLabel="-None-" itemValue="none"/>
+                             <apex:selectOption itemLabel="1" itemValue="5"/>
+                             <apex:selectOption itemLabel="2" itemValue="10"/>
+                             <apex:selectOption itemLabel="15" itemValue="15"/>
+                             <apex:selectOption itemLabel="20" itemValue="20"/>
+              </apex:selectlist>
+              <apex:inputText size="4" value="{!rows}"/>
+          <apex:commandButton value="limit" action="{!setLimit}" rerender="pb"/>
+                        <apex:commandButton value="Dynamic_limit" action="{!dynamicSetLimit}" rerender="pb"/>
+
+          </apex:pageBlockButtons>
+
+          <apex:pageblocktable value="{!accs1}" var="a" id="pb">
+             <apex:column value="{!a.name}"/>       
+                       <apex:column value="{!a.industry}"/>       
+          </apex:pageblocktable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

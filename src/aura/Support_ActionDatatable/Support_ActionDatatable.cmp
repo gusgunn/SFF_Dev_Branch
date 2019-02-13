@@ -2,7 +2,7 @@
 <aura:component controller="IssuesActionsCtr" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId"
                 access="global">
     <!-- fix toast -->
-<aura:import library="lightning:notificationsLibrary" property="notifications"/>
+ <lightning:notificationsLibrary aura:id="notifLib"/>
     
     <aura:attribute name="sortedBy" type="String" />
     <aura:attribute name="sortedDirection" type="String"/>

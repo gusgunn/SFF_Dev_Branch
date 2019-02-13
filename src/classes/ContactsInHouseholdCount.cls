@@ -2,7 +2,7 @@ public class ContactsInHouseholdCount {
     
     public static void handleTrigger(TriggerOperation operationType, List<Contact> newList, list<Contact> oldList, HouseholdUpdater updater){
         Set<ID> householdIds = new Set<ID>();
-        System.debug('in ContactsInHousehold: ' + householdIds);
+        
         if( operationType == TriggerOperation.AFTER_UPDATE || 
            operationType == TriggerOperation.AFTER_INSERT){
                for(Contact c: newList){
@@ -34,10 +34,8 @@ public class ContactsInHouseholdCount {
         
         for(npo02__Household__c h: households){
             if(h.Number_In_Household__c != contactCounts.get(h.Id)){
-                System.debug('contactCounts.get(h.Id) ' + contactCounts.get(h.Id));
                 npo02__Household__c toUpdate = updater.getHousehold(h.id);
                 toUpdate.Number_In_Household__c = contactCounts.get(h.id);
-                system.debug('ContactTriggerTrackCount changing contact count to ' + toUpdate.Number_In_Household__c + ' household: ' + h.id);
             }
         }
         

@@ -1,11 +1,9 @@
 <aura:component controller="Support_Consent" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
-    <aura:import library="lightning:notificationsLibrary" property="notifications"/>
-    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
     <aura:attribute name="filterId" type="String" default = "" />
     <aura:attribute name="sortedBy" type="String" />
     <aura:attribute name="sortedDirection" type="String"/>
     <aura:attribute name="objectName" type="Object" default ="Consent__c"/>
-    
     <aura:attribute name="mydata" type="Object"/>
     <aura:attribute name="mycolumns" type="List"/>
     <aura:attribute name="errors" type="string" default=""/>

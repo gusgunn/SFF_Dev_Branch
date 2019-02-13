@@ -1,5 +1,6 @@
 <aura:component controller="IssuesActionsCtr"  implements="force:appHostable,flexipage:availableForAllPageTypes,lightning:isUrlAddressable,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
     <lightning:notificationsLibrary aura:id="notifLib"/>
+    
     <aura:attribute name="interactionID" type="String" default=""/> 
     <aura:attribute name="interactionContact" type="String" default=""/> 
     <aura:attribute name="interactionContactAgency" type="String" default=""/>
@@ -29,11 +30,11 @@
                     <!-- class="{!'slds-tabs_path__item '+item.state}" -->
                     
                     <li aura:id="1" class="slds-tabs--path__item slds-is-current" role="presentation" >
-                        <a class="slds-tabs--path__link" id="tabs-path-2326" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" onclick="{!c.selectPathStep1}"  aria-live="assertive">
-                            <span class="slds-tabs--path__stage">
-                                <lightning:icon iconName="utility:check" size="x-small" alternativeText="Indicates approval"/>
+                        <a class="slds-tabs--path__link" id="tabs-path-2326" aria-controls="content-path-1" aria-selected="false"  tabindex="-1" role="tab" href="javascript:void(0);" onclick="{!c.selectPathStep1}"  aria-live="assertive">
+                            <span class="slds-tabs--path__stage" style="color:black">
+                                <lightning:icon iconName="utility:check" size="x-small"  alternativeText="Indicates approval"/>
                             </span>
-                            <span class="slds-tabs--path__title" ><div class="slds-text-heading_xx-small">Add Issues</div></span>
+                            <span class="slds-tabs--path__title" ><div class="slds-text-heading_xx-small slds-text-color_inverse" >Add Issues</div></span>
                         </a>
                     </li>
                     <li aura:id="2" class="slds-tabs--path__item slds-is-incomplete" role="presentation">
@@ -81,9 +82,9 @@
         <aura:if isTrue="{!v.pathStep == '1'}"> 
             <lightning:layoutItem flexibility="auto"  size="12" aura:id ="issues" >
                 <div class="slds-card slds-has-top-magnet slds-p-around_none slds-m-around_none">
-                    <c:Support_AddIssuesContainer interactionID="{!v.recordId}"
+               <!--     <c:Support_AddIssuesContainer interactionID="{!v.recordId}"
                                                   childID="{!v.simpleInteraction.Family__Child__c}" 
-                                                  contactID="{!v.simpleInteraction.ContactId}" /> 
+                                                  contactID="{!v.simpleInteraction.ContactId}" /> -->
                     
                 </div>
             </lightning:layoutItem>

@@ -1,0 +1,27 @@
+<apex:page controller="MetaData_Report">
+  
+   <apex:form >
+       <apex:pageBlock title="SelectReport">
+       <apex:pageBlockSection title="CMS">
+          
+     
+           
+           <apex:panelGrid columns="1">
+                    <apex:outputLabel value="Select" for="userSelect" />
+                    <div class="slds-select_container slds-m-right_medium">
+                        <div> <apex:selectList size="1" styleClass="slds-select" id="userSelect" onchange="setMeasure(this.value);"
+                                               value="{!measureOptions}" >
+                            <apex:selectOptions value="{!Measures}"/>
+                            </apex:selectlist></div>
+                         </div>
+                       </apex:panelGrid>   
+                             <div>
+                                 
+                    </div>
+            <apex:commandButton value="Generate" action="{!findSelected}"  />
+             </apex:pageBlockSection>
+       </apex:pageBlock>
+   </apex:form>
+
+
+</apex:page>

@@ -1,5 +1,5 @@
 <aura:component controller="IssuesActionsCtr" access ="global">
-    <lightning:notificationsLibrary aura:id="notifLib"/>
+     <lightning:notificationsLibrary aura:id="notifLib"/>
     <aura:attribute name="issue" type="Object[]" default="[]"/>
     <aura:attribute name="interactionContact" type="String" /> 
     <aura:attribute name="interactionContactAgency" type="String" /> 

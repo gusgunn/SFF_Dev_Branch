@@ -4,7 +4,7 @@ public with sharing class DynamicContactTriggerHandler implements ITriggerExtens
                         List<SObject> newList, List<SObject> oldList,
                         Map<ID, SObject> newMap, Map<ID, SObject> oldMap ) 
     {
-        system.debug('Trigger extension was called');
+
     }
 
 }
