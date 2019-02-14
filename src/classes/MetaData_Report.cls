@@ -7,9 +7,7 @@ public class MetaData_Report {
     public sObject sObjectToBind {get;set;}
     public List<String> listObjectFields {get;set;}
     
-    public MetaData_Report(){
-        
-    }
+
     
     public List<SelectOption> getMeasures() {
         List<SelectOption>  measures = new List<SelectOption>();

@@ -3,16 +3,16 @@
       <apex:pageBlock title="Accounts">
           <apex:pageBlockButtons location="top">
               <apex:selectlist size="1" value="{!selected}">
-                  <apex:actionSupport event="onchange" action="{!dynamicQuery}" rerender="pb"/>
+                 <!-- <apex:actionSupport event="onchange" action="{!dynamicQuery}" rerender="pb"/>-->
               <apex:selectOption itemLabel="-None-" itemValue="none"/>
-                             <apex:selectOption itemLabel="1" itemValue="5"/>
-                             <apex:selectOption itemLabel="2" itemValue="10"/>
+                             <apex:selectOption itemLabel="1" itemValue="1"/>
+                             <apex:selectOption itemLabel="5" itemValue="5"/>
                              <apex:selectOption itemLabel="15" itemValue="15"/>
                              <apex:selectOption itemLabel="20" itemValue="20"/>
               </apex:selectlist>
               <apex:inputText size="4" value="{!rows}"/>
           <apex:commandButton value="limit" action="{!setLimit}" rerender="pb"/>
-                        <apex:commandButton value="Dynamic_limit" action="{!dynamicSetLimit}" rerender="pb"/>
+                        <apex:commandButton value="Dynamic_limit" action="{!dynamicQuery}" rerender="pb"/>
 
           </apex:pageBlockButtons>
 

@@ -3,6 +3,7 @@ public class CMS_ByMeasure {
     
     public Date dateFrom {get; set;}
     public Date dateTo {get; set;}
+    public String measureName;
     public Date Q1Ends;
     public Date Q2Ends; 
     public Date Q3Ends; 
@@ -47,7 +48,7 @@ public class CMS_ByMeasure {
         return null;
     }
     
-    private Static void runBoard(Date DateFrom, Date DateTo) {
+    private Static void runBoard(Date dateFrom, Date dateTo, String measureNumber) {
         List<CMS_FYE__mdt> measures  =[select Id, MasterLabel, youngestAge__c, 
                                        oldestAge__c, createdByCM__c, HMG__c, CMS_Name__c, 
                                        includePMP__c, interactionType__c, Measure_Number__c, Total__c
@@ -121,7 +122,7 @@ public class CMS_ByMeasure {
                 }   
         
         System.debug('priorquarterEnds= ' + PriorQuarterEnds);
-        runBoard(dateFrom, dateTo);
+        runBoard(dateFrom, dateTo, measureName);
     }
     
     /***********************************************************************/
