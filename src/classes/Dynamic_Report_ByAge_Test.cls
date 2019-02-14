@@ -45,7 +45,7 @@ public class Dynamic_Report_ByAge_Test {
         Test.setCurrentPage(dashboard);
         Dynamic_Report_ByAge ctr = new Dynamic_Report_ByAge();
         date TestDateFrom = date.today().addYears(-1);
-        date TestDateTo = date.today(); 
+       // date TestDateTo = date.today(); 
         ctr.dateFrom = TestDateFrom;
         ctr.startGenerateBoard();
         ctr.getGenerateAgeNoAge(); 
@@ -148,9 +148,9 @@ public class Dynamic_Report_ByAge_Test {
     
     static void getDashboardNumbers(){
         Test.startTest();
-        PageReference dashboard = Page.annualReportVF;
+        PageReference dashboard = Page.Dynamic_Report_ByAge_VF;
         Test.setCurrentPage(dashboard);
-        annualReportAge ctr = new annualReportAge();
+        Dynamic_Report_ByAge ctr = new Dynamic_Report_ByAge();
         date TestDateFrom = date.today().addYears(-1);
         date TestDateTo = date.today(); 
         ctr.dateFrom = TestDateFrom;
@@ -163,8 +163,7 @@ public class Dynamic_Report_ByAge_Test {
        // ctr.GenerateKidsYTD();
         Test.stopTest();        
     }
-
     
-   
+      
     
 }

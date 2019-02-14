@@ -87,7 +87,7 @@ public class Dynamic_Report_TestData {
                                                RecordTypeID = rtChildContact.Id,
                                                Family__Primary_Language__c = 'Spanish',
                                                Family__Gender__c = 'Female',
-                                               Birthdate = BDate.addYears(ageOfChildrenToTest),
+                                               Birthdate = BDate.addYears(-ageOfChildrenToTest),
                                                npo02__Household__c=h.id
                                               ));
               
