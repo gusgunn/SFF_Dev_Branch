@@ -1,9 +1,27 @@
-trigger CaseTrigger on Case (after insert, after update) {
+trigger CaseTrigger on Case (before insert, after insert, before update, after update, before delete, after delete) {
    
-        if ((Trigger.isInsert  && Trigger.isAfter || Trigger.isUpdate && Trigger.isAfter) ) {
-            if (CheckRecursionCase.runOnce()){
-                InteractionDispatcher.getInteractionRecordType(trigger.new);
-                FamilyReferralTracks.sortCases(trigger.new);
-        }
+   
+   HouseholdUpdater householdUpdater = new HouseholdUpdater(); 
+   InteractionUpdater interactionUpdates = new InteractionUpdater ();
+
+ 
+    
+    if(trigger.operationType == TriggerOperation.AFTER_INSERT ||
+       trigger.operationType == TriggerOperation.AFTER_UPDATE){
+      //     InteractionDispatcher.getInteractionRecordType(trigger.new);
+      //FamilyReferralTracks.sortCases(trigger.new);
+      InteractionDispatcher.handleTrigger(trigger.operationType, trigger.new, trigger.old, householdUpdater);
+       }
+    
+       
+    List<ITriggerExtension> dyanmicTriggers = TriggerExtensionSupport.getTriggerClasses('Case');
+    for(ITriggerExtension trig: dyanmicTriggers){
+        trig.HandleTrigger(trigger.operationType, trigger.new, trigger.old, 
+                           trigger.newMap, trigger.oldMap);
     }
+    // or worker or hh updater
+    householdUpdater.updateHouseholds();
+   
+           
+     
 }
