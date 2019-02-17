@@ -49,27 +49,25 @@ public with sharing class InteractionRecordTypeFilter {
 	public static void sortAllInteractionsByRecordType (Map<Id, RecordType> interactionRecordTypes, List<Case> listIn){  
 	for (case cas: listIn){
 		for (recordType rt: interactionRecordTypes.values(){
-			if(rt.Name == 'SW Family Assessment'){
-				  if (interactionRecordTypes.containsKey(cas.recordtypeID) {
+			if(rt.Name == 'SW Family Assessment' && interactionRecordTypes.containsKey(cas.recordtypeID) {
 				      familyAssessmentsList.add(cas);
-				  } else if(rt.Name == 'Intake Survey'){
-					  if (interactionRecordTypes.containsKey(cas.recordtypeID){
+					  continue;
+				  } else if(rt.Name == 'Intake Survey' && interactionRecordTypes.containsKey(cas.recordtypeID){
 						  intakeSurveysList.add(cas);
-			            } else if(rt.Name == 'Professional Case'){
-							if (interactionRecordTypes.containsKey(cas.recordtypeID){
+						  continue;
+			            } else if(rt.Name == 'Professional Case' && interactionRecordTypes.containsKey(cas.recordtypeID){
 								Boolean caseHasChild = (cas.Family__Child__c != NULL && string.valueOf( cas.Family__Child__c)!='');
-								Boolean casehasHousehold = (cas.Family__Household__c != NULL); //
+								Boolean casehasHousehold = (cas.Family__Household__c != NULL); 
 								Boolean caseNotPMP = (!cas.Call_Type__c.contains('PMP'));
-								If(caseNotPMP && casehasHousehold && caseHasChild){
+								    If(caseNotPMP && casehasHousehold && caseHasChild){
 									professionalInteractionsList.add(cas);
-									} else if(rt.Name == 'Family Case'){
-										if (interactionRecordTypes.containsKey(cas.recordtypeID){
+								    }
+									continue;
+								} else if(rt.Name == 'Family Case' && interactionRecordTypes.containsKey(cas.recordtypeID){
 											familyInteractionsList.add(cas);
-										    } else if(rt.Name == 'Inclusion Interaction'){
-												if (interactionRecordTypes.containsKey(cas.recordtypeID){
+											continue;
+										    } else if(rt.Name == 'Inclusion Interaction' && interactionRecordTypes.containsKey(cas.recordtypeID){
 													SFINInteractionsList.add(cas);
-												} else {
-														//not using this interaction record type
 											}
 
 									
