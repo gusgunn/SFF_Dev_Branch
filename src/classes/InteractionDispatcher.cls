@@ -2,7 +2,7 @@ public class InteractionDispatcher {
 /***
 *   @gusgunn
 ***/
-
+privte static Set<Id> processedCases = new Set<Id> ();
 
 public static Boolean testingException = false;
 private static RecordType rTFamilyInteraction = [SELECT Id, Name FROM recordType WHERE Name = 'Family Case' AND sObjectType = 'Case' LIMIT 1];
@@ -13,13 +13,15 @@ private static RecordType rTSfin = [SELECT Id, Name FROM recordType WHERE Name =
 private static Profile SW = [SELECT Id, Name from Profile where name ='SFCD Social Worker' LIMIT 1];
                                 
 public static void getInteractionRecordType (List<Case> listIn){ 
+    Map <Id, RecordType> interactionRecordTypes =RecordTypes.getRecordTypes('Case');
+    List<Case> filteredList = RecordTypeFilter.getRecordTypeNames('Case');
     List<Case> familyAssessments = new List<Case>();
     List<Case> intakeSurveys = new List<Case>();
     List<Case> SFINInteraction = new List<Case>();
     List<Case> professionalInteractions = new List<Case>();
     List<Case> familyInteractions = new List<Case>();
     
-    for (case cas: listIn){
+    for (case cas: filteredList){
         if(cas.recordtypeID == rTSwFAF.Id){
             familyAssessments.add(cas);
         } else if(cas.recordtypeID == rTIntakeSurvey.Id){
@@ -37,7 +39,7 @@ public static void getInteractionRecordType (List<Case> listIn){
             } else if(caseIsFamily){
                 familyInteractions.add(cas); 
             }else{
-                System.debug('no relevant recordType & family combo' + cas.recordtypeID); 
+                System.debug('no relevant recordType +  call type' + cas.recordtypeID + ' ' + cas.Call_Type__c); 
             }
         }  
     }
@@ -57,10 +59,13 @@ public static void getInteractionRecordType (List<Case> listIn){
     }
 }
 
-public static Map<Integer, List<sObject>> processFamiliyAssessments (List<Case> listIn){   
+// new class for each - ALL case inserts and updates go through this
+// send updates to worker - but dont update right away. update on trigger after all trigger methods fire.
+//include set for no repeats
+public static Map<Integer, List<sObject>> processFamiliyAssessments (List<Case> filteredList){   
     Map<Integer, List<sObject>> indexToObjects = new Map<Integer, List<SObject>>();
     Integer isIndex =0;
-    List<npo02__Household__c> housholdInteractionDateUpdates = LastHouseholdSWAssessments(listIn);
+    List<npo02__Household__c> housholdInteractionDateUpdates = LastHouseholdSWAssessments(filteredList);
     if(housholdInteractionDateUpdates.size()>0){
         indexToObjects.put(isIndex, housholdInteractionDateUpdates); 
         isIndex = isIndex + 1;
@@ -75,11 +80,11 @@ public static Map<Integer, List<sObject>> processFamiliyAssessments (List<Case> 
     return indexToObjects;
 }
 
-public static Map<Integer, List<sObject>> processIntakeSurveys (List<Case> listIn){  
+public static Map<Integer, List<sObject>> processIntakeSurveys (List<Case> filteredList){  
     Map<Integer, List<sObject>> indexToObjects = new Map<Integer, List<SObject>>();
     Integer isIndex =0;
     //send list to become a map and select hh's in keyset
-    List<npo02__Household__c> housholdInteractionDateUpdates = LastHouseholdIntakeSurvey(listIn);
+    List<npo02__Household__c> housholdInteractionDateUpdates = LastHouseholdIntakeSurvey(filteredList);
     if(housholdInteractionDateUpdates.size()>0){
         indexToObjects.put(isIndex, housholdInteractionDateUpdates); 
         isIndex = isIndex + 1;
@@ -93,15 +98,15 @@ public static Map<Integer, List<sObject>> processIntakeSurveys (List<Case> listI
     return indexToObjects;
 }
 
-public static Map<Integer, List<sObject>> processFamiliyInteractions (List<Case> listIn){         
+public static Map<Integer, List<sObject>> processFamiliyInteractions (List<Case> filteredList){         
     Map<Integer, List<sObject>> indexToObjects = new Map<Integer, List<SObject>>();
     Integer isIndex =0;
-    List<npo02__Household__c> housholdInteractionDateUpdates = LastHouseholdInteractions(listIn);
+    List<npo02__Household__c> housholdInteractionDateUpdates = LastHouseholdInteractions(filteredList);
     if(housholdInteractionDateUpdates.size()>0){
         indexToObjects.put(isIndex, housholdInteractionDateUpdates); 
         isIndex = isIndex + 1;
     }
-    List<Contact> contactInteractionDateUpdates = LastFamilyInteractionCaseDate(listIn);
+    List<Contact> contactInteractionDateUpdates = LastFamilyInteractionCaseDate(filteredList);
     if(contactInteractionDateUpdates.size()>0){
         indexToObjects.put(isIndex, contactInteractionDateUpdates); 
         isIndex = isIndex + 1;
@@ -327,11 +332,11 @@ public static void processProfessionalInteractions(list <case> cases){
     
 }
 
-public static Map<String, List <Case>> getMakeKeys(List <Case> newListIn){
-    System.debug('getMakeKeys'  +  newListIn.size() );
+public static Map<String, List <Case>> getMakeKeys(List <Case> newfilteredList){
+    System.debug('getMakeKeys'  +  newfilteredList.size() );
     Map <String, List<Case>> casesMapList = new Map <String, List<Case>>();
     Map<String, String> newKeysMap = new Map <String, String>();
-    for(Case a: newListIn){
+    for(Case a: newfilteredList){
         
         /*** 
 * For now just write it if there is an 001 Org listed. 
