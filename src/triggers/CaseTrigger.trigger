@@ -11,7 +11,7 @@ trigger CaseTrigger on Case (before insert, after insert, before update, after u
       //     InteractionDispatcher.getInteractionRecordType(trigger.new);
       //FamilyReferralTracks.sortCases(trigger.new);
       
-      InteractionDispatcher.handleTrigger(trigger.operationType, trigger.new, trigger.old, householdUpdater);
+      InteractionDispatcher.updateHouseholdFirstLasts(trigger.operationType, trigger.new, trigger.old, householdUpdater);
        }
     
    // this deals with the updater after all processing has been done    

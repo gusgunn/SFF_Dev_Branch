@@ -5,64 +5,22 @@ public class InteractionDispatcher {
 privte static Set<Id> processedCases = new Set<Id> ();
 
 public static Boolean testingException = false;
-private static RecordType rTFamilyInteraction = [SELECT Id, Name FROM recordType WHERE Name = 'Family Case' AND sObjectType = 'Case' LIMIT 1];
-private static RecordType rTProfInteraction = [SELECT Id, Name FROM recordType WHERE Name = 'Professional Case' AND sObjectType = 'Case' LIMIT 1];
-private static RecordType rTIntakeSurvey = [SELECT Id, Name FROM recordType WHERE Name = 'Intake Survey' AND sObjectType = 'Case' LIMIT 1];
-private static RecordType rTSwFAF = [SELECT Id, Name FROM recordType WHERE Name = 'SW Family Assessment' AND sObjectType = 'Case' LIMIT 1]; //Family_Assessment
-private static RecordType rTSfin = [SELECT Id, Name FROM recordType WHERE Name = 'Inclusion Interaction' AND sObjectType = 'Case' LIMIT 1];//Inclusion_Interaction
-private static Profile SW = [SELECT Id, Name from Profile where name ='SFCD Social Worker' LIMIT 1];
-                                
-public static void getInteractionRecordType (List<Case> listIn){ 
+public static void handleTrigger(TriggerOperation operationType, List<Task> newList, list<Task> oldList, householdUpdater householdUpdates) {
+        
+    updateHouseholdFirstLasts(newList, householdUpdates);
+    }
+public static void updateHouseholdFirstLasts (List<Case> listIn, householdUpdater householdUpdates){ 
     Map <Id, RecordType> interactionRecordTypes =RecordTypes.getRecordTypes('Case');
-    List<Case> filteredList = RecordTypeFilter.getRecordTypeNames('Case');
-    List<Case> familyAssessments = new List<Case>();
-    List<Case> intakeSurveys = new List<Case>();
-    List<Case> SFINInteraction = new List<Case>();
-    List<Case> professionalInteractions = new List<Case>();
-    List<Case> familyInteractions = new List<Case>();
+    InteractionRecordTypeFilter.sortAllInteractionRecordTypes(interactionRecordTypes);
+   List<Case> filteredList, householdUpdates) processHouseholdFamilyInteractionDates = InteractionRecordTypeFilter.getFamiliyInteractionsList();
     
-    for (case cas: filteredList){
-        if(cas.recordtypeID == rTSwFAF.Id){
-            familyAssessments.add(cas);
-        } else if(cas.recordtypeID == rTIntakeSurvey.Id){
-            intakeSurveys.add(cas);
-        } else if (cas.recordtypeID == rTSfin.Id){
-            SFINInteraction.add(cas); 
-        } else {
-            Boolean caseHasChild = (cas.Family__Child__c != NULL && string.ValueOf( cas.Family__Child__c)!='');
-            Boolean casehasHousehold = (cas.Family__Household__c != NULL);
-            Boolean caseIsProfessional = (cas.recordtypeID == rTProfInteraction.Id);
-            Boolean caseNotPMP = (!cas.Call_Type__c.contains('PMP'));
-            Boolean caseIsFamily = (cas.recordtypeID == rTFamilyInteraction.Id);
-            If(caseIsProfessional && caseNotPMP && caseHasChild){
-                professionalInteractions.add(cas);
-            } else if(caseIsFamily){
-                familyInteractions.add(cas); 
-            }else{
-                System.debug('no relevant recordType +  call type' + cas.recordtypeID + ' ' + cas.Call_Type__c); 
-            }
-        }  
-    }
-    if (familyAssessments.size()>0){
-        processFamiliyAssessments(familyAssessments);
-    }
-    if (intakeSurveys.size()>0) {
-        processIntakeSurveys(intakeSurveys);
-    }
-    if (familyInteractions.size()>0){
-        processFamiliyInteractions(familyInteractions);
-            System.debug ('Family Int Selcted');
-    }
-    if (professionalInteractions.size()>0){
-        processProfessionalInteractions(professionalInteractions);
-        System.debug ('pof Int Selected');
-    }
+    //List<Case> filteredList = InteractionRecordTypeFilter.sortSWAssessments(interactionRecordTypes, listIn);
 }
 
 // new class for each - ALL case inserts and updates go through this
 // send updates to worker - but dont update right away. update on trigger after all trigger methods fire.
 //include set for no repeats
-public static Map<Integer, List<sObject>> processFamiliyAssessments (List<Case> filteredList){   
+public static Map<Integer, List<sObject>> processAWFamiliyAssessments (List<Case> filteredList, householdUpdates){   
     Map<Integer, List<sObject>> indexToObjects = new Map<Integer, List<SObject>>();
     Integer isIndex =0;
     List<npo02__Household__c> housholdInteractionDateUpdates = LastHouseholdSWAssessments(filteredList);
