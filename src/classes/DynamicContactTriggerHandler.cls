@@ -2,8 +2,7 @@ public with sharing class DynamicContactTriggerHandler implements ITriggerExtens
 
     public void HandleTrigger(TriggerOperation operationType,
                         List<SObject> newList, List<SObject> oldList,
-                        Map<ID, SObject> newMap, Map<ID, SObject> oldMap ) 
-    {
+                        Map<ID, SObject> newMap, Map<ID, SObject> oldMap ) {
 
     }
 

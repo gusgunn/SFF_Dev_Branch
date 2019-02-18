@@ -1,323 +1,174 @@
 public class InteractionDispatcher {  
-/***
-*   @gusgunn
-***/
-privte static Set<Id> processedCases = new Set<Id> ();
-
-public static Boolean testingException = false;
-public static void handleTrigger(TriggerOperation operationType, List<Task> newList, list<Task> oldList, householdUpdater householdUpdates) {
+    
+    public static Boolean testingException = false;
+    private static Set<Id> processedCases = new Set<Id>();
+    private static Map<Id, Case> interactionMap = new Map<Id, Case>();
+    public static void handleTrigger(TriggerOperation operationType, List<Case> newList, list<Case> oldList, householdUpdater householdUpdates){
+        updateHouseholdFirstLasts(newList, householdUpdates);
+    }
+    
+    public static void updateHouseholdFirstLasts (List<Case> listIn, householdUpdater householdUpdates){ 
+        Map<Id, RecordType> interactionRecordTypes =RecordTypes.getRecordTypes('Case');
+        InteractionRecordTypeFilter.sortAllInteractionsByRecordType(interactionRecordTypes, listIn);
+                system.debug('***************************in upateHH first 2 methods called');
+        for (Case cas: listIn){
+            interactionMap.put(cas.Family__Household__c, cas);
+                   system.debug('************************in loop for : ' + cas.Family__Household__c);
+            processedCases.add(cas.Id);
+        }
+                system.debug('************************ran loop');
+        List <npo02__Household__c> households = InteractionSelector.getHouseholdInteractions(interactionMap);
+        processHouseholdFRSInteractions(households, householdUpdates);
+       // processHouseholdSWInteractions(households, householdUpdates);
+       // processHouseholdIntakeSurveys(households, householdUpdates);
+       // processProfessionalInteractions(households, householdUpdates);
         
-    updateHouseholdFirstLasts(newList, householdUpdates);
-    }
-public static void updateHouseholdFirstLasts (List<Case> listIn, householdUpdater householdUpdates){ 
-    Map <Id, RecordType> interactionRecordTypes =RecordTypes.getRecordTypes('Case');
-    InteractionRecordTypeFilter.sortAllInteractionRecordTypes(interactionRecordTypes);
-   List<Case> filteredList, householdUpdates) processHouseholdFamilyInteractionDates = InteractionRecordTypeFilter.getFamiliyInteractionsList();
-    
-    //List<Case> filteredList = InteractionRecordTypeFilter.sortSWAssessments(interactionRecordTypes, listIn);
-}
-
-// new class for each - ALL case inserts and updates go through this
-// send updates to worker - but dont update right away. update on trigger after all trigger methods fire.
-//include set for no repeats
-public static Map<Integer, List<sObject>> processAWFamiliyAssessments (List<Case> filteredList, householdUpdates){   
-    Map<Integer, List<sObject>> indexToObjects = new Map<Integer, List<SObject>>();
-    Integer isIndex =0;
-    List<npo02__Household__c> housholdInteractionDateUpdates = LastHouseholdSWAssessments(filteredList);
-    if(housholdInteractionDateUpdates.size()>0){
-        indexToObjects.put(isIndex, housholdInteractionDateUpdates); 
-        isIndex = isIndex + 1;
-    }
-    Integer startingIndex = 0;
-    
-    if (indexToObjects.size()>0) {
-        System.enqueueJob(new Worker(indexToObjects, startingIndex));
-    }else {
-        //
-    }
-    return indexToObjects;
-}
-
-public static Map<Integer, List<sObject>> processIntakeSurveys (List<Case> filteredList){  
-    Map<Integer, List<sObject>> indexToObjects = new Map<Integer, List<SObject>>();
-    Integer isIndex =0;
-    //send list to become a map and select hh's in keyset
-    List<npo02__Household__c> housholdInteractionDateUpdates = LastHouseholdIntakeSurvey(filteredList);
-    if(housholdInteractionDateUpdates.size()>0){
-        indexToObjects.put(isIndex, housholdInteractionDateUpdates); 
-        isIndex = isIndex + 1;
     }
     
-    Integer startingIndex = 0;
-    
-    if (indexToObjects.size()>0) {
-        System.enqueueJob(new Worker(indexToObjects, startingIndex));
-    }
-    return indexToObjects;
-}
-
-public static Map<Integer, List<sObject>> processFamiliyInteractions (List<Case> filteredList){         
-    Map<Integer, List<sObject>> indexToObjects = new Map<Integer, List<SObject>>();
-    Integer isIndex =0;
-    List<npo02__Household__c> housholdInteractionDateUpdates = LastHouseholdInteractions(filteredList);
-    if(housholdInteractionDateUpdates.size()>0){
-        indexToObjects.put(isIndex, housholdInteractionDateUpdates); 
-        isIndex = isIndex + 1;
-    }
-    List<Contact> contactInteractionDateUpdates = LastFamilyInteractionCaseDate(filteredList);
-    if(contactInteractionDateUpdates.size()>0){
-        indexToObjects.put(isIndex, contactInteractionDateUpdates); 
-        isIndex = isIndex + 1;
-    }
-    
-    Integer startingIndex = 0;
-    
-    if (indexToObjects.size()>0) {
-        System.enqueueJob(new Worker(indexToObjects, startingIndex));
-    }
-    return indexToObjects;
-}
-
-public static List<Contact> LastFamilyInteractionCaseDate(list<Case> cases){
-    Map<Integer, List<sObject>> indexToObjects = new Map<Integer, List<SObject>>();
-    Map<ID, Case> caseMap = new Map<ID, Case>();
-    List<Contact> interactionList = new List<Contact>();
-    // Any Interaction- Call type not left message? Last_Interaction_Date__c
-    for (case cas: cases){
-        if(cas.RecordTypeId == rTFamilyInteraction.Id){
-            caseMap.put(cas.ContactID, cas);
-            System.Debug('Contact todays Int Date= ' + caseMap);
-        }
-        If(cas.Family__Child__c!=NULL ){
-            caseMap.put(cas.Family__Child__c, cas);
-        }
-    }
-    System.debug('caseMap =' + caseMap);
-    if(caseMap.size()>0){
-        List <Contact> conInteractions = InteractionSelector.getContactInteractions(caseMap);
-        Set<ID> keys = caseMap.keySet();
-        //for (ID k: keys) { 
-        for(Contact c: conInteractions){
-            Contact UpdateCon = new Contact();
-            Boolean conUpdated = false;
-            if(caseMap.containsKey(c.ID) )
-                UpdateCon.ID = c.id; 
-            if(c.Last_Interaction_Date__c ==  NULL || c.Last_Interaction_Date__c < caseMap.get(c.ID).Start_Time__c.date()){
-                System.debug('caseMap.get(k)= ' + caseMap.get(c.ID).Start_Time__c.date());
-                System.Debug('Contact ID & Date = ' + c +  '  ' + UpdateCon.Last_Interaction_Date__c);
-                UpdateCon.Last_Interaction_Date__c = caseMap.get(c.ID).Start_Time__c.date();
-                conUpdated = True;
-            }
-            if(c.First_Interaction__c == NULL || c.First_Interaction__c > caseMap.get(c.ID).Start_Time__c.date()){
-                UpdateCon.First_Interaction__c = caseMap.get(c.ID).Start_Time__c.date();
-                conUpdated = True;
+    public static void processHouseholdFRSInteractions(List <npo02__Household__c> households, householdUpdater householdUpdates){
+        Map<Id, Case> frsCaseMap = InteractionRecordTypeFilter.getFamiliyInteractionsMap();
+        if(frsCaseMap.size()>0){
+            system.debug('************************ frsCaseMap size : ' + frsCaseMap.size());
+            
+            for(npo02__Household__c h : households) {
+                if(frsCaseMap.containsKey(h.ID)) {
+                    npo02__Household__c toUpdate = householdUpdates.getHousehold(h.id);
+                    if (h.Most_Recent_Household_Interaction__c ==  NULL 
+                        || h.Most_Recent_Household_Interaction__c < frsCaseMap.get(h.ID).Start_Time__c.date()){
+                            toUpdate.Most_Recent_Household_Interaction__c = frsCaseMap.get(h.ID).Start_Time__c.date();
+                            toUpdate.Most_Recent_HH_Interaction_Call_Type__c = frsCaseMap.get(h.ID).Call_Type__c;
+                            System.Debug('*************** most recent hh interaction: ' + h.Most_Recent_Household_Interaction__c ); 
+                        } 
+                    if(h.First_Interaction__c == NULL || h.First_Interaction__c > frsCaseMap.get(h.ID).Start_Time__c.date()){
+                        toUpdate.First_Interaction__c = frsCaseMap.get(h.ID).Start_Time__c.date();
+                    }
+                    if(h.Last_Intake__c ==  NULL || h.Last_Intake__c < interactionMap.get(h.ID).Start_Time__c.date()){
+                toUpdate.Last_Intake__c = frsCaseMap.get(h.ID).Start_Time__c.date();
             } 
-            if(conUpdated == true) interactionList.add(UpdateCon);  
-        }   
-    }
-    System.debug('Interaction Date List= ' + interactionList.size());        
-    return interactionList;
-} 
-
-public static List<npo02__Household__c> LastHouseholdInteractions(list <case> cases){
-    System.Debug('getLastHouseholdInteractions running. Size = ' + cases);
-    // if SW do SW HH fields. 
-    // If FRS, do FRS.
-    Map<ID, Case> caseMap = new Map<ID, Case>();
-    Map<ID, Case> swCaseMap = new Map<ID, Case>();
-    Map<ID, Case> frsCaseMap = new Map<ID, Case>();
-    List<npo02__Household__c> interactionList = new List<npo02__Household__c>();
-    
-    for (case cas: cases){
-        caseMap.put(cas.Family__Household__c, cas); 
-        
-        if (cas.RecordTypeId == rTFamilyInteraction.Id && cas.Created_by_CM__c == false){
-            System.debug('Case created by__>' + cas.createdBy + '  Is SW?-->' +  cas.Created_by_CM__c );
-        
-            frsCaseMap.put(cas.Family__Household__c, cas); 
-        }else {
-            swCaseMap.put(cas.Family__Household__c, cas);
-        }
-        
-    } 
-    
-    List <npo02__Household__c> hhInteractions = InteractionSelector.getHouseholdInteractions(caseMap);
-    System.debug('caseMap in  getHouseholdInteractions = ' + caseMap);
-    
-    
-    for(npo02__Household__c h : hhInteractions) {
-        npo02__Household__c updateHousehold = new npo02__Household__c();
-        
-            if(caseMap.get(h.ID).Call_Type__c =='Intake' ){
-                if(h.Last_Intake__c ==  NULL || h.Last_Intake__c < caseMap.get(h.ID).Start_Time__c.date()){
-                    updateHousehold.Last_Intake__c = caseMap.get(h.ID).Start_Time__c.date();
+            if(h.First_Intake__c == NULL || h.First_Intake__c > interactionMap.get(h.ID).Start_Time__c.date()){
+                    toUpdate.First_Intake__c = frsCaseMap.get(h.ID).Start_Time__c.date();
+            }
                 }
-                System.Debug(h.First_Intake__c );    
-                if(h.First_Intake__c == NULL || h.First_Intake__c > caseMap.get(h.ID).Start_Time__c.date()){
-                    updateHousehold.First_Intake__c = caseMap.get(h.ID).Start_Time__c.date();
-                } 
-            }
-        
-        if(frsCaseMap.containsKey(h.ID)) {
-                updateHousehold.ID = frsCaseMap.get(h.ID).Family__Household__c;
-            if (h.Most_Recent_Household_Interaction__c ==  NULL 
-                || h.Most_Recent_Household_Interaction__c < frsCaseMap.get(h.ID).Start_Time__c.date()){
-                    updateHousehold.Most_Recent_Household_Interaction__c = frsCaseMap.get(h.ID).Start_Time__c.date();
-                    updateHousehold.Most_Recent_HH_Interaction_Call_Type__c = frsCaseMap.get(h.ID).Call_Type__c;
-                    System.Debug(h.Most_Recent_Household_Interaction__c ); 
-                } 
-            if(h.First_Interaction__c == NULL || h.First_Interaction__c > frsCaseMap.get(h.ID).Start_Time__c.date()){
-                updateHousehold.First_Interaction__c = frsCaseMap.get(h.ID).Start_Time__c.date();
             }
         }
-        
-            if(swCaseMap.containsKey(h.ID)) {
-                updateHousehold.ID = swCaseMap.get(h.ID).Family__Household__c;
+    }
+    
+     public static void processHouseholdSWInteractions(List <npo02__Household__c> households, householdUpdater householdUpdates){
+        Map<Id, Case> SWCaseMap = InteractionRecordTypeFilter.getSWFamilyAssessmentsMap();
+        if(SWCaseMap.size()>0){
+        for(npo02__Household__c h : households){
+            npo02__Household__c toUpdate = householdUpdates.getHousehold(h.id);
             if (h.Most_Recent_SW_HH_Interaction__c ==  NULL 
-                || h.Most_Recent_SW_HH_Interaction__c < swCaseMap.get(h.ID).Start_Time__c.date()){
-                    updateHousehold.Most_Recent_SW_HH_Interaction__c = swCaseMap.get(h.ID).Start_Time__c.date();
-                    //updateHousehold.Most_Recent_HH_Interaction_Call_Type__c = swCaseMap.get(h.ID).Call_Type__c;
-                    System.Debug(h.Most_Recent_SW_HH_Interaction__c ); 
-                } 
+                    || h.Most_Recent_SW_HH_Interaction__c < swCaseMap.get(h.ID).Start_Time__c.date()){
+                        toUpdate.Most_Recent_SW_HH_Interaction__c = swCaseMap.get(h.ID).Start_Time__c.date();
+                    } 
             if(h.First_SW_HH_Interaction__c == NULL || h.First_SW_HH_Interaction__c > swCaseMap.get(h.ID).Start_Time__c.date()){
-                updateHousehold.First_SW_HH_Interaction__c = swCaseMap.get(h.ID).Start_Time__c.date();
+                    toUpdate.First_SW_HH_Interaction__c = swCaseMap.get(h.ID).Start_Time__c.date();
+                }
             }
-        }
-        interactionList.add(updateHousehold);
-    }
-    return interactionList;
-}
-
-@AuraEnabled
-public static List<npo02__Household__c> LastHouseholdSWAssessments(list <case> cases){
-    System.Debug('getLastHouseholdInteractions running. Size = ' + cases);
-    //Making map here becuase need list for First and Last Interaction updates on Contact (Caregiver and child)
-    Map<ID, Case> caseMap = new Map<ID, Case>();
-    List<npo02__Household__c> interactionList = new List<npo02__Household__c>();
-    // Any Familiy Interaction attempt inc left message = Last_Interaction_Date__c
-    For (case cas: cases){
-        if (cas.RecordTypeId == rTSwFAF.Id){
-            caseMap.put(cas.Family__Household__c, cas); 
-        }
-    }
-    List <npo02__Household__c> hhInteractions = InteractionSelector.getHouseholdInteractions(caseMap);
-    System.debug('caseMap in  getHouseholdInteractions = ' + caseMap);
-    for(npo02__Household__c h : hhInteractions) {
-        npo02__Household__c updateHousehold = new npo02__Household__c();
-        // find 1 match
-        if(caseMap.containsKey(h.ID)) {
-            
-            updateHousehold.ID = caseMap.get(h.ID).Family__Household__c;
-            if (h.Most_Recent_Family_Assessment__c ==  NULL 
-                || h.Most_Recent_Family_Assessment__c < caseMap.get(h.ID).Start_Time__c.date()){
-                    updateHousehold.Most_Recent_Family_Assessment__c = caseMap.get(h.ID).Start_Time__c.date();
-                    System.Debug(h.Most_Recent_Family_Assessment__c ); 
-                } 
-            if(h.First_Family_Assessment__c == NULL || h.First_Family_Assessment__c > caseMap.get(h.ID).Start_Time__c.date()){
-                updateHousehold.First_Family_Assessment__c = caseMap.get(h.ID).Start_Time__c.date();
-            }
-        }
-        interactionList.add(updateHousehold);
-    }
-    return interactionList;
-}
-
-@AuraEnabled
-public static List<npo02__Household__c> LastHouseholdIntakeSurvey(list <case> cases){
-    System.Debug('getLastHouseholdInteractions running. Size = ' + cases);
-    
-    Map<ID, Case> caseMap = new Map<ID, Case>();
-    List<npo02__Household__c> interactionList = new List<npo02__Household__c>();
-    
-    For (case cas: cases){
-        if (cas.RecordTypeId == rTIntakeSurvey.Id){
-            caseMap.put(cas.Family__Household__c, cas); 
-        }
-    }
-    List <npo02__Household__c> hhInteractions = InteractionSelector.getHouseholdInteractions(caseMap);
-    System.debug('caseMap in  getHouseholdInteractions = ' + caseMap);
-    
-    for(npo02__Household__c h : hhInteractions) {
-        npo02__Household__c updateHousehold = new npo02__Household__c();
-        
-        if(caseMap.containsKey(h.ID)) {
-            updateHousehold.ID = caseMap.get(h.ID).Family__Household__c;
+                
+         }
+   }
+   public static void processHouseholdIntakeSurveys(List <npo02__Household__c> households, householdUpdater householdUpdates){
+        Map<Id, Case> intakeSurveyCaseMap = InteractionRecordTypeFilter.getIntakeSurveysMap();
+        if(intakeSurveyCaseMap.size()>0){
+        for(npo02__Household__c h : households){
+            npo02__Household__c toUpdate = householdUpdates.getHousehold(h.id);
             if (h.Most_Recent_Intake_Survey__c ==  NULL 
-                || h.Most_Recent_Intake_Survey__c < caseMap.get(h.ID).Start_Time__c.date()){
-                    updateHousehold.Most_Recent_Intake_Survey__c = caseMap.get(h.ID).Start_Time__c.date();
-                    System.Debug(h.Most_Recent_Intake_Survey__c ); 
+                    || h.Most_Recent_Intake_Survey__c < interactionMap.get(h.ID).Start_Time__c.date()){
+                        toUpdate.Most_Recent_Intake_Survey__c = interactionMap.get(h.ID).Start_Time__c.date();
+                    } 
+            if(h.First_Intake_Survey__c == NULL || h.First_Intake_Survey__c > interactionMap.get(h.ID).Start_Time__c.date()){
+                    toUpdate.First_Intake_Survey__c = interactionMap.get(h.ID).Start_Time__c.date();
+            }
+        }
+      }
+    }
+
+           /*  contact last int date
+            * 
+        System.debug('interactionMap =' + interactionMap);
+        if(interactionMap.size()>0){
+            List <Contact> conInteractions = InteractionSelector.getContactInteractions(interactionMap);
+            Set<ID> keys = interactionMap.keySet();
+            //for (ID k: keys) { 
+            for(Contact c: conInteractions){
+                Contact UpdateCon = new Contact();
+                Boolean conUpdated = false;
+                if(interactionMap.containsKey(c.ID) )
+                    UpdateCon.ID = c.id; 
+                if(c.Last_Interaction_Date__c ==  NULL || c.Last_Interaction_Date__c < interactionMap.get(c.ID).Start_Time__c.date()){
+                    System.debug('interactionMap.get(k)= ' + interactionMap.get(c.ID).Start_Time__c.date());
+                    System.Debug('Contact ID & Date = ' + c +  '  ' + UpdateCon.Last_Interaction_Date__c);
+                    UpdateCon.Last_Interaction_Date__c = interactionMap.get(c.ID).Start_Time__c.date();
+                    conUpdated = True;
+                }
+                if(c.First_Interaction__c == NULL || c.First_Interaction__c > interactionMap.get(c.ID).Start_Time__c.date()){
+                    UpdateCon.First_Interaction__c = interactionMap.get(c.ID).Start_Time__c.date();
+                    conUpdated = True;
                 } 
-            if(h.First_Intake_Survey__c == NULL || h.First_Intake_Survey__c > caseMap.get(h.ID).Start_Time__c.date()){
-                updateHousehold.First_Intake_Survey__c = caseMap.get(h.ID).Start_Time__c.date();
-            }
+                if(conUpdated == true) interactionList.add(UpdateCon);  
+            }   
         }
-        interactionList.add(updateHousehold);
-    }
-    return interactionList;
-}
-
-@AuraEnabled
-public static void processProfessionalInteractions(list <case> cases){
+        System.debug('Interaction Date List= ' + interactionList.size());        
+        return interactionList;
+    } 
+    */
     
-    List<Case> findNeedConsents = new List<case>();
-    
-    List<Consent__c> interactionList = new List<Consent__c>();
-    
-    // Professional records, consent per Org and Child
-    String HouseholdKey = NULL;
-    String key = Null;  
-    //InteractionSelector.getInteractionAccounts(cases);
-    For (case cas: cases){
-        Boolean caseIsProfessional = (cas.recordtypeID == rTProfInteraction.Id);
-        Boolean caseNotPMP = (!cas.Call_Type__c.contains('PMP'));
-        Boolean caseHasChild = (cas.Family__Child__c != NULL && string.ValueOf( cas.Family__Child__c)!='');
-        Boolean casehasHousehold = (cas.Family__Household__c != NULL);
-        Boolean caseIsInternalSFCD = (cas.AccountId != '001G000001kuowUIAQ'); 
-        If(caseIsProfessional && caseNotPMP && caseHasChild){
-                System.debug(' in consents');
-            findNeedConsents.add(cas);
-        }
-        if(findNeedConsents.size()>0){
-            RelationshipsMethods.getEnterRelationshipTrack(findNeedConsents);
-            Map <String, List<Case>>  returnedNeedConsentsMap = getMakeKeys(findNeedConsents);
-            
-            if (returnedNeedConsentsMap.keySet().size() > 0){
-                System.debug(' if returnedNeedConsentsMap>0 Send  To Consent');
-                ConsentMethods.getEnterConsentTrack(returnedNeedConsentsMap); 
-            }
+    public static void processProfessionalAndChildsRelationshipsList(List <npo02__Household__c> households, householdUpdater householdUpdates){
+       List<Case> profChildRelationshipsList = InteractionRecordTypeFilter.getprofessionalAndChildsRelationshipsList();
+        if(profChildRelationshipsList.size()>0){
+            RelationshipsMethods.getEnterRelationshipTrack(profChildRelationshipsList);
         }
     }
     
-}
-
-public static Map<String, List <Case>> getMakeKeys(List <Case> newfilteredList){
-    System.debug('getMakeKeys'  +  newfilteredList.size() );
-    Map <String, List<Case>> casesMapList = new Map <String, List<Case>>();
-    Map<String, String> newKeysMap = new Map <String, String>();
-    for(Case a: newfilteredList){
+    @AuraEnabled
+    public static void processProfessionalInteractions(List <npo02__Household__c> households, householdUpdater householdUpdates){
+  /*     // Map<Id, Case> profOBOCaseMap = InteractionRecordTypeFilter.getProfessionalInteractionsOboMap();
+       List<Case> profChildRelationshipsList = InteractionRecordTypeFilter.getProfessionalAndChildsRelationshipsList();
         
-        /*** 
+            if(profChildRelationshipsList.size()>0){
+              //  RelationshipsMethods.getEnterRelationshipTrack(findNeedConsents);
+              Map <String, List<Case>>  returnedNeedConsentsMap = getMakeKeys(profChildRelationshipsList);
+                
+                if (returnedNeedConsentsMap.keySet().size() > 0){
+                    System.debug(' if returnedNeedConsentsMap>0 Send  To Consent');
+                    ConsentMethods.getEnterConsentTrack(returnedNeedConsentsMap); 
+                }
+            }
+        }
+        
+    }
+    /*
+    public static Map<String, List <Case>> getMakeKeys(List <Case> profChildRelationshipsList){
+     /*   System.debug('getMakeKeys'  +  profChildRelationshipsList.size() );
+        Map <String, List<Case>> casesMapList = new Map <String, List<Case>>();
+        Map<String, String> newKeysMap = new Map <String, String>();
+        for(Case a: profChildRelationshipsList){
+            
+            /*** 
 * For now just write it if there is an 001 Org listed. 
 * These cases all have children listed as per above
 * Make Key for Child & Professional's Org
-* **/
-        
-        String key = string.ValueOf(a.AccountID) + string.ValueOf( a.Family__Child__c);
-        newKeysMap.put(key, key);
-        // If the key has already been added to the Map
-        if (casesMapList.containsKey(key)){
-            System.debug('found dupe key');
-            casesMapList.get(key).add(a);
-            System.debug('get(key).add(a);' + key +' ' + casesMapList.size());
-            System.debug('.   keyset= ' + casesMapList.keyset());
-            System.debug('.  casesMapList sfter dupe found values= ' + casesMapList.values().size());
-        } else {
-            // casesMapList.put(a.ReferralKey__c, new List<Action__c>{a});
-            casesMapList.put(key, new List<Case>{a});
+
             
-            System.debug('.  casesMapList after new entry= ' + casesMapList.size());   
-        } 
+            String key = string.ValueOf(a.AccountID) + string.ValueOf( a.Family__Child__c);
+            newKeysMap.put(key, key);
+            // If the key has already been added to the Map
+            if (casesMapList.containsKey(key)){
+                System.debug('found dupe key');
+                casesMapList.get(key).add(a);
+                System.debug('get(key).add(a);' + key +' ' + casesMapList.size());
+                System.debug('.   keyset= ' + casesMapList.keyset());
+                System.debug('.  casesMapList sfter dupe found values= ' + casesMapList.values().size());
+            } else {
+                // casesMapList.put(a.ReferralKey__c, new List<Action__c>{a});
+                casesMapList.put(key, new List<Case>{a});
+                
+                System.debug('.  casesMapList after new entry= ' + casesMapList.size());   
+            } 
+        }
+        return casesMapList;
+    } */
     }
-    return casesMapList;
-} 
 }

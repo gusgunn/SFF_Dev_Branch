@@ -12,7 +12,7 @@
         
         <apex:pageBlock title="AnnualReport Dashboard">
             <apex:pageMessages id="messages" ></apex:pageMessages>
-            <apex:pageBlockSection title="Enter Quarter Ending" columns="1" collapsible="false">
+            <apex:pageBlockSection title="Enter Date Range" columns="1" collapsible="false">
                 <apex:panelGroup >
                     <apex:outputLabel value="Date From" />
                     <apex:input label="Date From" value="{!dateFrom}" type="auto" /> 
